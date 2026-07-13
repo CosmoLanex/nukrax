@@ -5,28 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>nukrax.cr — Deposit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:       #000000;
-  --layer1:   #0d0d0d;
-  --layer2:   #121212;
-  --layer3:   #1a1a1a;
-  --layer4:   #222222;
-  --border:   #2a2a2a;
-  --border2:  #333333;
-  --mid:      #4a4a4a;
-  --secondary:#888888;
-  --text:     #bfbfbf;
-  --white:    #ffffff;
-  --warn:     #e53e3e;
-  --warn-bg:  rgba(229,62,62,0.08);
-  --glass:    rgba(255,255,255,0.03);
-  --glass2:   rgba(255,255,255,0.06);
-  --radius:   16px;
-  --radius-sm:10px;
-  --shadow:   0 4px 24px rgba(0,0,0,0.6);
-  --shadow-lg:0 8px 48px rgba(0,0,0,0.8);
+  --bg:       #030507;
+  --layer1:   #0A0F13;
+  --layer2:   #0E141A;
+  --layer3:   #131A21;
+  --layer4:   #1B2328;
+  --border:   #1B2328;
+  --border2:  #2A353C;
+  --mid:      #46626B;
+  --secondary:#8A9BA3;
+  --accent:   #8FB8C4;
+  --text:     #D3DBDD;
+  --white:    #F2F5F5;
+  --warn:     #D9667A;
+  --warn-bg:  rgba(217,102,122,0.08);
+  --glass:    rgba(242,245,245,0.03);
+  --glass2:   rgba(242,245,245,0.06);
+  --radius:   6px;
+  --radius-sm:4px;
+  --shadow:   0 4px 24px rgba(0,0,0,0.5);
+  --shadow-lg:0 8px 48px rgba(0,0,0,0.7);
+}
+
+/* Wordmark display face — matches main page, loaded from assets/fonts */
+@font-face{
+  font-family:'NKX Display';
+  src:url('assets/fonts/nukrax-display.woff2') format('woff2'),
+      url('assets/fonts/nukrax-display.otf') format('opentype');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,7 +46,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--white);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 15px;
   line-height: 1.5;
   overflow-x: hidden;
@@ -68,7 +79,7 @@ body {
   position: absolute; inset: 0;
   border: 1.5px solid transparent;
   border-top-color: #fff;
-  border-right-color: rgba(255,255,255,0.3);
+  border-right-color: rgba(242,245,245,0.3);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -78,15 +89,15 @@ body {
   border: 1px solid var(--border2);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 14px; font-weight: 700; color: var(--white);
 }
 .pre-name {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 18px; font-weight: 600;
-  color: var(--white); letter-spacing: -0.02em;
+  font-family: 'NKX Display', 'Outfit', sans-serif;
+  font-size: 20px; font-weight: 400;
+  color: var(--white); letter-spacing: 0.02em;
 }
-.pre-name span { color: var(--secondary); }
+.pre-name span { color: var(--accent); }
 .pre-sub {
   font-size: 11px; color: var(--mid);
   letter-spacing: 0.12em; text-transform: uppercase;
@@ -129,7 +140,7 @@ nav {
   border: 1px solid var(--border2);
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 13px; font-weight: 700; color: var(--white);
   overflow: hidden; position: relative;
 }
@@ -137,11 +148,11 @@ nav {
 .nav-logo-mark img.ok { display:block; }
 .nav-logo-mark span.fb { display:block; }
 .nav-brand {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 16px; font-weight: 600; color: var(--white);
-  letter-spacing: -0.02em;
+  font-family: 'NKX Display', 'Outfit', sans-serif;
+  font-size: 18px; font-weight: 400; color: var(--white);
+  letter-spacing: 0.02em;
 }
-.nav-brand em { color: var(--secondary); font-style: normal; }
+.nav-brand em { color: var(--accent); font-style: normal; }
 
 .nav-pill {
   display: flex; align-items: center; gap: 6px;
@@ -188,7 +199,7 @@ main {
 }
 .hero-sup .dot2 { width:5px;height:5px;border-radius:50%;background:var(--mid); }
 .hero h1 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: clamp(28px,5vw,46px);
   font-weight: 700; line-height: 1.1;
   color: var(--white);
@@ -235,7 +246,7 @@ main {
 .cc::before {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent);
+  background: linear-gradient(135deg, rgba(242,245,245,0.04), transparent);
   opacity: 0; transition: opacity 0.2s;
   border-radius: inherit;
 }
@@ -243,9 +254,9 @@ main {
 .cc:hover::before { opacity: 1; }
 .cc:active { transform: translateY(0) scale(0.97); }
 .cc.active {
-  border-color: rgba(255,255,255,0.25);
+  border-color: rgba(242,245,245,0.25);
   background: var(--layer3);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.12), var(--shadow);
+  box-shadow: 0 0 0 1px rgba(242,245,245,0.12), var(--shadow);
 }
 .cc.active::before { opacity: 1; }
 
@@ -259,9 +270,9 @@ main {
   font-family: 'Space Mono', monospace;
   transition: border-color 0.2s;
 }
-.cc.active .cc-icon { border-color: rgba(255,255,255,0.3); }
+.cc.active .cc-icon { border-color: rgba(242,245,245,0.3); }
 .cc-name {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 12px; font-weight: 600;
   color: var(--text); letter-spacing: -0.01em;
   transition: color 0.2s;
@@ -299,7 +310,7 @@ main {
   transition: opacity 0.18s; border-radius: 2px 0 0 2px;
 }
 .nc:hover { border-color: var(--border2); background: var(--layer3); transform: translateX(2px); }
-.nc.active { border-color: rgba(255,255,255,0.2); background: var(--layer3); }
+.nc.active { border-color: rgba(242,245,245,0.2); background: var(--layer3); }
 .nc.active::after { opacity: 1; }
 .nc:active { transform: scale(0.98); }
 
@@ -312,7 +323,7 @@ main {
 
 .nc-info { flex: 1; min-width: 0; }
 .nc-name {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 12px; font-weight: 500; color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   transition: color 0.18s;
@@ -327,8 +338,8 @@ main {
 .tag-best {
   font-family: 'Space Mono', monospace; font-size: 8px;
   padding: 2px 7px; border-radius: 20px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(242,245,245,0.06);
+  border: 1px solid rgba(242,245,245,0.12);
   color: var(--white); letter-spacing: 0.08em;
   text-transform: uppercase; flex-shrink: 0;
 }
@@ -372,7 +383,7 @@ footer {
   gap: 32px 40px;
 }
 .footer-col h3 {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 12px; font-weight: 600;
   color: var(--text); letter-spacing: 0.04em;
   margin-bottom: 10px; text-transform: uppercase;
@@ -384,7 +395,7 @@ footer {
   padding-top: 20px; border-top: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
 }
-.footer-bottom-l { font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: var(--mid); }
+.footer-bottom-l { font-family: 'Outfit', sans-serif; font-size: 12px; color: var(--mid); }
 .footer-bottom-r { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--border2); letter-spacing: 0.1em; text-transform: uppercase; }
 
 /* ── RESPONSIVE ── */
@@ -503,14 +514,16 @@ function renderCryptoGrid() {
       <div class="cc-name">${c.name}</div>
       <div class="cc-ticker">${c.ticker}</div>`;
     el.addEventListener('click', () => { playClick(); selectCrypto(key, el); });
-    el.addEventListener('mousemove', e => tilt(e, el));
-    el.addEventListener('mouseleave', () => el.style.transform = '');
+    let _rect = null;
+    el.addEventListener('mouseenter', () => { _rect = el.getBoundingClientRect(); });
+    el.addEventListener('mousemove', e => tilt(e, el, _rect));
+    el.addEventListener('mouseleave', () => { el.style.transform = ''; _rect = null; });
     g.appendChild(el);
   });
 }
 
-function tilt(e, el) {
-  const r = el.getBoundingClientRect();
+function tilt(e, el, rect) {
+  const r = rect || el.getBoundingClientRect();
   const x = (e.clientX - r.left) / r.width  - 0.5;
   const y = (e.clientY - r.top)  / r.height - 0.5;
   el.style.transform = `translateY(-2px) rotateX(${-y*6}deg) rotateY(${x*6}deg)`;
@@ -559,7 +572,7 @@ function goToDeposit(cryptoKey, netIdx) {
 (function() {
   const cv = document.getElementById('bgCanvas'), ctx = cv.getContext('2d');
   let W, H;
-  const N = window.innerWidth < 600 ? 40 : 70;
+  const N = window.innerWidth < 600 ? 26 : 46;
   let pts = [];
 
   function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
@@ -571,7 +584,17 @@ function goToDeposit(cryptoKey, netIdx) {
     r: Math.random()*.8+.2
   });
 
-  function draw() {
+  let running = !document.hidden, last = 0;
+  const FRAME_MS = 1000/30;
+  document.addEventListener('visibilitychange', () => {
+    running = !document.hidden;
+    if (running) requestAnimationFrame(draw);
+  });
+
+  function draw(t) {
+    if (!running) return;
+    if (t - last < FRAME_MS) { requestAnimationFrame(draw); return; }
+    last = t;
     ctx.clearRect(0,0,W,H);
     pts.forEach(p => {
       p.x += p.vx; p.y += p.vy;
@@ -582,18 +605,18 @@ function goToDeposit(cryptoKey, netIdx) {
       const dx = pts[i].x-pts[j].x, dy = pts[i].y-pts[j].y;
       const d = Math.sqrt(dx*dx+dy*dy);
       if (d < 130) {
-        ctx.strokeStyle = `rgba(255,255,255,${0.06*(1-d/130)})`;
+        ctx.strokeStyle = `rgba(143,184,196,${0.08*(1-d/130)})`;
         ctx.lineWidth = .4;
         ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke();
       }
     }
     pts.forEach(p => {
-      ctx.fillStyle = `rgba(255,255,255,0.12)`;
+      ctx.fillStyle = `rgba(143,184,196,0.18)`;
       ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
     });
     requestAnimationFrame(draw);
   }
-  draw();
+  draw(0);
 })();
 
 // Clear navigation flags
