@@ -124,8 +124,8 @@ body::after{
 #sidebar{
   width:72px;
   background:rgba(10,15,19,.75);
-  backdrop-filter:blur(20px) saturate(140%);
-  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
   border-right:1px solid var(--border);
   display:flex;flex-direction:column;align-items:center;
   padding:24px 0;gap:8px;
@@ -236,8 +236,8 @@ body::after{
 #topbar{
   height:64px;
   background:rgba(22,22,26,.7);
-  backdrop-filter:blur(16px) saturate(140%);
-  -webkit-backdrop-filter:blur(16px) saturate(140%);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
   border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
   padding:0 28px;
@@ -436,9 +436,9 @@ body::after{
   color:var(--white);letter-spacing:-.01em;
 }
 .brand-mark{font-family:var(--font-logo);font-weight:400;letter-spacing:.02em}
-.dash-greeting span{
-  color:var(--white);
-  text-shadow:0 0 20px rgba(242,245,245,.25);
+.dash-greeting .brand-mark > span{
+  color:var(--accent);
+  text-shadow:0 0 20px rgba(143,184,196,.25);
 }
 .dash-date{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.04em}
 
@@ -3169,9 +3169,9 @@ function initParticles(){
 
   // 3 layers of depth
   const layers=[
-    {count:25,speed:.15,size:[.8,1.8],alpha:.25,linkDist:140}, // far
-    {count:25,speed:.3,size:[1,2.2],alpha:.45,linkDist:130},   // mid
-    {count:18,speed:.5,size:[1.4,2.6],alpha:.65,linkDist:120}  // near
+    {count:16,speed:.15,size:[.8,1.8],alpha:.25,linkDist:130}, // far
+    {count:16,speed:.3,size:[1,2.2],alpha:.45,linkDist:120},   // mid
+    {count:12,speed:.5,size:[1.4,2.6],alpha:.65,linkDist:110}  // near
   ];
 
   const pts=[];
@@ -3187,7 +3187,18 @@ function initParticles(){
     }
   });
 
-  function draw(){
+  let lastFrame=0;
+  const FRAME_MS=1000/30;
+  let visible=!document.hidden;
+  document.addEventListener('visibilitychange',()=>{
+    visible=!document.hidden;
+    if(visible) requestAnimationFrame(draw);
+  });
+
+  function draw(t){
+    if(!visible) return;
+    if(t-lastFrame<FRAME_MS){ requestAnimationFrame(draw); return; }
+    lastFrame=t;
     ctx.clearRect(0,0,W,H);
 
     pts.forEach(p=>{
