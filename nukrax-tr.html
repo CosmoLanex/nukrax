@@ -13,6 +13,7 @@
    NUKRAX.TR — ELITE 3D DESIGN SYSTEM
 ═══════════════════════════════════════════════════════════════ */
 :root {
+  --accent:    #8FB8C4;
   --black:     #030507;
   --graphite:  #0A0F13;
   --panel:     #0A0F13;
@@ -408,6 +409,9 @@ body::after{
   transform-style:preserve-3d;
   transition:transform .6s var(--ease-out),box-shadow .4s;
 }
+.tilt-card.tilt-active{
+  box-shadow:0 20px 45px rgba(0,0,0,.5),0 0 30px rgba(242,245,245,.06),0 0 0 1px rgba(242,245,245,.05);
+}
 .tilt-card > *{transform:translateZ(24px)}
 .tilt-card .card-title{transform:translateZ(18px)}
 .tilt-card .card-value{transform:translateZ(36px)}
@@ -431,6 +435,7 @@ body::after{
   font-family:var(--font-head);font-size:24px;font-weight:800;
   color:var(--white);letter-spacing:-.01em;
 }
+.brand-mark{font-family:var(--font-logo);font-weight:400;letter-spacing:.02em}
 .dash-greeting span{
   color:var(--white);
   text-shadow:0 0 20px rgba(242,245,245,.25);
@@ -1655,7 +1660,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
       <div class="page active" id="page-dashboard">
         <div class="dash-header">
           <div>
-            <div class="dash-greeting">NUKRAX<span>.TR</span> — Trading Command</div>
+            <div class="dash-greeting"><span class="brand-mark">NUKRAX<span>.TR</span></span> — Trading Command</div>
             <div class="dash-date" id="dash-date"></div>
           </div>
           <div id="dash-streak-badge"></div>
@@ -1902,7 +1907,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
             <div class="card card-sm">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:16px">
                 <div>
-                  <div style="font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--white);margin-bottom:4px;text-shadow:0 0 12px rgba(242,245,245,.25)">NUKRAX.TR</div>
+                  <div style="font-family:var(--font-logo);font-size:20px;font-weight:400;color:var(--white);margin-bottom:4px">NUKRAX.TR</div>
                   <div style="font-size:11px;color:var(--muted)">Version 2.0.0 — Elite 3D Trading Journal</div>
                   <div style="font-size:11px;color:var(--muted);margin-top:4px">Built for discipline, precision, and performance.</div>
                 </div>
@@ -2005,13 +2010,18 @@ function setDate(){
 ═══════════════════════════════════════════════════════════════ */
 function initParallax(){
   if(IS_TOUCH) return;
-  let tx=0,ty=0,cx=0,cy=0;
+  let tx=0,ty=0,cx=0,cy=0,running=true;
   window.addEventListener('mousemove',e=>{
     tx=(e.clientX/window.innerWidth-.5);
     ty=(e.clientY/window.innerHeight-.5);
   },{passive:true});
+  document.addEventListener('visibilitychange',()=>{
+    running=!document.hidden;
+    if(running) requestAnimationFrame(loop);
+  });
 
   function loop(){
+    if(!running) return;
     cx+=(tx-cx)*.05;
     cy+=(ty-cy)*.05;
     document.body.style.setProperty('--parx',cx);
@@ -3015,6 +3025,7 @@ function initTiltCards(){
     tiltAttached.add(card);
 
     let rx=0,ry=0,trx=0,try_=0,tz=0,ttz=0,running=false;
+    let rect=null;
 
     function loop(){
       rx+=(trx-rx)*.12;
@@ -3030,27 +3041,25 @@ function initTiltCards(){
     }
     function start(){if(!running){running=true;requestAnimationFrame(loop)}}
 
+    card.addEventListener('mouseenter',()=>{
+      rect=card.getBoundingClientRect();
+      card.classList.add('tilt-active');
+    },{passive:true});
     card.addEventListener('mousemove',e=>{
-      const r=card.getBoundingClientRect();
-      const x=(e.clientX-r.left)/r.width;
-      const y=(e.clientY-r.top)/r.height;
+      if(!rect) rect=card.getBoundingClientRect();
+      const x=(e.clientX-rect.left)/rect.width;
+      const y=(e.clientY-rect.top)/rect.height;
       trx=(0.5-y)*10;
       try_=(x-0.5)*10;
       ttz=24;
       card.style.setProperty('--mx',(x*100)+'%');
       card.style.setProperty('--my',(y*100)+'%');
-      const glowX=(x-.5)*20;
-      const glowY=(y-.5)*20;
-      card.style.boxShadow=`
-        ${-glowX}px ${-glowY+10}px 40px rgba(0,0,0,.5),
-        0 0 30px rgba(242,245,245,.06),
-        0 0 0 1px rgba(242,245,245,.05)
-      `;
       start();
-    });
+    },{passive:true});
     card.addEventListener('mouseleave',()=>{
       trx=0;try_=0;ttz=0;
-      card.style.boxShadow='';
+      rect=null;
+      card.classList.remove('tilt-active');
       start();
     });
     card.addEventListener('mousedown',()=>{ttz=10;start()});
@@ -3277,449 +3286,7 @@ function toggleParticlesQS(el){
   document.getElementById('particles').style.display=el.checked?'block':'none';
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   NUKRAX — PREMIUM CINEMATIC MOTION SYSTEM v3.0
-═══════════════════════════════════════════════════════════════ */
-
-/* ── SCROLL REVEAL ANIMATION ── */
-function initScrollReveal() {
-  const style = document.createElement('style');
-  style.textContent = `
-    .nx-reveal {
-      opacity: 0;
-      transform: translateY(28px) scale(0.98);
-      transition: opacity 0.75s cubic-bezier(.22,1,.36,1),
-                  transform 0.75s cubic-bezier(.22,1,.36,1);
-      will-change: opacity, transform;
-    }
-    .nx-reveal.nx-visible {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-    .nx-reveal-left {
-      opacity: 0;
-      transform: translateX(-22px);
-      transition: opacity 0.7s cubic-bezier(.22,1,.36,1),
-                  transform 0.7s cubic-bezier(.22,1,.36,1);
-      will-change: opacity, transform;
-    }
-    .nx-reveal-left.nx-visible {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    .nx-float {
-      animation: nxFloat 6s ease-in-out infinite;
-    }
-    .nx-float-slow {
-      animation: nxFloat 9s ease-in-out infinite;
-    }
-    .nx-float-2 {
-      animation: nxFloat 7s ease-in-out infinite;
-      animation-delay: -2.5s;
-    }
-    @keyframes nxFloat {
-      0%, 100% { transform: translateY(0px); }
-      50%       { transform: translateY(-7px); }
-    }
-    .nx-glow-pulse {
-      animation: nxGlowPulse 4s ease-in-out infinite;
-    }
-    @keyframes nxGlowPulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(242,245,245,0); }
-      50%     { box-shadow: 0 0 32px 2px rgba(242,245,245,.04); }
-    }
-    .nx-shimmer-border {
-      position: relative;
-      overflow: hidden;
-    }
-    .nx-shimmer-border::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: linear-gradient(
-        105deg,
-        transparent 40%,
-        rgba(242,245,245,.06) 50%,
-        transparent 60%
-      );
-      background-size: 200% 100%;
-      animation: nxShimmerBorder 5s ease-in-out infinite;
-      pointer-events: none;
-    }
-    @keyframes nxShimmerBorder {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-    /* Stagger children */
-    .nx-stagger > * { transition-delay: 0ms; }
-    .nx-stagger > *:nth-child(1) { transition-delay: 0ms; }
-    .nx-stagger > *:nth-child(2) { transition-delay: 60ms; }
-    .nx-stagger > *:nth-child(3) { transition-delay: 120ms; }
-    .nx-stagger > *:nth-child(4) { transition-delay: 180ms; }
-    .nx-stagger > *:nth-child(5) { transition-delay: 240ms; }
-    .nx-stagger > *:nth-child(6) { transition-delay: 300ms; }
-    /* Premium card hover depth */
-    .nx-depth-card {
-      transition: transform 0.5s cubic-bezier(.22,1,.36,1),
-                  box-shadow 0.5s cubic-bezier(.22,1,.36,1);
-      will-change: transform;
-    }
-    .nx-depth-card:hover {
-      transform: translateY(-5px) scale(1.008);
-      box-shadow:
-        0 24px 60px rgba(0,0,0,.6),
-        0 0 0 1px rgba(242,245,245,.07),
-        0 0 50px rgba(242,245,245,.025);
-    }
-    /* Stat card counter animation */
-    @keyframes nxCountUp {
-      from { opacity:0; transform: translateY(8px); }
-      to   { opacity:1; transform: translateY(0); }
-    }
-    .nx-count-anim {
-      animation: nxCountUp 0.5s cubic-bezier(.22,1,.36,1) both;
-    }
-    /* Section title accent line grow */
-    .nx-title-grow::before {
-      transform-origin: left;
-      animation: nxGrow 0.8s cubic-bezier(.22,1,.36,1) both;
-    }
-    @keyframes nxGrow {
-      from { transform: scaleY(0); opacity:0; }
-      to   { transform: scaleY(1); opacity:1; }
-    }
-    /* Ambient orb behind active cards */
-    .nx-orb {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-      filter: blur(60px);
-      opacity: 0;
-      transition: opacity 0.6s ease;
-      z-index: 0;
-    }
-    .card:hover .nx-orb,
-    .an-stat:hover .nx-orb {
-      opacity: 1;
-    }
-    /* Page transition depth */
-    .page.active {
-      animation: nxPageEnter 0.55s cubic-bezier(.22,1,.36,1) both;
-    }
-    @keyframes nxPageEnter {
-      from {
-        opacity: 0;
-        transform: translateY(16px) scale(0.99);
-        filter: blur(3px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0);
-      }
-    }
-    /* Nav item active underline slide */
-    .nav-item.active .nav-icon {
-      animation: nxIconActivate 0.4s cubic-bezier(.34,1.56,.64,1);
-    }
-    @keyframes nxIconActivate {
-      0%   { transform: scale(0.7) rotate(-10deg); }
-      100% { transform: scale(1) rotate(0deg); }
-    }
-    /* Table row entrance */
-    #journal-table tbody tr {
-      animation: nxRowIn 0.4s cubic-bezier(.22,1,.36,1) both;
-    }
-    #journal-table tbody tr:nth-child(1){animation-delay:0ms}
-    #journal-table tbody tr:nth-child(2){animation-delay:30ms}
-    #journal-table tbody tr:nth-child(3){animation-delay:60ms}
-    #journal-table tbody tr:nth-child(4){animation-delay:90ms}
-    #journal-table tbody tr:nth-child(5){animation-delay:120ms}
-    #journal-table tbody tr:nth-child(6){animation-delay:150ms}
-    #journal-table tbody tr:nth-child(7){animation-delay:180ms}
-    #journal-table tbody tr:nth-child(8){animation-delay:210ms}
-    #journal-table tbody tr:nth-child(9){animation-delay:240ms}
-    #journal-table tbody tr:nth-child(10){animation-delay:270ms}
-    @keyframes nxRowIn {
-      from { opacity:0; transform:translateX(-10px); }
-      to   { opacity:1; transform:translateX(0); }
-    }
-    /* Premium modal entrance */
-    .modal-overlay.open .modal {
-      animation: nxModalIn 0.5s cubic-bezier(.34,1.2,.64,1) both;
-    }
-    @keyframes nxModalIn {
-      from { opacity:0; transform: scale(0.88) translateY(24px); filter:blur(6px); }
-      to   { opacity:1; transform: scale(1) translateY(0); filter:blur(0); }
-    }
-    /* Topbar title transition */
-    #topbar-title {
-      transition: opacity 0.25s ease, transform 0.35s cubic-bezier(.22,1,.36,1);
-    }
-    /* Streak bar segment pop */
-    .streak-seg {
-      animation: nxSegPop 0.35s cubic-bezier(.34,1.56,.64,1) both;
-    }
-    @keyframes nxSegPop {
-      from { transform: scaleY(0); opacity:0; }
-      to   { transform: scaleY(1); opacity:1; }
-    }
-    /* Dashboard stat number morph */
-    .card-value {
-      transition: color 0.35s ease, text-shadow 0.35s ease;
-    }
-    /* Premium scan line on loader */
-    #loader::after {
-      content:'';
-      position:absolute;
-      left:0;right:0;height:1px;
-      background:linear-gradient(90deg,transparent,rgba(242,245,245,.15),transparent);
-      animation: nxScan 2s ease-in-out infinite;
-    }
-    @keyframes nxScan {
-      0%   { top:0%; opacity:0; }
-      10%  { opacity:1; }
-      90%  { opacity:1; }
-      100% { top:100%; opacity:0; }
-    }
-    /* Ambient light sweep on cards */
-    .card {
-      --card-sweep: 0%;
-    }
-    /* Recent row stagger */
-    .recent-row {
-      animation: nxRowIn 0.4s cubic-bezier(.22,1,.36,1) both;
-    }
-    /* Detail panel cinematic entrance */
-    .detail-overlay.open .detail-panel {
-      animation: nxDetailIn 0.55s cubic-bezier(.22,1,.36,1) both;
-    }
-    @keyframes nxDetailIn {
-      from { opacity:0; transform:translateX(40px) scale(0.97); filter:blur(4px); }
-      to   { opacity:1; transform:translateX(0) scale(1); filter:blur(0); }
-    }
-    /* Toast cinematic in */
-    .toast {
-      animation: nxToastIn 0.45s cubic-bezier(.34,1.4,.64,1) both;
-    }
-    @keyframes nxToastIn {
-      from { opacity:0; transform:translateX(20px) scale(0.94); }
-      to   { opacity:1; transform:translateX(0) scale(1); }
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-/* ── INTERSECTION OBSERVER for scroll reveals ── */
-function initScrollRevealObserver() {
-  // Tag all major content blocks for reveal
-  const targets = document.querySelectorAll(
-    '.card, .an-stat, .settings-section, .section-title, ' +
-    '.dash-greeting, .stat-grid, .perf-score-ring, .breakdown-list, ' +
-    '.chart-card, .recent-row'
-  );
-
-  targets.forEach((el, i) => {
-    el.classList.add('nx-reveal');
-    el.style.transitionDelay = Math.min(i * 18, 220) + 'ms';
-  });
-
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('nx-visible');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.07, rootMargin: '0px 0px -30px 0px' });
-
-  targets.forEach(el => io.observe(el));
-}
-
-/* ── ENHANCED TILT — more premium feel ── */
-function initPremiumTilt() {
-  if (IS_TOUCH) return;
-  document.querySelectorAll('.card, .an-stat').forEach(card => {
-    if (card.dataset.nxTilt) return;
-    card.dataset.nxTilt = '1';
-    card.classList.add('nx-depth-card');
-
-    let rx = 0, ry = 0, trx = 0, try_ = 0, tz = 0, ttz = 0, running = false;
-
-    // Inject ambient orb
-    const orb = document.createElement('div');
-    orb.className = 'nx-orb';
-    orb.style.cssText = 'width:160px;height:160px;top:-40px;left:-40px;background:radial-gradient(circle,rgba(242,245,245,.04),transparent 70%)';
-    card.style.position = 'relative';
-    card.appendChild(orb);
-
-    function loop() {
-      rx += (trx - rx) * .1;
-      ry += (try_ - ry) * .1;
-      tz += (ttz - tz) * .1;
-      card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(${tz}px)`;
-      if (Math.abs(trx - rx) > .04 || Math.abs(try_ - ry) > .04 || Math.abs(ttz - tz) > .4) {
-        requestAnimationFrame(loop);
-      } else {
-        running = false;
-      }
-    }
-    function start() { if (!running) { running = true; requestAnimationFrame(loop); } }
-
-    card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width;
-      const y = (e.clientY - r.top) / r.height;
-      trx = (0.5 - y) * 7;
-      try_ = (x - 0.5) * 7;
-      ttz = 16;
-      // Move orb to follow mouse
-      orb.style.left = (x * 60 - 20) + '%';
-      orb.style.top  = (y * 60 - 20) + '%';
-      card.style.setProperty('--mx', (x * 100) + '%');
-      card.style.setProperty('--my', (y * 100) + '%');
-      card.style.boxShadow = `
-        ${-(x-.5)*18}px ${-(y-.5)*18+14}px 44px rgba(0,0,0,.55),
-        0 0 36px rgba(242,245,245,.05),
-        0 0 0 1px rgba(242,245,245,.06)
-      `;
-      start();
-    }, { passive: true });
-
-    card.addEventListener('mouseleave', () => {
-      trx = 0; try_ = 0; ttz = 0;
-      card.style.boxShadow = '';
-      start();
-    });
-  });
-}
-
-/* ── AMBIENT BACKGROUND NEBULA ── */
-function initAmbientNebula() {
-  const canvas = document.createElement('canvas');
-  canvas.id = 'nx-nebula';
-  canvas.style.cssText = `
-    position:fixed;inset:0;width:100%;height:100%;
-    pointer-events:none;z-index:0;opacity:.6;
-    mix-blend-mode:screen;
-  `;
-  document.body.insertBefore(canvas, document.body.firstChild);
-
-  const ctx = canvas.getContext('2d');
-  let W, H, mx = 0.5, my = 0.5;
-
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize, { passive: true });
-  window.addEventListener('mousemove', e => {
-    mx = e.clientX / window.innerWidth;
-    my = e.clientY / window.innerHeight;
-  }, { passive: true });
-
-  // 3 slow-moving orbs
-  const orbs = [
-    { x: 0.2, y: 0.2, r: 0.32, color: [255, 255, 255], a: 0.022, vx: 0.00008, vy: 0.00012 },
-    { x: 0.8, y: 0.7, r: 0.28, color: [240, 180, 41],  a: 0.015, vx: -0.00006, vy: 0.00009 },
-    { x: 0.5, y: 0.9, r: 0.35, color: [57, 217, 138],  a: 0.012, vx: 0.00010, vy: -0.00007 },
-  ];
-
-  let frame = 0;
-  function draw() {
-    frame++;
-    ctx.clearRect(0, 0, W, H);
-
-    // Mouse influence
-    const mxOff = (mx - 0.5) * 0.04;
-    const myOff = (my - 0.5) * 0.04;
-
-    orbs.forEach(o => {
-      o.x += o.vx;
-      o.y += o.vy;
-      // Soft bounce
-      if (o.x < 0.1 || o.x > 0.9) o.vx *= -1;
-      if (o.y < 0.1 || o.y > 0.9) o.vy *= -1;
-
-      const cx = (o.x + mxOff) * W;
-      const cy = (o.y + myOff) * H;
-      const rad = o.r * Math.min(W, H);
-      const breathe = 1 + Math.sin(frame * 0.008 + o.x * 10) * 0.08;
-
-      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad * breathe);
-      g.addColorStop(0, `rgba(${o.color},${o.a})`);
-      g.addColorStop(0.5, `rgba(${o.color},${o.a * 0.4})`);
-      g.addColorStop(1, `rgba(${o.color},0)`);
-
-      ctx.beginPath();
-      ctx.arc(cx, cy, rad * breathe, 0, Math.PI * 2);
-      ctx.fillStyle = g;
-      ctx.fill();
-    });
-
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-/* ── CINEMATIC PAGE TRANSITION — wraps navigate with blur ── */
-const _nxOrigNavigate = _navigateCore;
-function navigate(btn) {
-  const content = document.getElementById('content');
-  if (content) {
-    content.style.transition = 'opacity 0.18s ease, filter 0.18s ease';
-    content.style.opacity = '0.35';
-    content.style.filter = 'blur(3px)';
-    setTimeout(() => {
-      _nxOrigNavigate(btn);
-      content.style.opacity = '1';
-      content.style.filter = 'blur(0)';
-      setTimeout(() => {
-        initScrollRevealObserver();
-        if (state && state.settings && state.settings.tilt !== false) {
-          initPremiumTilt();
-        }
-      }, 80);
-    }, 170);
-  } else {
-    _nxOrigNavigate(btn);
-  }
-}
-
-/* ── TOPBAR TITLE MORPH on navigate ── */
-(function() {
-  const titleEl = document.getElementById('topbar-title');
-  if (!titleEl) return;
-  new MutationObserver(() => {
-    titleEl.style.transition = 'none';
-    titleEl.style.opacity = '0';
-    titleEl.style.transform = 'translateY(6px)';
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      titleEl.style.transition = 'opacity 0.3s ease, transform 0.35s cubic-bezier(.22,1,.36,1)';
-      titleEl.style.opacity = '1';
-      titleEl.style.transform = 'translateY(0)';
-    }));
-  }).observe(titleEl, { childList: true, subtree: true, characterData: true });
-})();
-
-/* ── INIT ALL ── */
-function initNukraxPremium() {
-  initScrollReveal();
-  initAmbientNebula();
-  setTimeout(() => {
-    initScrollRevealObserver();
-    initPremiumTilt();
-  }, 300);
-}
-
-// Hook into existing load event (already fired if DOMContentLoaded passed)
-if (document.readyState === 'complete') {
-  initNukraxPremium();
-} else {
-  window.addEventListener('load', initNukraxPremium, { once: true });
-}
+/* Duplicate/legacy motion system removed — was causing significant lag via a second tilt-card handler and an always-on ambient canvas layered on top of the existing ones. */
 
 // ── KEYBOARD ──
 document.addEventListener('keydown',e=>{
