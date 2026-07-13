@@ -5,28 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>nukrax.cr — Deposit Address</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root {
-  --bg:       #000000;
-  --layer1:   #0d0d0d;
-  --layer2:   #121212;
-  --layer3:   #1a1a1a;
-  --layer4:   #222222;
-  --border:   #2a2a2a;
-  --border2:  #333333;
-  --mid:      #4a4a4a;
-  --secondary:#888888;
-  --text:     #bfbfbf;
-  --white:    #ffffff;
-  --warn:     #e53e3e;
-  --warn-bg:  rgba(229,62,62,0.08);
-  --warn-bd:  rgba(229,62,62,0.25);
-  --radius:   16px;
-  --radius-sm:10px;
-  --shadow:   0 4px 24px rgba(0,0,0,0.6);
-  --shadow-lg:0 12px 60px rgba(0,0,0,0.85);
+  --bg:       #030507;
+  --layer1:   #0A0F13;
+  --layer2:   #0E141A;
+  --layer3:   #131A21;
+  --layer4:   #1B2328;
+  --border:   #1B2328;
+  --border2:  #2A353C;
+  --mid:      #46626B;
+  --secondary:#8A9BA3;
+  --accent:   #8FB8C4;
+  --text:     #D3DBDD;
+  --white:    #F2F5F5;
+  --warn:     #D9667A;
+  --warn-bg:  rgba(217,102,122,0.08);
+  --warn-bd:  rgba(217,102,122,0.25);
+  --radius:   6px;
+  --radius-sm:4px;
+  --shadow:   0 4px 24px rgba(0,0,0,0.5);
+  --shadow-lg:0 12px 60px rgba(0,0,0,0.7);
+}
+
+/* Wordmark display face — matches main page, loaded from assets/fonts */
+@font-face{
+  font-family:'NKX Display';
+  src:url('assets/fonts/nukrax-display.woff2') format('woff2'),
+      url('assets/fonts/nukrax-display.otf') format('opentype');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
 }
 
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,7 +46,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--white);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 15px; line-height: 1.5;
   overflow-x: hidden;
   min-height: 100vh;
@@ -79,17 +90,17 @@ nav {
   width: 30px; height: 30px; background: var(--layer3);
   border: 1px solid var(--border2); border-radius: 7px;
   display: flex; align-items:center; justify-content:center;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 12px; font-weight: 700; color: var(--white);
   overflow: hidden;
 }
 .nav-logo-mark img { width:100%;height:100%;object-fit:cover;display:none; }
 .nav-logo-mark img.ok { display:block; }
 .nav-brand {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 15px; font-weight: 600; color: var(--white); letter-spacing: -0.02em;
+  font-family: 'NKX Display', 'Outfit', sans-serif;
+  font-size: 17px; font-weight: 400; color: var(--white); letter-spacing: 0.02em;
 }
-.nav-brand em { color: var(--secondary); font-style: normal; }
+.nav-brand em { color: var(--accent); font-style: normal; }
 
 .nav-right { display:flex; align-items:center; gap:8px; }
 .nav-breadcrumb {
@@ -121,7 +132,7 @@ main {
   content: '';
   position: absolute; top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(242,245,245,0.1), transparent);
 }
 @keyframes riseIn {
   from { opacity:0; transform:translateY(16px); }
@@ -137,7 +148,7 @@ main {
 }
 .asset-info { flex: 1; min-width: 0; }
 .asset-name {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 20px; font-weight: 700; color: var(--white);
   letter-spacing: -0.02em; line-height: 1.1;
 }
@@ -179,7 +190,7 @@ main {
 }
 .deposit-card::before {
   content:''; position:absolute; top:0;left:0;right:0; height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);
+  background:linear-gradient(90deg,transparent,rgba(242,245,245,0.08),transparent);
 }
 
 .dc-body {
@@ -223,7 +234,7 @@ main {
   flex: 1; background: var(--layer3); border: 1px solid var(--border);
   border-radius: var(--radius-sm); padding: 10px 16px;
   cursor: pointer; color: var(--text);
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 12px; font-weight: 500;
   display: flex; align-items: center; justify-content: center; gap: 7px;
   transition: all 0.15s ease;
@@ -232,14 +243,14 @@ main {
 .copy-btn:hover { background: var(--layer4); border-color: var(--border2); color: var(--white); }
 .copy-btn:active { transform: scale(0.97); }
 .copy-btn.copied {
-  background: rgba(255,255,255,0.06);
-  border-color: rgba(255,255,255,0.18);
+  background: rgba(242,245,245,0.06);
+  border-color: rgba(242,245,245,0.18);
   color: var(--white);
   animation: copyBurst 0.35s ease;
 }
 @keyframes copyBurst {
   0%   { transform: scale(1); }
-  40%  { transform: scale(1.04); box-shadow: 0 0 20px rgba(255,255,255,0.08); }
+  40%  { transform: scale(1.04); box-shadow: 0 0 20px rgba(242,245,245,0.08); }
   100% { transform: scale(1); }
 }
 .copy-icon { font-size: 13px; }
@@ -304,7 +315,7 @@ main {
   flex: 1; background: var(--layer2); border: 1px solid var(--border);
   border-radius: 12px; padding: 12px 18px;
   cursor: pointer; color: var(--text);
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 13px; font-weight: 500;
   display: flex; align-items:center; justify-content:center; gap:8px;
   transition: all 0.15s; text-decoration: none;
@@ -342,7 +353,7 @@ footer {
   display: flex; align-items:center; justify-content:space-between;
   flex-wrap: wrap; gap: 8px;
 }
-.footer-l { font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: var(--mid); }
+.footer-l { font-family: 'Outfit', sans-serif; font-size: 12px; color: var(--mid); }
 .footer-r { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--border2); letter-spacing: 0.1em; text-transform: uppercase; }
 
 /* ── RESPONSIVE ── */
@@ -523,7 +534,7 @@ if (!crypto || !net) {
         text: qrData,
         width: 120, height: 120,
         colorDark: '#ffffff',
-        colorLight: '#121212',
+        colorLight: '#0E141A',
         correctLevel: QRCode.CorrectLevel.M
       });
     } catch(e) {}
@@ -593,12 +604,21 @@ if (performance.navigation.type === 2 || sessionStorage.getItem('nukrax_from_cry
 (function() {
   const cv = document.getElementById('bg'), ctx = cv.getContext('2d');
   cv.width = innerWidth; cv.height = innerHeight;
-  const pts = Array.from({length: window.innerWidth<600?30:55}, () => ({
+  const pts = Array.from({length: window.innerWidth<600?18:36}, () => ({
     x: Math.random()*cv.width, y: Math.random()*cv.height,
     vx:(Math.random()-.5)*.22, vy:(Math.random()-.5)*.22,
     r: Math.random()*.7+.15
   }));
-  function draw() {
+  let running = !document.hidden, last = 0;
+  const FRAME_MS = 1000/30;
+  document.addEventListener('visibilitychange', () => {
+    running = !document.hidden;
+    if (running) requestAnimationFrame(draw);
+  });
+  function draw(t) {
+    if (!running) return;
+    if (t - last < FRAME_MS) { requestAnimationFrame(draw); return; }
+    last = t;
     ctx.clearRect(0,0,cv.width,cv.height);
     pts.forEach(p => {
       p.x+=p.vx; p.y+=p.vy;
@@ -607,12 +627,12 @@ if (performance.navigation.type === 2 || sessionStorage.getItem('nukrax_from_cry
     });
     for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
       const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
-      if(d<110){ ctx.strokeStyle=`rgba(255,255,255,${0.05*(1-d/110)})`; ctx.lineWidth=.35; ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
+      if(d<110){ ctx.strokeStyle=`rgba(143,184,196,${0.07*(1-d/110)})`; ctx.lineWidth=.35; ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
     }
-    pts.forEach(p=>{ ctx.fillStyle='rgba(255,255,255,0.1)'; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); });
+    pts.forEach(p=>{ ctx.fillStyle='rgba(143,184,196,0.16)'; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); });
     requestAnimationFrame(draw);
   }
-  draw();
+  draw(0);
 })();
 </script>
 </body>
