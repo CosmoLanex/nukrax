@@ -486,11 +486,28 @@ footer {
   img.onerror = () => { img.style.display = 'none'; };
 });
 
-// ── Preloader ──
-setTimeout(() => {
-  document.getElementById('preloader').classList.add('out');
-  setTimeout(() => document.getElementById('app').classList.add('show'), 80);
-}, 2200);
+// ── Preloader (only plays once, ever) ──
+(function(){
+  const SEEN_KEY = 'nkx_cr_intro_seen';
+  const preloader = document.getElementById('preloader');
+  const app = document.getElementById('app');
+  let seen = false;
+  try { seen = localStorage.getItem(SEEN_KEY) === '1'; } catch(e) {}
+
+  if (seen) {
+    // Skip the animation entirely — no fade, no delay
+    preloader.style.transition = 'none';
+    preloader.style.display = 'none';
+    app.style.transition = 'none';
+    app.classList.add('show');
+  } else {
+    setTimeout(() => {
+      preloader.classList.add('out');
+      setTimeout(() => app.classList.add('show'), 80);
+      try { localStorage.setItem(SEEN_KEY, '1'); } catch(e) {}
+    }, 2200);
+  }
+})();
 
 // ── Toast ──
 let _toastT;
