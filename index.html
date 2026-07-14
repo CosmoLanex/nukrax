@@ -400,7 +400,6 @@ nav.scrolled{
   transition:transform .35s var(--ease-out);
   flex-shrink:0;
 }
-.acc-item[open] .acc-chevron{transform:rotate(45deg)}
 .acc-body{
   padding:0 2px 26px 68px;
   font-size:13.5px;color:var(--muted);line-height:1.75;
@@ -671,6 +670,102 @@ footer{
 .cookie-btn-accept:hover{background:var(--accent);border-color:var(--accent)}
 
 @media(max-width:520px){#cookie-banner{left:12px;right:12px;bottom:12px;max-width:none}}
+
+/* ══════════ PREMIUM MOTION ENHANCEMENTS ══════════ */
+
+/* Heading reveal — words animate individually */
+.reveal-word{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(22px);
+  filter:blur(4px);
+  transition:opacity .7s var(--ease),transform .7s var(--ease),filter .7s var(--ease);
+  will-change:transform,opacity,filter;
+}
+.reveal-heading.visible .reveal-word{opacity:1;transform:translateY(0);filter:blur(0)}
+
+/* Paragraph reveal */
+.reveal-para{
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity .7s var(--ease-out),transform .7s var(--ease-out);
+}
+.reveal-para.visible{opacity:1;transform:translateY(0)}
+
+/* Button-group reveal */
+.reveal-btn{
+  opacity:0;
+  transform:translateY(14px) scale(.95);
+  transition:opacity .5s var(--ease-out),transform .5s var(--ease-out);
+}
+.reveal-btn.visible{opacity:1;transform:translateY(0) scale(1)}
+
+/* Card reveal */
+.reveal-card{
+  opacity:0;
+  transform:translateY(28px) scale(.97) rotateX(3deg);
+  transition:opacity .6s var(--ease),transform .6s var(--ease);
+  will-change:transform,opacity;
+}
+.reveal-card.visible{opacity:1;transform:translateY(0) scale(1) rotateX(0)}
+
+/* Image reveal */
+.reveal-image{
+  opacity:0;
+  transform:scale(1.08);
+  filter:blur(8px);
+  transition:opacity .8s var(--ease),transform .8s var(--ease),filter .8s var(--ease);
+}
+.reveal-image.visible{opacity:1;transform:scale(1);filter:blur(0)}
+
+/* Footer reveal */
+.reveal-footer{opacity:0;transform:translateY(40px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal-footer.visible{opacity:1;transform:translateY(0)}
+
+/* Terminal metrics — staggered rows */
+.terminal-metric{opacity:0;transform:translateY(16px);transition:opacity .5s var(--ease-out),transform .5s var(--ease-out)}
+.reveal-metrics.visible .terminal-metric{opacity:1;transform:translateY(0)}
+.reveal-metrics.visible .terminal-metric:nth-child(1){transition-delay:.05s}
+.reveal-metrics.visible .terminal-metric:nth-child(2){transition-delay:.15s}
+.reveal-metrics.visible .terminal-metric:nth-child(3){transition-delay:.25s}
+.reveal-metrics.visible .terminal-metric:nth-child(4){transition-delay:.35s}
+
+/* Nav — logo scales down slightly while scrolled */
+.nav-logo-container{transition:transform .5s var(--ease);transform-origin:left center}
+nav.scrolled .nav-logo-container{transform:scale(.92)}
+
+/* Buttons — hover lift + soft glow, press feedback */
+.btn{will-change:transform}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary:hover{box-shadow:0 10px 30px rgba(143,184,196,0.22)}
+.btn:active{transform:translateY(0) scale(.97)}
+.nav-cta:active{transform:scale(.97)}
+
+/* Social icons — lift, rotate, glow */
+.social-icon{will-change:transform}
+.social-icon:hover{transform:translateY(-3px) rotate(-6deg);box-shadow:0 8px 18px rgba(143,184,196,0.16)}
+
+/* EA cards — 3D tilt support */
+.ea-preview-card{transform-style:preserve-3d}
+.ea-preview-grid{perspective:900px}
+
+/* Accordion — smooth height/fade support (JS-driven), chevron decoupled from [open] */
+.acc-item .acc-chevron{transform:rotate(-45deg)}
+.acc-item.opening .acc-chevron{transform:rotate(45deg)}
+.acc-body{transition:opacity .3s var(--ease-out)}
+
+/* Equity graph draw */
+.terminal-chart svg polygon{transition:opacity .5s var(--ease-out)}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -743,16 +838,16 @@ footer{
   <div class="section-label reveal">01 — The Infrastructure</div>
   <div class="about-grid">
     <div class="reveal about-sticky">
-      <h2 class="about-headline">
+      <h2 class="about-headline reveal-heading">
         Built for <em>professionals.</em>
       </h2>
-      <p class="about-intro">
+      <p class="about-intro reveal-para">
         A private trading ecosystem engineered for serious market participants who demand institutional-grade tools without compromise.
       </p>
     </div>
     <div class="reveal">
       <div class="accordion">
-        <details class="acc-item" open>
+        <details class="acc-item opening" open>
           <summary>
             <span class="acc-num">01</span>
             <span class="acc-title">Institutional-Grade Expert Advisors</span>
@@ -800,11 +895,11 @@ footer{
 <!-- STATS -->
 <div class="stats">
   <div class="stat reveal reveal-delay-1">
-    <div class="stat-num">3</div>
+    <div class="stat-num" data-count-target="3">0</div>
     <div class="stat-label">Expert Advisors</div>
   </div>
   <div class="stat reveal reveal-delay-2">
-    <div class="stat-num">2</div>
+    <div class="stat-num" data-count-target="2">0</div>
     <div class="stat-label">Live Platforms</div>
   </div>
   <div class="stat reveal reveal-delay-3">
@@ -821,8 +916,8 @@ footer{
 <section class="terminal-section" id="terminal">
   <div class="section-label reveal">02 — The Terminal</div>
   <div class="terminal-head reveal">
-    <h2 class="terminal-title">Where execution happens.</h2>
-    <p class="terminal-desc">Every EA reports into the same environment — live position state, risk exposure, and execution latency, at a glance.</p>
+    <h2 class="terminal-title reveal-heading">Where execution happens.</h2>
+    <p class="terminal-desc reveal-para">Every EA reports into the same environment — live position state, risk exposure, and execution latency, at a glance.</p>
   </div>
   <div class="terminal-panel reveal">
     <div class="terminal-bar">
@@ -841,16 +936,16 @@ footer{
               <stop offset="100%" stop-color="#8FB8C4" stop-opacity="0"/>
             </linearGradient>
           </defs>
-          <polyline points="0,150 40,140 80,145 120,110 160,120 200,85 240,95 280,60 320,68 360,32 400,40"
+          <polyline id="equityLine" points="0,150 40,140 80,145 120,110 160,120 200,85 240,95 280,60 320,68 360,32 400,40"
             fill="none" stroke="#8FB8C4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <polygon points="0,150 40,140 80,145 120,110 160,120 200,85 240,95 280,60 320,68 360,32 400,40 400,180 0,180"
+          <polygon id="equityFill" points="0,150 40,140 80,145 120,110 160,120 200,85 240,95 280,60 320,68 360,32 400,40 400,180 0,180"
             fill="url(#chartFill)"/>
           <line x1="0" y1="45" x2="400" y2="45" stroke="#1B2328" stroke-width="1"/>
           <line x1="0" y1="90" x2="400" y2="90" stroke="#1B2328" stroke-width="1"/>
           <line x1="0" y1="135" x2="400" y2="135" stroke="#1B2328" stroke-width="1"/>
         </svg>
       </div>
-      <div class="terminal-metrics">
+      <div class="terminal-metrics reveal-metrics">
         <div class="terminal-metric">
           <span class="terminal-metric-label">Active Systems</span>
           <span class="terminal-metric-value">3 / 3</span>
@@ -876,34 +971,34 @@ footer{
 <!-- EA PREVIEW -->
 <section class="ea-section" id="ea">
   <div class="section-label reveal">03 — Execution Systems</div>
-  <h2 class="ea-section-title reveal">Systems built to execute.</h2>
+  <h2 class="ea-section-title reveal reveal-heading">Systems built to execute.</h2>
   <div class="ea-preview-grid">
-    <a href="ea/apex.html" class="ea-preview-card reveal reveal-delay-1">
+    <a href="ea/apex.html" class="ea-preview-card reveal-card reveal-delay-1">
       <span class="ea-preview-card-tag">HFT · v1.0</span>
       <div class="ea-preview-card-name">APEX</div>
       <div class="ea-preview-card-desc">Ultra-fast execution engine with adaptive scalping logic and multi-timeframe confirmation system.</div>
       <div class="ea-preview-card-arrow">View system →</div>
     </a>
-    <a href="ea/aurum.html" class="ea-preview-card reveal reveal-delay-2">
+    <a href="ea/aurum.html" class="ea-preview-card reveal-card reveal-delay-2">
       <span class="ea-preview-card-tag">HFT · v1.0</span>
       <div class="ea-preview-card-name">AURUM</div>
       <div class="ea-preview-card-desc">Gold-specialist HFT system with advanced liquidity-targeting algorithms and session-based filters.</div>
       <div class="ea-preview-card-arrow">View system →</div>
     </a>
-    <a href="ea/smc-ict.html" class="ea-preview-card reveal reveal-delay-3">
+    <a href="ea/smc-ict.html" class="ea-preview-card reveal-card reveal-delay-3">
       <span class="ea-preview-card-tag">SMC · ICT</span>
       <div class="ea-preview-card-name">SMC ICT</div>
       <div class="ea-preview-card-desc">Smart Money Concepts implementation with ICT methodology, FVG detection, and order block validation.</div>
       <div class="ea-preview-card-arrow">View system →</div>
     </a>
-    <a href="ea/404.html" class="ea-preview-card reveal reveal-delay-4">
+    <a href="ea/404.html" class="ea-preview-card reveal-card reveal-delay-4">
       <span class="ea-preview-card-tag">Coming Soon</span>
       <div class="ea-preview-card-name">MORE SYSTEMS</div>
       <div class="ea-preview-card-desc">Additional expert advisors currently in development and rigorous testing phases.</div>
       <div class="ea-preview-card-arrow">View system →</div>
     </a>
   </div>
-  <div class="ea-cta-wrap reveal">
+  <div class="ea-cta-wrap reveal-btn">
     <a href="ea-selection.html" class="btn btn-primary">
       View All Expert Advisors
       <span class="btn-arrow">→</span>
@@ -912,7 +1007,7 @@ footer{
 </section>
 
 <!-- FOOTER -->
-<footer>
+<footer class="reveal-footer">
   <div class="footer-content">
     <div class="footer-grid">
       <div class="footer-column">
@@ -988,21 +1083,43 @@ function updateProgress(){
 window.addEventListener('scroll', updateProgress, { passive:true });
 updateProgress();
 
-/* ── HERO GLOW — subtle cursor-reactive volumetric light ── */
+/* ── HERO GLOW — cursor-reactive + scroll-linked parallax volumetric light ── */
 (function(){
   const glow = document.getElementById('heroGlow');
   const heroSection = document.getElementById('heroSection');
   if(!glow || !heroSection) return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   requestAnimationFrame(()=>glow.classList.add('active'));
+
+  let mx = 0, my = 0, scrollOffset = 0;
+  function render(){
+    glow.style.transform = `translate(calc(-50% + ${mx}px), calc(-50% + ${my + scrollOffset}px))`;
+  }
   heroSection.addEventListener('mousemove', function(e){
+    if(reduceMotion) return;
     const rect = heroSection.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width - 0.5;
-    const py = (e.clientY - rect.top) / rect.height - 0.5;
-    glow.style.transform = `translate(calc(-50% + ${px * 60}px), calc(-50% + ${py * 60}px))`;
+    mx = ((e.clientX - rect.left) / rect.width - 0.5) * 60;
+    my = ((e.clientY - rect.top) / rect.height - 0.5) * 60;
+    render();
   }, { passive:true });
   heroSection.addEventListener('mouseleave', function(){
-    glow.style.transform = 'translate(-50%,-50%)';
+    mx = 0; my = 0; render();
   });
+
+  if(!reduceMotion){
+    let ticking = false;
+    function onScroll(){
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(()=>{
+        // subtle 10–30px drift as the hero scrolls out of view
+        scrollOffset = Math.min(window.scrollY * 0.08, 26);
+        render();
+        ticking = false;
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive:true });
+  }
 })();
 
 /* ── RIPPLE ── */
@@ -1063,25 +1180,216 @@ window.addEventListener('scroll',()=>{
   navbar.classList.toggle('scrolled',window.scrollY>60);
 });
 
-/* ── REVEAL ON SCROLL ── */
-const reveals=document.querySelectorAll('.reveal');
-const io=new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting) entry.target.classList.add('visible');
-  });
-},{threshold:0.1});
-reveals.forEach(el=>io.observe(el));
+/* ── REVEAL ON SCROLL — reversible, scroll-linked entrance for every section ── */
+const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+const REDUCE_MOTION = reduceMotionQuery.matches;
 
-/* ── ACCORDION: keep at most one open at a time on desktop for a tidier feel ── */
-document.querySelectorAll('.acc-item').forEach(item=>{
-  item.addEventListener('toggle', function(){
-    if(this.open){
-      document.querySelectorAll('.acc-item').forEach(other=>{
-        if(other !== this) other.open = false;
-      });
+/* Split heading text into individually-animatable words, preserving inline
+   elements like <em> so markup/visuals never change. */
+function wrapWordsForReveal(root){
+  function walk(node){
+    Array.from(node.childNodes).forEach(child=>{
+      if(child.nodeType === 3){ // text node
+        if(!child.textContent.trim()) return;
+        const parts = child.textContent.split(/(\s+)/);
+        const frag = document.createDocumentFragment();
+        parts.forEach(part=>{
+          if(part === '') return;
+          if(/^\s+$/.test(part)){
+            frag.appendChild(document.createTextNode(part));
+          } else {
+            const span = document.createElement('span');
+            span.className = 'reveal-word';
+            span.textContent = part;
+            frag.appendChild(span);
+          }
+        });
+        child.replaceWith(frag);
+      } else if(child.nodeType === 1){
+        walk(child);
+      }
+    });
+  }
+  walk(root);
+  const words = root.querySelectorAll('.reveal-word');
+  words.forEach((w,i)=>{ w.style.transitionDelay = (i * 45) + 'ms'; });
+}
+
+document.querySelectorAll('.reveal-heading').forEach(h=>{
+  if(!REDUCE_MOTION) wrapWordsForReveal(h);
+});
+
+const revealEls = document.querySelectorAll(
+  '.reveal, .reveal-heading, .reveal-para, .reveal-btn, .reveal-card, .reveal-image, .reveal-footer, .reveal-metrics'
+);
+
+if(REDUCE_MOTION){
+  revealEls.forEach(el=>el.classList.add('visible'));
+} else {
+  const revealIO = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      entry.target.classList.toggle('visible', entry.isIntersecting);
+    });
+  },{ threshold:0.12, rootMargin:'0px 0px -8% 0px' });
+  revealEls.forEach(el=>revealIO.observe(el));
+}
+
+/* ── NUMBER COUNT-UP ── */
+(function(){
+  const nums = document.querySelectorAll('[data-count-target]');
+  if(!nums.length) return;
+  function animateCount(el, target){
+    if(REDUCE_MOTION){ el.textContent = target; return; }
+    const duration = 1100;
+    const start = performance.now();
+    function tick(now){
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(eased * target);
+      if(p < 1) requestAnimationFrame(tick);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(tick);
+  }
+  const countIO = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      const el = entry.target;
+      const target = parseInt(el.dataset.countTarget, 10);
+      if(entry.isIntersecting){
+        animateCount(el, target);
+      } else if(entry.boundingClientRect.top > 0){
+        el.textContent = '0';
+      }
+    });
+  }, { threshold:0.5 });
+  nums.forEach(el=>countIO.observe(el));
+})();
+
+/* ── EQUITY GRAPH — progressive scroll-linked draw ── */
+(function(){
+  const line = document.getElementById('equityLine');
+  const fill = document.getElementById('equityFill');
+  const chartWrap = document.querySelector('.terminal-chart');
+  if(!line || !fill || !chartWrap) return;
+
+  if(REDUCE_MOTION){
+    fill.style.opacity = 1;
+    return;
+  }
+
+  const length = line.getTotalLength();
+  line.style.strokeDasharray = length;
+  line.style.strokeDashoffset = length;
+  fill.style.opacity = 0;
+
+  let ticking = false;
+  function updateGraph(){
+    const rect = chartWrap.getBoundingClientRect();
+    const vh = window.innerHeight;
+    let progress = (vh - rect.top) / (vh * 0.75 + rect.height * 0.5);
+    progress = Math.max(0, Math.min(1, progress));
+    line.style.strokeDashoffset = length * (1 - progress);
+    fill.style.opacity = progress;
+    ticking = false;
+  }
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(updateGraph);
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', onScroll, { passive:true });
+  updateGraph();
+})();
+
+/* ── EA CARDS — subtle 3D mouse parallax tilt ── */
+if(!REDUCE_MOTION){
+  document.querySelectorAll('.ea-preview-card').forEach(card=>{
+    card.addEventListener('mousemove', function(e){
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      const rx = (-py * 3).toFixed(2);
+      const ry = (px * 3).toFixed(2);
+      card.style.transform = `translateY(-4px) scale(1.008) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    }, { passive:true });
+    card.addEventListener('mouseleave', function(){
+      card.style.transform = '';
+    });
+  });
+}
+
+/* ── ACCORDION — smooth height + fade expand/collapse, arrow rotate ── */
+(function(){
+  const items = document.querySelectorAll('.acc-item');
+
+  // sync any already-open item (e.g. the first, open by default)
+  items.forEach(item=>{
+    if(item.hasAttribute('open')){
+      const body = item.querySelector('.acc-body');
+      body.style.height = 'auto';
+      body.style.opacity = '1';
     }
   });
-});
+
+  function openItem(item, body){
+    item.classList.add('opening');
+    item.setAttribute('open','');
+    body.style.overflow = 'hidden';
+    body.style.height = '0px';
+    body.style.opacity = '0';
+    // force reflow so the transition kicks off from 0
+    void body.offsetHeight;
+    const target = body.scrollHeight;
+    body.style.transition = 'height .45s var(--ease), opacity .4s var(--ease-out)';
+    body.style.height = target + 'px';
+    body.style.opacity = '1';
+    body.addEventListener('transitionend', function te(e){
+      if(e.propertyName === 'height'){
+        body.style.height = 'auto';
+        body.style.overflow = 'visible';
+        body.removeEventListener('transitionend', te);
+      }
+    });
+  }
+
+  function closeItem(item, body){
+    item.classList.remove('opening');
+    const current = body.scrollHeight;
+    body.style.overflow = 'hidden';
+    body.style.height = current + 'px';
+    body.style.opacity = '1';
+    void body.offsetHeight;
+    body.style.transition = 'height .4s var(--ease), opacity .3s var(--ease-out)';
+    body.style.height = '0px';
+    body.style.opacity = '0';
+    body.addEventListener('transitionend', function te(e){
+      if(e.propertyName === 'height'){
+        item.removeAttribute('open');
+        body.removeEventListener('transitionend', te);
+      }
+    });
+  }
+
+  items.forEach(item=>{
+    const summary = item.querySelector('summary');
+    const body = item.querySelector('.acc-body');
+    summary.addEventListener('click', function(e){
+      e.preventDefault();
+      const isOpen = item.hasAttribute('open');
+      if(isOpen){
+        closeItem(item, body);
+      } else {
+        items.forEach(other=>{
+          if(other !== item && other.hasAttribute('open')){
+            closeItem(other, other.querySelector('.acc-body'));
+          }
+        });
+        openItem(item, body);
+      }
+    });
+  });
+})();
 
 </script>
 <!-- NUKRAX mountain environment: layered parallax peaks, drifting mist, frost, mouse + scroll reactivity -->
