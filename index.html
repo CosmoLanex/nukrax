@@ -283,57 +283,60 @@ nav.scrolled{
   z-index:2;
 }
 
-/* ambient drifting mist — continuous, seamless, multi-layer flow at different
-   speeds/directions for a sense of depth. Pure CSS transforms, no JS/canvas. */
+/* signature background — a living gradient mesh: organic blob shapes that
+   morph, drift, scale and shift color simultaneously. Pure CSS (transform +
+   border-radius + opacity), no JS/canvas, so it stays cheap. */
 .hero-ambient{
   position:absolute;inset:0;
   z-index:-1;
   pointer-events:none;
   overflow:hidden;
 }
-.hero-ambient .mist-layer{
-  position:absolute;left:0;
-  width:200%;
-  filter:blur(50px);
-  will-change:transform;
+.hero-ambient .blob{
+  position:absolute;
+  filter:blur(60px);
+  mix-blend-mode:screen;
+  will-change:transform,border-radius,opacity;
 }
-.hero-ambient .mist-layer span{
-  position:absolute;top:0;width:50%;height:100%;
+.blob-1{
+  width:640px;height:640px;
+  top:-12%;left:2%;
+  background:radial-gradient(circle at 35% 35%,rgba(143,184,196,0.32),rgba(90,177,200,0.1) 55%,transparent 75%);
+  animation:morph-1 24s ease-in-out infinite;
 }
-.mist-layer:nth-child(1){
-  top:6%;height:200px;opacity:.5;
-  animation:mist-flow-right 34s linear infinite;
+.blob-2{
+  width:560px;height:560px;
+  bottom:-18%;right:0%;
+  background:radial-gradient(circle at 60% 40%,rgba(90,177,200,0.26),rgba(173,226,236,0.08) 55%,transparent 75%);
+  animation:morph-2 30s ease-in-out infinite;
 }
-.mist-layer:nth-child(1) span{
-  background:radial-gradient(ellipse 60% 100% at 30% 50%,rgba(143,184,196,0.22),transparent 70%),
-             radial-gradient(ellipse 50% 100% at 75% 50%,rgba(90,177,200,0.18),transparent 70%);
+.blob-3{
+  width:460px;height:460px;
+  top:26%;right:30%;
+  background:radial-gradient(circle at 50% 50%,rgba(173,226,236,0.2),rgba(143,184,196,0.08) 55%,transparent 75%);
+  animation:morph-3 20s ease-in-out infinite;
 }
-.mist-layer:nth-child(2){
-  top:42%;height:240px;opacity:.42;
-  animation:mist-flow-left 44s linear infinite;
+@keyframes morph-1{
+  0%{   border-radius:42% 58% 65% 35%/48% 42% 58% 52%; transform:translate(0,0) scale(1) rotate(0deg);   opacity:.65}
+  25%{  border-radius:65% 35% 40% 60%/55% 65% 35% 45%; transform:translate(40px,30px) scale(1.12) rotate(8deg); opacity:.8}
+  50%{  border-radius:35% 65% 55% 45%/40% 35% 65% 60%; transform:translate(70px,-10px) scale(.94) rotate(-6deg); opacity:.55}
+  75%{  border-radius:58% 42% 38% 62%/62% 58% 42% 38%; transform:translate(20px,-40px) scale(1.05) rotate(4deg); opacity:.7}
+  100%{ border-radius:42% 58% 65% 35%/48% 42% 58% 52%; transform:translate(0,0) scale(1) rotate(0deg);   opacity:.65}
 }
-.mist-layer:nth-child(2) span{
-  background:radial-gradient(ellipse 55% 100% at 25% 50%,rgba(90,177,200,0.2),transparent 70%),
-             radial-gradient(ellipse 45% 100% at 70% 50%,rgba(173,226,236,0.14),transparent 70%);
+@keyframes morph-2{
+  0%{   border-radius:55% 45% 40% 60%/45% 55% 60% 40%; transform:translate(0,0) scale(1) rotate(0deg);   opacity:.55}
+  30%{  border-radius:38% 62% 60% 40%/58% 42% 55% 45%; transform:translate(-50px,-30px) scale(1.15) rotate(-10deg); opacity:.7}
+  60%{  border-radius:62% 38% 45% 55%/42% 60% 40% 58%; transform:translate(-20px,20px) scale(.92) rotate(6deg); opacity:.45}
+  100%{ border-radius:55% 45% 40% 60%/45% 55% 60% 40%; transform:translate(0,0) scale(1) rotate(0deg);   opacity:.55}
 }
-.mist-layer:nth-child(3){
-  top:72%;height:180px;opacity:.36;
-  animation:mist-flow-right 26s linear infinite;
-}
-.mist-layer:nth-child(3) span{
-  background:radial-gradient(ellipse 50% 100% at 35% 50%,rgba(143,184,196,0.18),transparent 70%),
-             radial-gradient(ellipse 40% 100% at 80% 50%,rgba(90,177,200,0.14),transparent 70%);
-}
-@keyframes mist-flow-right{
-  from{transform:translateX(-50%)}
-  to{transform:translateX(0%)}
-}
-@keyframes mist-flow-left{
-  from{transform:translateX(0%)}
-  to{transform:translateX(-50%)}
+@keyframes morph-3{
+  0%{   border-radius:48% 52% 55% 45%/55% 48% 52% 45%; transform:translate(0,0) scale(1);   opacity:.5}
+  40%{  border-radius:60% 40% 42% 58%/40% 60% 45% 55%; transform:translate(-35px,40px) scale(1.2); opacity:.68}
+  70%{  border-radius:40% 60% 58% 42%/58% 45% 55% 40%; transform:translate(30px,15px) scale(.88); opacity:.4}
+  100%{ border-radius:48% 52% 55% 45%/55% 48% 52% 45%; transform:translate(0,0) scale(1);   opacity:.5}
 }
 @media(prefers-reduced-motion:reduce){
-  .mist-layer{animation:none}
+  .hero-ambient .blob{animation:none}
 }
 
 /* signature "wow" element — soft volumetric glow behind the wordmark that
@@ -822,9 +825,9 @@ footer{
 <!-- HERO -->
 <section class="hero" id="heroSection">
   <div class="hero-ambient">
-    <div class="mist-layer"><span></span><span></span></div>
-    <div class="mist-layer"><span></span><span></span></div>
-    <div class="mist-layer"><span></span><span></span></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
   </div>
   <div class="hero-glow" id="heroGlow"></div>
   <p class="hero-label">Est. 2024 &nbsp;/&nbsp; <span>Professional Trading Suite</span></p>
