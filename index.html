@@ -278,6 +278,77 @@ nav.scrolled{
 }
 .hero-glow.active{opacity:1}
 
+/* ── NUKRAX CORE — signature centerpiece: metallic sphere + segmented
+   rotating rings + drifting mist + orbiting particles. Pure CSS/SVG,
+   GPU-driven transforms only (no JS animation loop). Sits behind the
+   wordmark so it reads as atmosphere, not competition. ── */
+.nukrax-core{
+  position:absolute;top:50%;left:50%;
+  width:min(760px,74vw);height:min(760px,74vw);
+  transform:translate(-50%,-50%);
+  z-index:0;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 1.6s var(--ease-out), transform .9s var(--ease-out);
+  will-change:transform;
+}
+.nukrax-core.active{opacity:1}
+
+.core-mist{
+  position:absolute;inset:-12%;border-radius:50%;
+  background:radial-gradient(circle at 50% 58%, rgba(143,184,196,0.055), transparent 62%);
+  filter:blur(38px);
+  animation:core-mist-drift 15s ease-in-out infinite alternate;
+}
+@keyframes core-mist-drift{
+  from{transform:translate(-2%,1%) scale(1)}
+  to{transform:translate(2%,-1.5%) scale(1.045)}
+}
+
+.core-sphere{
+  position:absolute;inset:29%;border-radius:50%;
+  background:radial-gradient(circle at 36% 30%, rgba(143,184,196,0.17), rgba(10,15,19,0.9) 52%, rgba(3,5,7,0.96) 76%);
+  box-shadow:0 0 90px rgba(143,184,196,0.12), inset 0 0 50px rgba(0,0,0,0.65);
+  animation:core-pulse 9s ease-in-out infinite;
+}
+@keyframes core-pulse{
+  0%,100%{box-shadow:0 0 90px rgba(143,184,196,0.12), inset 0 0 50px rgba(0,0,0,0.65);}
+  50%{box-shadow:0 0 150px rgba(143,184,196,0.24), inset 0 0 50px rgba(0,0,0,0.65);}
+}
+
+.core-ring{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.core-ring circle{fill:none}
+.ring-outer{filter:drop-shadow(0 0 7px rgba(143,184,196,0.3));animation:core-spin-cw 36s linear infinite}
+.ring-outer circle{stroke:rgba(143,184,196,0.45);stroke-width:1.2;stroke-dasharray:5 16}
+.ring-mid{filter:drop-shadow(0 0 5px rgba(143,184,196,0.22));animation:core-spin-ccw 27s linear infinite}
+.ring-mid circle{stroke:rgba(143,184,196,0.3);stroke-width:1;stroke-dasharray:1 4 12 4}
+.ring-inner{filter:drop-shadow(0 0 6px rgba(143,184,196,0.4));animation:core-spin-cw 19s linear infinite}
+.ring-inner circle{stroke:rgba(143,184,196,0.55);stroke-width:1.1;stroke-dasharray:1 7}
+
+@keyframes core-spin-cw{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes core-spin-ccw{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
+
+.core-particles span{
+  position:absolute;top:50%;left:50%;width:3px;height:3px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 7px 1.5px rgba(143,184,196,0.65);
+  opacity:.7;
+  animation:core-orbit linear infinite;
+  animation-duration:var(--d);
+  animation-delay:var(--delay);
+}
+@keyframes core-orbit{
+  from{transform:translate(-50%,-50%) rotate(0deg) translateX(var(--r)) rotate(0deg)}
+  to{transform:translate(-50%,-50%) rotate(360deg) translateX(var(--r)) rotate(-360deg)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .core-sphere,.core-mist,.ring-outer,.ring-mid,.ring-inner,.core-particles span{animation:none}
+}
+@media(max-width:700px){
+  .nukrax-core{width:min(560px,86vw);height:min(560px,86vw)}
+}
+
 .hero-label{
   position:relative;z-index:1;
   font-family:var(--font-m);font-size:11px;letter-spacing:.26em;
@@ -291,7 +362,7 @@ nav.scrolled{
   position:relative;z-index:1;
   font-family:var(--font-logo);
   font-weight:400;
-  font-size:clamp(58px,12vw,158px);
+  font-size:clamp(54px,11vw,138px);
   line-height:1;
   letter-spacing:.04em;
   color:var(--white);
@@ -713,6 +784,25 @@ footer{
 <!-- HERO -->
 <section class="hero" id="heroSection">
   <div class="hero-glow" id="heroGlow"></div>
+
+  <!-- NUKRAX CORE — signature visual identity -->
+  <div class="nukrax-core" id="nukraxCore" aria-hidden="true">
+    <div class="core-mist"></div>
+    <div class="core-sphere"></div>
+    <svg class="core-ring ring-outer" viewBox="0 0 600 600"><circle cx="300" cy="300" r="266"/></svg>
+    <svg class="core-ring ring-mid" viewBox="0 0 600 600"><circle cx="300" cy="300" r="216"/></svg>
+    <svg class="core-ring ring-inner" viewBox="0 0 600 600"><circle cx="300" cy="300" r="172"/></svg>
+    <div class="core-particles">
+      <span style="--r:184px; --d:12s; --delay:0s"></span>
+      <span style="--r:184px; --d:12s; --delay:-4s"></span>
+      <span style="--r:184px; --d:12s; --delay:-8s"></span>
+      <span style="--r:234px; --d:18s; --delay:-2s"></span>
+      <span style="--r:234px; --d:18s; --delay:-11s"></span>
+      <span style="--r:284px; --d:24s; --delay:-6s"></span>
+      <span style="--r:284px; --d:24s; --delay:-18s"></span>
+    </div>
+  </div>
+
   <p class="hero-label">Est. 2024 &nbsp;/&nbsp; <span>Professional Trading Suite</span></p>
   <h1 class="hero-logo" aria-label="NUKRAX">NUKRAX</h1>
   <p class="hero-tagline">Precision tools for elite traders.</p>
@@ -988,20 +1078,32 @@ function updateProgress(){
 window.addEventListener('scroll', updateProgress, { passive:true });
 updateProgress();
 
-/* ── HERO GLOW — subtle cursor-reactive volumetric light ── */
+/* ── HERO GLOW + NUKRAX CORE — cursor-reactive volumetric light & parallax ── */
 (function(){
   const glow = document.getElementById('heroGlow');
+  const core = document.getElementById('nukraxCore');
   const heroSection = document.getElementById('heroSection');
-  if(!glow || !heroSection) return;
-  requestAnimationFrame(()=>glow.classList.add('active'));
+  if(!heroSection) return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  requestAnimationFrame(()=>{
+    if(glow) glow.classList.add('active');
+    if(core) core.classList.add('active');
+  });
+
+  if(reduceMotion) return; // skip parallax; CSS media query already halts the loop animations
+
   heroSection.addEventListener('mousemove', function(e){
     const rect = heroSection.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
-    glow.style.transform = `translate(calc(-50% + ${px * 60}px), calc(-50% + ${py * 60}px))`;
+    if(glow) glow.style.transform = `translate(calc(-50% + ${px * 60}px), calc(-50% + ${py * 60}px))`;
+    if(core) core.style.transform = `translate(calc(-50% + ${px * -18}px), calc(-50% + ${py * -18}px))`;
   }, { passive:true });
+
   heroSection.addEventListener('mouseleave', function(){
-    glow.style.transform = 'translate(-50%,-50%)';
+    if(glow) glow.style.transform = 'translate(-50%,-50%)';
+    if(core) core.style.transform = 'translate(-50%,-50%)';
   });
 })();
 
@@ -1063,14 +1165,93 @@ window.addEventListener('scroll',()=>{
   navbar.classList.toggle('scrolled',window.scrollY>60);
 });
 
-/* ── REVEAL ON SCROLL ── */
+/* ── REVEAL ON SCROLL (bidirectional) ──
+   Adds 'visible' entering the viewport, removes it leaving — so every
+   fade/slide plays in reverse on the way back up, same as going down. */
 const reveals=document.querySelectorAll('.reveal');
 const io=new IntersectionObserver(entries=>{
   entries.forEach(entry=>{
-    if(entry.isIntersecting) entry.target.classList.add('visible');
+    entry.target.classList.toggle('visible', entry.isIntersecting);
   });
-},{threshold:0.1});
+},{threshold:0.15, rootMargin:'0px 0px -6% 0px'});
 reveals.forEach(el=>io.observe(el));
+
+/* ── EQUITY CHART — draws in on scroll down, un-draws on scroll back up ── */
+(function(){
+  const chart = document.querySelector('.terminal-chart');
+  if(!chart) return;
+  const svg = chart.querySelector('svg');
+  const line = svg.querySelector('polyline');
+  const fill = svg.querySelector('polygon');
+  const gridLines = svg.querySelectorAll('line');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const len = line.getTotalLength();
+  line.style.strokeDasharray = len;
+  line.style.strokeDashoffset = reduceMotion ? 0 : len;
+  line.style.transition = reduceMotion ? 'none' : 'stroke-dashoffset 1.4s var(--ease-out)';
+  fill.style.transition = reduceMotion ? 'none' : 'opacity 1s var(--ease-out) .25s';
+  fill.style.opacity = reduceMotion ? 1 : 0;
+  gridLines.forEach((gl,i)=>{
+    gl.style.transformOrigin = '0 50%';
+    gl.style.transition = reduceMotion ? 'none' : `transform .8s var(--ease-out) ${i*0.06}s`;
+    gl.style.transform = reduceMotion ? 'scaleX(1)' : 'scaleX(0)';
+  });
+
+  const chartIO = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      const inView = entry.isIntersecting;
+      line.style.strokeDashoffset = inView ? 0 : len;
+      fill.style.opacity = inView ? 1 : 0;
+      gridLines.forEach(gl => gl.style.transform = inView ? 'scaleX(1)' : 'scaleX(0)');
+    });
+  },{threshold:0.3});
+  chartIO.observe(chart);
+})();
+
+/* ── STAT NUMBERS — count up entering, count back down leaving ── */
+(function(){
+  const nums = document.querySelectorAll('.stat-num');
+  if(!nums.length) return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  nums.forEach(el=>{
+    const raw = el.textContent.trim();
+    const match = raw.match(/^(\d+)(.*)$/); // leading integer + optional suffix (e.g. "24" + "/7")
+    if(!match){ el.dataset.plain = raw; return; }
+    el.dataset.target = match[1];
+    el.dataset.suffix = match[2] || '';
+    el.textContent = reduceMotion ? raw : '0' + (match[2] || '');
+  });
+
+  if(reduceMotion) return;
+
+  function animateCount(el, to){
+    cancelAnimationFrame(el._raf);
+    const suffix = el.dataset.suffix || '';
+    const from = parseInt(el.textContent, 10) || 0;
+    const duration = 800;
+    const startTime = performance.now();
+    function tick(now){
+      const p = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = Math.round(from + (to - from) * eased);
+      el.textContent = val + suffix;
+      if(p < 1) el._raf = requestAnimationFrame(tick);
+    }
+    el._raf = requestAnimationFrame(tick);
+  }
+
+  const statIO = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      const el = entry.target;
+      if(el.dataset.plain !== undefined) return; // non-numeric (MT5) — handled by .reveal only
+      const target = parseInt(el.dataset.target, 10);
+      animateCount(el, entry.isIntersecting ? target : 0);
+    });
+  },{threshold:0.4});
+  nums.forEach(el=>statIO.observe(el));
+})();
 
 /* ── ACCORDION: keep at most one open at a time on desktop for a tidier feel ── */
 document.querySelectorAll('.acc-item').forEach(item=>{
