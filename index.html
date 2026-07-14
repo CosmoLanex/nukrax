@@ -283,52 +283,57 @@ nav.scrolled{
   z-index:2;
 }
 
-/* ambient drifting background — soft, slow-moving light behind the whole hero,
-   independent of the cursor-reactive glow. Pure CSS transforms, no JS/canvas. */
+/* ambient drifting mist — continuous, seamless, multi-layer flow at different
+   speeds/directions for a sense of depth. Pure CSS transforms, no JS/canvas. */
 .hero-ambient{
   position:absolute;inset:0;
   z-index:-1;
   pointer-events:none;
   overflow:hidden;
 }
-.hero-ambient span{
-  position:absolute;
-  border-radius:50%;
-  filter:blur(70px);
-  opacity:.5;
+.hero-ambient .mist-layer{
+  position:absolute;left:0;
+  width:200%;
+  filter:blur(50px);
+  will-change:transform;
 }
-.hero-ambient span:nth-child(1){
-  width:520px;height:520px;
-  top:-10%;left:8%;
-  background:radial-gradient(circle,rgba(143,184,196,0.22),transparent 70%);
-  animation:drift-a 22s ease-in-out infinite;
+.hero-ambient .mist-layer span{
+  position:absolute;top:0;width:50%;height:100%;
 }
-.hero-ambient span:nth-child(2){
-  width:600px;height:600px;
-  bottom:-15%;right:6%;
-  background:radial-gradient(circle,rgba(90,177,200,0.16),transparent 70%);
-  animation:drift-b 26s ease-in-out infinite;
+.mist-layer:nth-child(1){
+  top:6%;height:200px;opacity:.5;
+  animation:mist-flow-right 34s linear infinite;
 }
-.hero-ambient span:nth-child(3){
-  width:420px;height:420px;
-  top:30%;right:26%;
-  background:radial-gradient(circle,rgba(173,226,236,0.1),transparent 70%);
-  animation:drift-c 18s ease-in-out infinite;
+.mist-layer:nth-child(1) span{
+  background:radial-gradient(ellipse 60% 100% at 30% 50%,rgba(143,184,196,0.22),transparent 70%),
+             radial-gradient(ellipse 50% 100% at 75% 50%,rgba(90,177,200,0.18),transparent 70%);
 }
-@keyframes drift-a{
-  0%,100%{transform:translate(0,0) scale(1)}
-  50%{transform:translate(60px,40px) scale(1.15)}
+.mist-layer:nth-child(2){
+  top:42%;height:240px;opacity:.42;
+  animation:mist-flow-left 44s linear infinite;
 }
-@keyframes drift-b{
-  0%,100%{transform:translate(0,0) scale(1)}
-  50%{transform:translate(-50px,-30px) scale(1.1)}
+.mist-layer:nth-child(2) span{
+  background:radial-gradient(ellipse 55% 100% at 25% 50%,rgba(90,177,200,0.2),transparent 70%),
+             radial-gradient(ellipse 45% 100% at 70% 50%,rgba(173,226,236,0.14),transparent 70%);
 }
-@keyframes drift-c{
-  0%,100%{transform:translate(0,0) scale(1)}
-  50%{transform:translate(-40px,50px) scale(.9)}
+.mist-layer:nth-child(3){
+  top:72%;height:180px;opacity:.36;
+  animation:mist-flow-right 26s linear infinite;
+}
+.mist-layer:nth-child(3) span{
+  background:radial-gradient(ellipse 50% 100% at 35% 50%,rgba(143,184,196,0.18),transparent 70%),
+             radial-gradient(ellipse 40% 100% at 80% 50%,rgba(90,177,200,0.14),transparent 70%);
+}
+@keyframes mist-flow-right{
+  from{transform:translateX(-50%)}
+  to{transform:translateX(0%)}
+}
+@keyframes mist-flow-left{
+  from{transform:translateX(0%)}
+  to{transform:translateX(-50%)}
 }
 @media(prefers-reduced-motion:reduce){
-  .hero-ambient span{animation:none}
+  .mist-layer{animation:none}
 }
 
 /* signature "wow" element — soft volumetric glow behind the wordmark that
@@ -816,7 +821,11 @@ footer{
 
 <!-- HERO -->
 <section class="hero" id="heroSection">
-  <div class="hero-ambient"><span></span><span></span><span></span></div>
+  <div class="hero-ambient">
+    <div class="mist-layer"><span></span><span></span></div>
+    <div class="mist-layer"><span></span><span></span></div>
+    <div class="mist-layer"><span></span><span></span></div>
+  </div>
   <div class="hero-glow" id="heroGlow"></div>
   <p class="hero-label">Est. 2024 &nbsp;/&nbsp; <span>Professional Trading Suite</span></p>
   <h1 class="hero-logo" aria-label="NUKRAX">NUKRAX</h1>
