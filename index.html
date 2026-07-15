@@ -1334,9 +1334,105 @@ a.testimonial-card:hover{transform:translateY(-3px)}
   font-size:14.5px;color:var(--muted);max-width:48ch;margin:0 auto 40px;line-height:1.7;
 }
 .final-cta-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:22px}
+
+/* ══════════════════════════════════════════════════════════════
+   PREMIUM ENHANCEMENT LAYER — additive only. No layout, color,
+   type, spacing, or section changes below this point: purely
+   deepens motion, depth, and interaction quality on top of the
+   existing design.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Ambient mist — slow, layered, never above content ── */
+.nkx-mist{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;contain:strict}
+.mist-layer{
+  position:absolute;border-radius:50%;
+  filter:blur(60px);opacity:.45;
+  will-change:transform;
+  transform:translateZ(0);
+  background:radial-gradient(circle, rgba(143,184,196,0.10), transparent 70%);
+}
+.mist-1{width:58vw;height:58vw;top:-14%;left:-12%;animation:nkx-mist-1 48s ease-in-out infinite}
+.mist-2{width:48vw;height:48vw;top:32%;right:-14%;opacity:.4;background:radial-gradient(circle, rgba(70,98,107,0.14), transparent 70%);animation:nkx-mist-2 60s ease-in-out infinite}
+.mist-3{width:66vw;height:66vw;bottom:-22%;left:18%;opacity:.32;animation:nkx-mist-3 66s ease-in-out infinite}
+@keyframes nkx-mist-1{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(3%,5%,0) scale(1.07)}}
+@keyframes nkx-mist-2{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-4%,4%,0) scale(1.05)}}
+@keyframes nkx-mist-3{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(2%,-4%,0) scale(1.09)}}
+@media(max-width:768px){.mist-layer{filter:blur(38px);opacity:.28}}
+@media(prefers-reduced-motion:reduce){.mist-layer{animation:none}}
+
+/* ── Ambient dust — tiny glowing motes, independent of the signal mesh ── */
+#nkxDust{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.55;will-change:transform}
+@media(prefers-reduced-motion:reduce){#nkxDust{display:none}}
+
+/* ── Hero cinematic depth — soft vignette, adds focus without moving anything ── */
+.hero{isolation:isolate}
+.hero::after{
+  content:'';position:absolute;inset:-10% -5%;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 50% 45%, transparent 42%, rgba(3,5,7,0.4) 100%);
+  opacity:0;transition:opacity 1.6s var(--ease);
+}
+.hero.nkx-depth-in::after{opacity:1}
+
+/* ── Refined hero entrance — same choreography, smoother finish ── */
+@keyframes fade-up{
+  from{opacity:0;transform:translateY(16px) scale(.985);filter:blur(3px)}
+  60%{filter:blur(0)}
+  to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+
+/* ── Smoother, springier reveal easing on top of existing reveal classes ── */
+.reveal,.reveal-heading .reveal-word,.reveal-para,.reveal-btn,.reveal-card,.reveal-image,.reveal-footer{
+  transition-timing-function:cubic-bezier(.19,1,.22,1);
+}
+
+/* ── Buttons — smoother transform transitions + refined depth/glow ── */
+.btn{
+  transition:transform .45s var(--ease-out),border-color .3s var(--ease),background .3s var(--ease),color .3s var(--ease),box-shadow .45s var(--ease-out);
+  will-change:transform;
+}
+.btn:active{transition:transform .15s var(--ease)}
+.btn-primary{box-shadow:0 0 0 rgba(143,184,196,0)}
+.btn-primary:hover{box-shadow:0 14px 36px rgba(143,184,196,0.24),0 2px 10px rgba(143,184,196,0.14)}
+.nav-cta{transition:background .3s var(--ease),transform .35s var(--ease-out)}
+.nav-cta:hover{box-shadow:0 8px 22px rgba(143,184,196,0.18)}
+.link-inline{transition:color .3s var(--ease),border-color .3s var(--ease),transform .35s var(--ease-out)}
+
+/* ── Cards — softer shadow, border glow, lift, all on hover only ── */
+.dash-card,.why-card,.security-card,.stack-card,.testimonial-card,.x-cell,.ea-preview-card{
+  transition:background .35s var(--ease),transform .5s var(--ease-out),box-shadow .5s var(--ease-out);
+  will-change:transform;
+}
+.dash-card:hover,.why-card:hover,.security-card:hover,.stack-card:hover,.testimonial-card:hover,.x-cell:hover{
+  transform:translateY(-3px);
+  box-shadow:0 20px 46px rgba(0,0,0,0.32),0 0 0 1px rgba(143,184,196,0.12);
+}
+@media(max-width:768px){
+  .dash-card:hover,.why-card:hover,.security-card:hover,.stack-card:hover,.testimonial-card:hover,.x-cell:hover{
+    transform:none;box-shadow:none;
+  }
+}
+
+/* ── Magnetic + tilt targets get a perspective-friendly transform origin ── */
+.btn,.nav-cta,.dash-card,.why-card,.security-card,.stack-card,.testimonial-card,.x-cell,.ea-preview-card{
+  transform-style:preserve-3d;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hero::after{transition:none;opacity:1}
+}
 </style>
 </head>
 <body>
+
+<!-- AMBIENT MIST — soft layered depth, purely decorative, sits behind all content -->
+<div class="nkx-mist" aria-hidden="true">
+  <span class="mist-layer mist-1"></span>
+  <span class="mist-layer mist-2"></span>
+  <span class="mist-layer mist-3"></span>
+</div>
+
+<!-- AMBIENT DUST — tiny slow-floating glow motes -->
+<canvas id="nkxDust" aria-hidden="true"></canvas>
 
 <!-- NUKRAX SIGNAL FIELD — ambient neural mesh, ties every section into one system -->
 <canvas id="nkxField" aria-hidden="true"></canvas>
@@ -2866,6 +2962,156 @@ if(!REDUCE_MOTION){
   scheduleHeartbeat();
 })();
 
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   PREMIUM ENHANCEMENT LAYER — JS
+   Additive only: ambient dust, hero depth/parallax, magnetic
+   buttons, generalized card tilt. Every effect respects reduced-
+   motion and disables itself on touch/small screens.
+   ══════════════════════════════════════════════════════════════ */
+(function(){
+  const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FINE_POINTER = window.matchMedia('(pointer:fine)').matches;
+  const IS_NARROW = window.matchMedia('(max-width:768px)').matches;
+
+  /* ── Hero depth-in — reveal the vignette once the page settles ── */
+  const heroSection = document.getElementById('heroSection');
+  if(heroSection){
+    requestAnimationFrame(()=>{
+      setTimeout(()=>heroSection.classList.add('nkx-depth-in'), 300);
+    });
+  }
+
+  /* ── Ambient dust — tiny, slow, glowing motes; cheap and mobile-safe ── */
+  (function(){
+    const canvas = document.getElementById('nkxDust');
+    if(!canvas) return;
+    if(REDUCE){ canvas.style.display = 'none'; return; }
+    const ctx = canvas.getContext('2d');
+    let W, H, DPR, motes = [];
+    let running = true;
+
+    function resize(){
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = W * DPR; canvas.height = H * DPR;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      const count = IS_NARROW ? 14 : (W < 1200 ? 22 : 30);
+      motes = Array.from({ length: count }, makeMote);
+    }
+    function makeMote(){
+      return {
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 0.9 + 0.4,
+        vy: -(Math.random() * 0.06 + 0.02),
+        vx: (Math.random() - 0.5) * 0.03,
+        tw: Math.random() * Math.PI * 2,
+      };
+    }
+    let last = performance.now();
+    function tick(now){
+      if(!running) return;
+      const dt = Math.min(48, now - last);
+      last = now;
+      ctx.clearRect(0, 0, W, H);
+      motes.forEach(m=>{
+        m.x += m.vx * (dt / 16);
+        m.y += m.vy * (dt / 16);
+        m.tw += 0.004 * (dt / 16);
+        if(m.y < -10) m.y = H + 10;
+        if(m.x < -10) m.x = W + 10;
+        if(m.x > W + 10) m.x = -10;
+        const a = 0.18 + Math.sin(m.tw) * 0.12;
+        ctx.fillStyle = `rgba(143,184,196,${Math.max(0.04, a).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(tick);
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive:true });
+    document.addEventListener('visibilitychange', ()=>{
+      running = !document.hidden;
+      if(running){ last = performance.now(); requestAnimationFrame(tick); }
+    });
+    requestAnimationFrame(tick);
+  })();
+
+  /* ── Hero cursor parallax — moves only decorative layers, never real content ── */
+  if(heroSection && FINE_POINTER && !REDUCE){
+    const mist = document.querySelector('.nkx-mist');
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
+    function render(){
+      cx += (tx - cx) * 0.06;
+      cy += (ty - cy) * 0.06;
+      if(mist) mist.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+      if(Math.abs(tx - cx) > 0.05 || Math.abs(ty - cy) > 0.05){
+        raf = requestAnimationFrame(render);
+      } else {
+        raf = null;
+      }
+    }
+    heroSection.addEventListener('mousemove', function(e){
+      const rect = heroSection.getBoundingClientRect();
+      tx = ((e.clientX - rect.left) / rect.width - 0.5) * 14;
+      ty = ((e.clientY - rect.top) / rect.height - 0.5) * 14;
+      if(!raf) raf = requestAnimationFrame(render);
+    }, { passive:true });
+    heroSection.addEventListener('mouseleave', function(){
+      tx = 0; ty = 0;
+      if(!raf) raf = requestAnimationFrame(render);
+    });
+  }
+
+  /* ── Soft magnetic buttons — primary CTAs only, restrained travel ── */
+  if(FINE_POINTER && !REDUCE){
+    document.querySelectorAll('.btn-primary, .nav-cta').forEach(btn=>{
+      let raf = null, mx = 0, my = 0;
+      function apply(){
+        btn.style.transform = `translate(${mx}px, ${my}px)`;
+        raf = null;
+      }
+      btn.addEventListener('mousemove', function(e){
+        const rect = btn.getBoundingClientRect();
+        mx = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
+        my = ((e.clientY - rect.top) / rect.height - 0.5) * 8;
+        if(!raf) raf = requestAnimationFrame(apply);
+      }, { passive:true });
+      btn.addEventListener('mouseleave', function(){
+        mx = 0; my = 0;
+        if(!raf) raf = requestAnimationFrame(apply);
+      });
+    });
+  }
+
+  /* ── Generalized card tilt — extends the EA-card tilt to the rest of the site's cards ── */
+  if(FINE_POINTER && !REDUCE && !IS_NARROW){
+    const tiltSelectors = '.dash-card, .why-card, .security-card, .stack-card, .testimonial-card, .x-cell';
+    document.querySelectorAll(tiltSelectors).forEach(card=>{
+      let raf = null;
+      card.addEventListener('mousemove', function(e){
+        const rect = card.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width - 0.5;
+        const py = (e.clientY - rect.top) / rect.height - 0.5;
+        if(raf) return;
+        raf = requestAnimationFrame(()=>{
+          const rx = (-py * 2.2).toFixed(2);
+          const ry = (px * 2.2).toFixed(2);
+          card.style.transform = `perspective(800px) translateY(-3px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+          raf = null;
+        });
+      }, { passive:true });
+      card.addEventListener('mouseleave', function(){
+        card.style.transform = '';
+      });
+    });
+  }
+})();
 </script>
 
 <!-- COOKIE BANNER -->
