@@ -155,6 +155,3 @@ This is a **private** trading ecosystem. Source is shared for reference; usage o
 
 <br/>
 
-> **Setup note:** this README references two small SVGs that carry the exact `NKX Display` wordmark font (self-embedded, no external font requests) — add them to your repo at:
-> - `assets/readme/nukrax-wordmark.svg` (header)
-> - `assets/readme/nukrax-wordmark-small.svg` (footer)
