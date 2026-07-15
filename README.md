@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.png" alt="NUKRAX logo" width="72" height="72" style="border-radius:12px;" />
+
 
 <br/><br/>
 
@@ -18,7 +18,7 @@ systems, and live trading infrastructure for serious market participants.
 <br/><br/>
 
 <a href="https://t.me/CosmoLanex">
-  <img src="https://img.shields.io/badge/GET_NUKRAX-8FB8C4?style=for-the-badge&logo=telegram&logoColor=030507&labelColor=030507" alt="Get NUKRAX on Telegram" />
+  <img src="https://img.shields.io/badge/GET_EA-8FB8C4?style=for-the-badge&logo=telegram&logoColor=030507&labelColor=030507" alt="Get EA on Telegram" />
 </a>
 <a href="https://nukrax.cosmolanex.workers.dev/nukrax-cr">
   <img src="https://img.shields.io/badge/FUEL_THE_PROJECT-46626B?style=for-the-badge&logoColor=F2F5F5&labelColor=030507" alt="Fuel the project" />
@@ -155,4 +155,6 @@ This is a **private** trading ecosystem. Source is shared for reference; usage o
 
 <br/>
 
-
+> **Setup note:** this README references two small SVGs that carry the exact `NKX Display` wordmark font (self-embedded, no external font requests) — add them to your repo at:
+> - `assets/readme/nukrax-wordmark.svg` (header)
+> - `assets/readme/nukrax-wordmark-small.svg` (footer)
