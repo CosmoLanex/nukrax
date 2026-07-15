@@ -75,7 +75,7 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-size:16px}
+html{scroll-behavior:smooth;font-size:16px;-webkit-overflow-scrolling:touch}
 body{
   background:var(--black);
   color:var(--text);
@@ -1420,6 +1420,66 @@ a.testimonial-card:hover{transform:translateY(-3px)}
 @media(prefers-reduced-motion:reduce){
   .hero::after{transition:none;opacity:1}
 }
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE PERFORMANCE + HERO STABILITY — additive, scoped to
+   ≤768px only. Same visuals, far cheaper to render: removes the
+   ambient decorative layers and any filter/blur-driven transitions
+   that force repaints while the page scrolls, and locks the hero
+   into its own stable compositor layer so it can't jitter.
+   ══════════════════════════════════════════════════════════════ */
+@media(max-width:768px){
+
+  /* Ambient mist + dust add negligible visual value on small screens
+     relative to their compositing cost on mid/low-end mobile GPUs.
+     Fully disabling them (rather than just "reducing") removes the
+     fixed + filter combination that causes flicker while scrolling. */
+  .nkx-mist,#nkxDust{display:none !important}
+
+  /* Word/paragraph/image reveal — keep the fade + slide, drop the
+     blur. Animating `filter` forces a repaint per frame; opacity and
+     transform alone stay on the compositor thread. */
+  .reveal-word{
+    filter:none !important;
+    transition:opacity .5s var(--ease-out),transform .5s var(--ease-out) !important;
+  }
+  .reveal-image{
+    filter:none !important;
+    transition:opacity .6s var(--ease),transform .6s var(--ease) !important;
+  }
+
+  /* Card tilt/lift is a fine-pointer-only feature already (JS-gated),
+     but ensure no residual hover transform lingers on touch and that
+     any transform this layer sets is transform/opacity only. */
+  .dash-card:hover,.why-card:hover,.security-card:hover,.stack-card:hover,
+  .testimonial-card:hover,.x-cell:hover,.ea-preview-card:hover{
+    transform:none;box-shadow:none;
+  }
+
+  /* Hero stability — isolate the hero into its own GPU layer so
+     Safari/Chrome don't repaint it against the rest of the fixed
+     decorative layers while the page scrolls. No visual change:
+     translateZ(0) forces layer promotion without moving anything. */
+  .hero{
+    transform:translateZ(0);
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+  }
+  .hero::after{transition:opacity .8s var(--ease);will-change:auto}
+
+  /* The vignette and glow are static once faded in on mobile — no
+     benefit from staying in a promoted layer indefinitely. */
+  .hero-glow{will-change:auto}
+
+  /* Section "breathing"/pulse decorations already disable their own
+     infinite animation on mobile (see PREMIUM MOTION ENHANCEMENTS
+     above); this just guarantees no stray box-shadow transition cost
+     lingers from the heartbeat class on low-end devices. */
+  body.nkx-pulse .x-panel,body.nkx-pulse .dash-card,body.nkx-pulse .terminal-panel,
+  body.nkx-pulse .stack-card,body.nkx-pulse .security-card{
+    transition:none;
+  }
+}
 </style>
 </head>
 <body>
@@ -2325,14 +2385,16 @@ a.testimonial-card:hover{transform:translateY(-3px)}
   window.addEventListener('load', () => {}); // keep min-display time regardless of load speed
 })();
 
-/* ── SCROLL PROGRESS ── */
+/* ── SCROLL PROGRESS + NAV STATE — merged into one rAF-throttled
+   handler further down, right after the navbar element is defined,
+   so scroll never triggers more than one layout read + one paint
+   per frame regardless of how many things respond to it. ── */
 const progressBar = document.getElementById('scroll-progress');
 function updateProgress(){
   const doc = document.documentElement;
   const max = Math.max(1, doc.scrollHeight - window.innerHeight);
   progressBar.style.width = (Math.min(1, window.scrollY / max) * 100) + '%';
 }
-window.addEventListener('scroll', updateProgress, { passive:true });
 updateProgress();
 
 /* ── HERO GLOW — cursor-reactive + scroll-linked parallax volumetric light ── */
@@ -2563,11 +2625,23 @@ window.addEventListener('pageshow', function(event) {
   }
 });
 
-/* ── NAVBAR SCROLL ── */
+/* ── NAVBAR SCROLL + SCROLL PROGRESS — one passive listener,
+   one requestAnimationFrame per frame, no matter how fast the
+   user scrolls. Prevents the layout-thrash pattern of multiple
+   independent scroll handlers each doing their own read/write. ── */
 const navbar=document.getElementById('navbar');
-window.addEventListener('scroll',()=>{
-  navbar.classList.toggle('scrolled',window.scrollY>60);
-});
+let scrollTicking = false;
+function onScrollFrame(){
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+  updateProgress();
+  scrollTicking = false;
+}
+window.addEventListener('scroll', function(){
+  if(!scrollTicking){
+    scrollTicking = true;
+    requestAnimationFrame(onScrollFrame);
+  }
+}, { passive:true });
 
 /* ── REVEAL ON SCROLL — reversible, scroll-linked entrance for every section ── */
 const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -2988,7 +3062,7 @@ if(!REDUCE_MOTION){
   (function(){
     const canvas = document.getElementById('nkxDust');
     if(!canvas) return;
-    if(REDUCE){ canvas.style.display = 'none'; return; }
+    if(REDUCE || IS_NARROW){ canvas.style.display = 'none'; return; }
     const ctx = canvas.getContext('2d');
     let W, H, DPR, motes = [];
     let running = true;
