@@ -1,17 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "nukrax",
-  "main": "worker.js",
-  "compatibility_date": "2026-05-23",
+  "compatibility_date": "2026-07-19",
   "observability": {
     "enabled": true
   },
   "assets": {
-    "directory": ".",
-    "binding": "ASSETS"
-  },
-  "ai": {
-    "binding": "AI"
+    "directory": "."
   },
   "compatibility_flags": [
     "nodejs_compat"
