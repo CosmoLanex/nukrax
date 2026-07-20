@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NUKRAX — Market Map</title>
+<meta name="description" content="Live liquidity, order flow, and heat map monitoring across XAUUSD, DXY, EURUSD, GBPJPY, and JPYUSD — powered by the NUKRAX signal engine."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="icon" href="assets/logo.png" type="image/png"/>
+<style>
+
+/* ── Wordmark display face — matches main page, loaded from assets/fonts ── */
+@font-face{
+  font-family:'NKX Display';
+  src:url('assets/fonts/nukrax-display.woff2') format('woff2'),
+      url('assets/fonts/nukrax-display.otf') format('opentype');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+:root {
+  --black:    #030507;
+  --panel:    #0A0F13;
+  --line:     #1B2328;
+  --line-lit: #2A353C;
+  --muted:    #8A9BA3;
+  --text:     #D3DBDD;
+  --white:    #F2F5F5;
+  --accent:   #8FB8C4;
+  --accent-dim: #46626B;
+  --up:       #7FCBA4;
+  --down:     #D98282;
+
+  --font-logo: 'NKX Display', 'Outfit', sans-serif;
+  --font-m:   'Space Mono', monospace;
+  --font-b:   'Outfit', sans-serif;
+  --ease:     cubic-bezier(0.22,1,0.36,1);
+  --ease-out: cubic-bezier(0.16,1,0.3,1);
+
+  --container: 1180px;
+  --gutter: clamp(24px, 5vw, 64px);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--black);
+  color:var(--text);
+  font-family:var(--font-b);
+  font-weight:300;
+  overflow-x:hidden;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+::selection{background:rgba(143,184,196,0.22);color:var(--white)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--black)}
+::-webkit-scrollbar-thumb{background:var(--line-lit);border-radius:2px}
+
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ── Ambient background ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:radial-gradient(rgba(143,184,196,0.07) 1px, transparent 1px);
+  background-size:30px 30px;
+}
+.bg-glow{
+  position:fixed;
+  top:-120px;left:50%;
+  width:min(1100px,110vw);height:min(900px,80vh);
+  transform:translateX(-50%);
+  background:radial-gradient(circle at center, rgba(143,184,196,0.16), rgba(143,184,196,0.05) 45%, transparent 72%);
+  filter:blur(40px);
+  pointer-events:none;
+  z-index:0;
+}
+.bg-glow-2{
+  position:fixed;
+  bottom:-200px;right:-120px;
+  width:600px;height:600px;
+  background:radial-gradient(circle at center, rgba(143,184,196,0.09), transparent 70%);
+  filter:blur(50px);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── Page curtain ── */
+#page-curtain{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--black);
+  transform:translateY(101%);
+  transition:transform .5s var(--ease);
+  pointer-events:none;
+}
+#page-curtain.active{transform:translateY(0)}
+
+/* ── Reveal on scroll ── */
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1.visible{transition-delay:.05s}
+.reveal-delay-2.visible{transition-delay:.1s}
+.reveal-delay-3.visible{transition-delay:.15s}
+.reveal-delay-4.visible{transition-delay:.2s}
+.reveal-delay-5.visible{transition-delay:.25s}
+
+/* ══════════ NAV ══════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:26px var(--gutter);
+  background:rgba(3,5,7,0.88);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.nav-logo-container{display:flex;align-items:center;gap:11px}
+.nav-logo-img{
+  width:30px;height:30px;border-radius:7px;overflow:hidden;
+  border:1px solid var(--line);
+  background:var(--panel);
+}
+.nav-logo-img img{width:100%;height:100%;object-fit:cover}
+.nav-logo{
+  font-family:var(--font-logo);font-weight:400;font-size:16px;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--white);
+}
+.nav-back{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-m);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+  transition:color .3s var(--ease);
+}
+.nav-back:hover{color:var(--white)}
+.nav-back .arrow{transition:transform .3s var(--ease-out)}
+.nav-back:hover .arrow{transform:translateX(-3px)}
+
+/* ══════════ PAGE HEADER ══════════ */
+.page-header{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:150px var(--gutter) 40px;
+  position:relative;
+  z-index:2;
+}
+.section-label{
+  display:flex;align-items:center;gap:12px;
+  font-family:var(--font-m);
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:22px;
+}
+.section-label::before{content:'';width:20px;height:1px;background:var(--line-lit)}
+.page-title{
+  font-family:var(--font-logo);
+  font-weight:400;
+  font-size:clamp(32px,4.6vw,54px);
+  letter-spacing:.02em;
+  color:var(--white);
+  line-height:1.1;
+  margin-bottom:18px;
+}
+.page-subtitle{
+  font-size:14.5px;
+  color:var(--muted);
+  max-width:62ch;
+}
+
+/* ══════════ STATUS STRIP ══════════ */
+.status-strip{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 var(--gutter) 30px;
+  position:relative;
+  z-index:2;
+  display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+}
+.status-item{display:flex;align-items:center;gap:8px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);position:relative}
+.status-dot::before{
+  content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--accent);
+  opacity:.6;animation:nkx-status-pulse 2.4s var(--ease-out) infinite;
+}
+@keyframes nkx-status-pulse{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
+.status-item strong{color:var(--white);font-weight:400}
+.disclaimer{
+  max-width:var(--container);margin:0 auto;
+  padding:0 var(--gutter) 28px;
+  position:relative;z-index:2;
+  font-family:var(--font-m);font-size:10px;letter-spacing:.06em;
+  color:var(--muted);opacity:.75;
+}
+
+/* ══════════ TICKER STRIP ══════════ */
+.ticker-strip{
+  max-width:var(--container);
+  margin:0 auto 60px;
+  padding:0 var(--gutter);
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  border-top:1px solid var(--line);border-left:1px solid var(--line);
+}
+@media(max-width:900px){.ticker-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.ticker-strip{grid-template-columns:repeat(2,1fr)}}
+.ticker-item{
+  padding:18px 20px;
+  border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.ticker-label{font-family:var(--font-m);font-size:9.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.ticker-price{font-family:var(--font-b);font-weight:500;font-size:18px;color:var(--white);transition:color .25s var(--ease)}
+.ticker-price.tick-up{color:var(--up)}
+.ticker-price.tick-down{color:var(--down)}
+
+/* ══════════ PAIR GRID ══════════ */
+.pair-grid{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 var(--gutter) 130px;
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+@media(max-width:860px){.pair-grid{grid-template-columns:1fr}}
+
+.pair-card{background:var(--black)}
+.pair-panel-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:14px 18px;
+  border-bottom:1px solid var(--line);
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:.1em;
+  color:var(--muted);text-transform:uppercase;
+}
+.terminal-dot{width:7px;height:7px;border-radius:50%;background:var(--line-lit)}
+.live-tag{
+  margin-left:auto;display:flex;align-items:center;gap:6px;
+  color:var(--accent);font-size:10px;letter-spacing:.14em;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);position:relative}
+.live-dot::before{
+  content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--accent);
+  opacity:.6;animation:nkx-status-pulse 2.4s var(--ease-out) infinite;
+}
+
+.pair-body{padding:24px 24px 26px}
+.pair-price-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:26px;flex-wrap:wrap;gap:10px}
+.pair-name{font-family:var(--font-logo);font-weight:400;font-size:19px;letter-spacing:.02em;color:var(--white)}
+.pair-sub{font-family:var(--font-m);font-size:10px;color:var(--muted);margin-top:4px}
+.pair-price-block{text-align:right}
+.pair-price{
+  font-family:var(--font-b);font-weight:500;font-size:24px;color:var(--white);
+  transition:color .25s var(--ease);
+  font-variant-numeric:tabular-nums;
+}
+.pair-price.tick-up{color:var(--up)}
+.pair-price.tick-down{color:var(--down)}
+.pair-delta{font-family:var(--font-m);font-size:11px;margin-top:4px;transition:color .25s var(--ease)}
+.pair-delta.pos{color:var(--up)}
+.pair-delta.neg{color:var(--down)}
+
+.pair-section-label{
+  font-family:var(--font-m);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:12px;
+}
+.pair-section-label + .pair-section-label{margin-top:22px}
+
+/* liquidity heatmap */
+.heatmap{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-bottom:24px}
+.heat-cell{
+  aspect-ratio:1;border-radius:1px;
+  background:var(--accent);
+  opacity:var(--cell-o,.2);
+  transition:opacity .5s var(--ease);
+}
+
+/* order flow */
+.flow-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.flow-row:last-child{margin-bottom:22px}
+.flow-row-label{font-family:var(--font-m);font-size:10px;color:var(--muted);width:54px;flex-shrink:0}
+.flow-track{flex:1;height:5px;background:var(--line);border-radius:3px;overflow:hidden}
+.flow-fill{height:100%;width:50%;background:var(--accent);border-radius:3px;transition:width .5s var(--ease)}
+.flow-row-val{font-family:var(--font-m);font-size:10.5px;color:var(--white);width:36px;text-align:right;flex-shrink:0}
+
+/* footer row: gauge + AI tag */
+.pair-footer-row{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  padding-top:20px;border-top:1px solid var(--line);
+}
+.gauge-wrap{display:flex;align-items:center;gap:14px}
+.gauge-svg{width:56px;height:56px;flex-shrink:0}
+.gauge-track{fill:none;stroke:var(--line);stroke-width:6}
+.gauge-fill{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .5s var(--ease)}
+.gauge-num{font-family:var(--font-b);font-weight:500;font-size:14px;color:var(--white)}
+.gauge-sub{font-family:var(--font-m);font-size:9px;color:var(--muted);letter-spacing:.06em;margin-top:2px}
+.ai-tag{
+  font-family:var(--font-m);font-size:10px;letter-spacing:.06em;color:var(--muted);
+  text-align:right;
+}
+.ai-tag span{color:var(--accent);display:block;font-size:11.5px;margin-top:3px}
+
+/* ══════════ FOOTER (matches ea-selection) ══════════ */
+footer{
+  border-top:1px solid var(--line);
+  padding:60px var(--gutter) 32px;
+  position:relative;
+  z-index:2;
+  background:rgba(3,5,7,0.45);
+}
+.footer-content{max-width:var(--container);margin:0 auto}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-logo{font-family:var(--font-logo);font-weight:400;font-size:14px;letter-spacing:.05em;color:var(--muted)}
+.footer-copy{font-size:11px;color:var(--muted)}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{font-size:11px;color:var(--muted);transition:color .3s var(--ease)}
+.footer-links a:hover{color:var(--white)}
+@media(max-width:640px){.footer-bottom{flex-direction:column;align-items:flex-start}}
+
+@media (max-width: 480px) {
+  nav{padding:16px 18px}
+  .nav-logo-img{width:26px;height:26px}
+  .page-header{padding:112px 20px 32px}
+  .pair-body{padding:20px 18px 22px}
+}
+</style>
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<div class="bg-glow"></div>
+<div class="bg-glow-2"></div>
+
+<nav>
+  <div class="nav-logo-container">
+    <a href="index.html" class="nav-logo-img"><img src="assets/logo.png" alt="NUKRAX Logo"></a>
+    <a href="index.html" class="nav-logo">nukrax</a>
+  </div>
+  <a href="index.html" class="nav-back"><span class="arrow">←</span> Back to Hub</a>
+</nav>
+
+<div class="page-header">
+  <div class="section-label reveal">03 — Live Signal Engine</div>
+  <h1 class="page-title reveal">Market Map</h1>
+  <p class="page-subtitle reveal">Real-time liquidity, order flow, and heat-map monitoring across five core instruments — the same signal layer every NUKRAX Expert Advisor reads on each tick.</p>
+</div>
+
+<div class="status-strip reveal">
+  <div class="status-item"><span class="status-dot"></span>AI Liquidity Engine — <strong>Active</strong></div>
+  <div class="status-item">Refresh Rate — <strong>500ms</strong></div>
+  <div class="status-item">Instruments — <strong>5</strong></div>
+  <div class="status-item">Last Tick — <strong id="lastTick">--:--:--.---</strong></div>
+</div>
+<div class="disclaimer reveal">SIMULATED SIGNAL FEED — ILLUSTRATIVE, NOT LIVE MARKET DATA.</div>
+
+<div class="ticker-strip" id="tickerStrip"></div>
+
+<div class="pair-grid" id="pairGrid"></div>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-bottom">
+      <a href="index.html" class="footer-logo">NUKRAX</a>
+      <div class="footer-copy">© 2024 NUKRAX. All rights reserved. Built by @CosmoLanex</div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="ea-selection.html">Expert Advisors</a>
+        <a href="p.html" target="_blank">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── PAGE TRANSITIONS ── */
+const curtain=document.getElementById('page-curtain');
+document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach(a=>{
+  a.addEventListener('click',function(e){
+    const href=this.getAttribute('href');
+    if(!href||href.startsWith('http')||href.startsWith('mailto')) return;
+    e.preventDefault();
+    curtain.classList.add('active');
+    setTimeout(()=>{ window.location.href=href; },500);
+  });
+});
+window.addEventListener('pageshow', function(event) {
+  if (event.persisted || (window.performance && window.performance.navigation && window.performance.navigation.type === 2)) {
+    curtain.classList.remove('active');
+  }
+});
+
+/* ── REVEAL ON SCROLL ── */
+const reveals=document.querySelectorAll('.reveal');
+const revealIO=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.classList.add('visible'); });
+},{threshold:0.08});
+reveals.forEach(el=>revealIO.observe(el));
+
+/* ══════════════════════════════════════════════════
+   LIVE MARKET MAP ENGINE — simulated signal feed
+   Updates every 500ms: price, order flow, liquidity
+   heat map, and a derived "AI read" per instrument.
+   ══════════════════════════════════════════════════ */
+(function(){
+  const HEAT_ROWS = 3, HEAT_COLS = 8, HEAT_CELLS = HEAT_ROWS*HEAT_COLS;
+
+  const PAIRS = [
+    { id:'xauusd', label:'XAUUSD', sub:'Gold / U.S. Dollar',      price:2412.50, decimals:2, vol:0.42 },
+    { id:'dxy',    label:'DXY',    sub:'U.S. Dollar Index',       price:104.320, decimals:3, vol:0.028 },
+    { id:'eurusd', label:'EURUSD', sub:'Euro / U.S. Dollar',      price:1.08650, decimals:5, vol:0.00028 },
+    { id:'gbpjpy', label:'GBPJPY', sub:'Sterling / Japanese Yen', price:199.850, decimals:3, vol:0.055 },
+    { id:'jpyusd', label:'JPYUSD', sub:'Yen / U.S. Dollar',       price:0.006700, decimals:6, vol:0.000016 },
+  ];
+
+  function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+  function rand(min,max){ return min + Math.random()*(max-min); }
+
+  // ── init per-pair state ──
+  PAIRS.forEach(p=>{
+    p.startPrice = p.price;
+    p.buy = rand(35,65);
+    p.liquidity = rand(45,88);
+    p.heat = Array.from({length:HEAT_CELLS}, ()=> rand(.08,.85));
+  });
+
+  // ── build ticker strip ──
+  const tickerStrip = document.getElementById('tickerStrip');
+  PAIRS.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'ticker-item';
+    el.innerHTML = `<div class="ticker-label">${p.label}</div><div class="ticker-price" id="tick-${p.id}">--</div>`;
+    tickerStrip.appendChild(el);
+  });
+
+  // ── build pair cards ──
+  const grid = document.getElementById('pairGrid');
+  PAIRS.forEach((p,idx)=>{
+    const heatCells = Array.from({length:HEAT_CELLS}).map((_,i)=>
+      `<div class="heat-cell" id="heat-${p.id}-${i}"></div>`
+    ).join('');
+
+    const card = document.createElement('div');
+    card.className = 'pair-card reveal reveal-delay-' + ((idx % 5) + 1);
+    card.innerHTML = `
+      <div class="pair-panel-bar">
+        <span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span>
+        NUKRAX // ${p.label} LIVE FEED
+        <span class="live-tag"><span class="live-dot"></span>LIVE</span>
+      </div>
+      <div class="pair-body">
+        <div class="pair-price-row">
+          <div>
+            <div class="pair-name">${p.label}</div>
+            <div class="pair-sub">${p.sub}</div>
+          </div>
+          <div class="pair-price-block">
+            <div class="pair-price" id="price-${p.id}">--</div>
+            <div class="pair-delta" id="delta-${p.id}">+0.00%</div>
+          </div>
+        </div>
+
+        <div class="pair-section-label">Liquidity heat map</div>
+        <div class="heatmap">${heatCells}</div>
+
+        <div class="pair-section-label">Order flow</div>
+        <div class="flow-row">
+          <span class="flow-row-label">Buy Side</span>
+          <div class="flow-track"><div class="flow-fill" id="buyfill-${p.id}"></div></div>
+          <span class="flow-row-val" id="buyval-${p.id}">--</span>
+        </div>
+        <div class="flow-row">
+          <span class="flow-row-label">Sell Side</span>
+          <div class="flow-track"><div class="flow-fill" id="sellfill-${p.id}"></div></div>
+          <span class="flow-row-val" id="sellval-${p.id}">--</span>
+        </div>
+
+        <div class="pair-footer-row">
+          <div class="gauge-wrap">
+            <svg class="gauge-svg" viewBox="0 0 100 100">
+              <circle class="gauge-track" cx="50" cy="50" r="42"/>
+              <circle class="gauge-fill" id="gauge-${p.id}" cx="50" cy="50" r="42" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+            </svg>
+            <div>
+              <div class="gauge-num" id="gaugenum-${p.id}">0%</div>
+              <div class="gauge-sub">Liquidity depth</div>
+            </div>
+          </div>
+          <div class="ai-tag">AI read<span id="ai-${p.id}">—</span></div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  reveals.forEach(el=>{}); // no-op, keep reference stable
+  document.querySelectorAll('.reveal').forEach(el=>revealIO.observe(el));
+
+  // ── cache element refs ──
+  PAIRS.forEach(p=>{
+    p.el = {
+      price: document.getElementById('price-'+p.id),
+      delta: document.getElementById('delta-'+p.id),
+      tick:  document.getElementById('tick-'+p.id),
+      buyFill: document.getElementById('buyfill-'+p.id),
+      sellFill: document.getElementById('sellfill-'+p.id),
+      buyVal: document.getElementById('buyval-'+p.id),
+      sellVal: document.getElementById('sellval-'+p.id),
+      gaugeFill: document.getElementById('gauge-'+p.id),
+      gaugeNum: document.getElementById('gaugenum-'+p.id),
+      ai: document.getElementById('ai-'+p.id),
+      heatCells: Array.from({length:HEAT_CELLS}).map((_,i)=> document.getElementById(`heat-${p.id}-${i}`)),
+    };
+  });
+
+  function aiRead(buy, liquidity){
+    if(buy >= 62 && liquidity >= 65) return 'Bullish · High Liquidity';
+    if(buy <= 38 && liquidity >= 65) return 'Bearish · High Liquidity';
+    if(liquidity < 50) return 'Neutral · Thin Book';
+    if(buy > 54) return 'Mild Buy Pressure';
+    if(buy < 46) return 'Mild Sell Pressure';
+    return 'Balanced · Ranging';
+  }
+
+  function formatPrice(v, decimals){
+    return v.toLocaleString('en-US', { minimumFractionDigits:decimals, maximumFractionDigits:decimals });
+  }
+
+  function flash(el, dir){
+    if(!el) return;
+    el.classList.remove('tick-up','tick-down');
+    if(dir === 'up') el.classList.add('tick-up');
+    else if(dir === 'down') el.classList.add('tick-down');
+  }
+
+  function tick(){
+    const now = new Date();
+    const ts = now.toTimeString().slice(0,8) + '.' + String(now.getMilliseconds()).padStart(3,'0');
+    const lastTickEl = document.getElementById('lastTick');
+    if(lastTickEl) lastTickEl.textContent = ts;
+
+    PAIRS.forEach(p=>{
+      // price random walk
+      const prev = p.price;
+      const delta = rand(-p.vol, p.vol);
+      p.price = Math.max(0.000001, p.price + delta);
+      const dir = p.price > prev ? 'up' : (p.price < prev ? 'down' : null);
+
+      const priceStr = formatPrice(p.price, p.decimals);
+      if(p.el.price) p.el.price.textContent = priceStr;
+      if(p.el.tick) p.el.tick.textContent = priceStr;
+      flash(p.el.price, dir);
+      flash(p.el.tick, dir);
+
+      const pct = ((p.price - p.startPrice) / p.startPrice) * 100;
+      if(p.el.delta){
+        p.el.delta.textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '% today';
+        p.el.delta.classList.toggle('pos', pct >= 0);
+        p.el.delta.classList.toggle('neg', pct < 0);
+      }
+
+      // order flow random walk
+      p.buy = clamp(p.buy + rand(-5,5), 12, 88);
+      const sell = 100 - p.buy;
+      if(p.el.buyFill) p.el.buyFill.style.width = p.buy.toFixed(0) + '%';
+      if(p.el.sellFill) p.el.sellFill.style.width = sell.toFixed(0) + '%';
+      if(p.el.buyVal) p.el.buyVal.textContent = p.buy.toFixed(0) + '%';
+      if(p.el.sellVal) p.el.sellVal.textContent = sell.toFixed(0) + '%';
+
+      // liquidity gauge random walk
+      p.liquidity = clamp(p.liquidity + rand(-4,4), 25, 98);
+      if(p.el.gaugeFill) p.el.gaugeFill.style.strokeDashoffset = (100 - p.liquidity);
+      if(p.el.gaugeNum) p.el.gaugeNum.textContent = Math.round(p.liquidity) + '%';
+
+      // heat map random walk (smooth drift, not full jump)
+      p.heat = p.heat.map(v => clamp(v + rand(-0.18,0.18), 0.05, 1));
+      p.heat.forEach((v,i)=>{
+        const cell = p.el.heatCells[i];
+        if(cell) cell.style.setProperty('--cell-o', v.toFixed(2));
+      });
+
+      // AI read
+      if(p.el.ai) p.el.ai.textContent = aiRead(p.buy, p.liquidity);
+    });
+  }
+
+  tick();
+  setInterval(tick, 500);
+})();
+</script>
+
+</body>
+</html>
