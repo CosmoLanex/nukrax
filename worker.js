@@ -23,6 +23,7 @@ import { getNukraxResponse } from './assets/ai/responder.js';
 
 const MODEL = 'claude-sonnet-5';
 const MAX_TOKENS = 700;
+const SUPABASE_URL = 'https://gxmpaurwuiaxurqnxeck.supabase.co';
 
 export default {
   async fetch(request, env) {
