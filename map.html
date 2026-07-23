@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>body{visibility:hidden}</style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NUKRAX — Market Map</title>
+<meta name="description" content="Consolidated price, order-flow bias, and cross-instrument correlation across XAUUSD, DXY, EURUSD, GBPJPY, and JPYUSD — the instrument set read by the NUKRAX execution layer."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="icon" href="assets/logo.png" type="image/png"/>
+<style>
+
+/* ── Wordmark display face — matches main page, loaded from assets/fonts ── */
+@font-face{
+  font-family:'NKX Display';
+  src:url('assets/fonts/nukrax-display.woff2') format('woff2'),
+      url('assets/fonts/nukrax-display.otf') format('opentype');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+:root {
+  --black:    #030507;
+  --panel:    #0A0F13;
+  --line:     #1B2328;
+  --line-lit: #2A353C;
+  --muted:    #8A9BA3;
+  --text:     #D3DBDD;
+  --white:    #F2F5F5;
+  --accent:   #8FB8C4;
+  --accent-dim: #46626B;
+  --up:       #7FCBA4;
+  --down:     #D98282;
+
+  --font-logo: 'NKX Display', 'Outfit', sans-serif;
+  --font-m:   'Space Mono', monospace;
+  --font-b:   'Outfit', sans-serif;
+  --ease:     cubic-bezier(0.22,1,0.36,1);
+  --ease-out: cubic-bezier(0.16,1,0.3,1);
+
+  --container: 1180px;
+  --gutter: clamp(24px, 5vw, 64px);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--black);
+  color:var(--text);
+  font-family:var(--font-b);
+  font-weight:300;
+  overflow-x:hidden;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+::selection{background:rgba(143,184,196,0.22);color:var(--white)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--black)}
+::-webkit-scrollbar-thumb{background:var(--line-lit);border-radius:2px}
+
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+/* ── Ambient background ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:radial-gradient(rgba(143,184,196,0.06) 1px, transparent 1px);
+  background-size:30px 30px;
+}
+.bg-glow{
+  position:fixed;
+  top:-160px;left:50%;
+  width:min(1000px,100vw);height:min(700px,60vh);
+  transform:translateX(-50%);
+  background:radial-gradient(circle at center, rgba(143,184,196,0.10), rgba(143,184,196,0.03) 45%, transparent 72%);
+  filter:blur(50px);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── Page curtain ── */
+#page-curtain{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--black);
+  transform:translateY(101%);
+  transition:transform .5s var(--ease);
+  pointer-events:none;
+}
+#page-curtain.active{transform:translateY(0)}
+
+/* ── Reveal on scroll ── */
+.reveal{opacity:0;transform:translateY(12px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1.visible{transition-delay:.05s}
+.reveal-delay-2.visible{transition-delay:.1s}
+.reveal-delay-3.visible{transition-delay:.15s}
+.reveal-delay-4.visible{transition-delay:.2s}
+.reveal-delay-5.visible{transition-delay:.25s}
+
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important}
+}
+
+/* ══════════ NAV ══════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:26px var(--gutter);
+  background:rgba(3,5,7,0.88);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.nav-logo-container{display:flex;align-items:center;gap:11px}
+.nav-logo-img{
+  width:30px;height:30px;border-radius:7px;overflow:hidden;
+  border:1px solid var(--line);
+  background:var(--panel);
+}
+.nav-logo-img img{width:100%;height:100%;object-fit:cover}
+.nav-logo{
+  font-family:var(--font-logo);font-weight:400;font-size:16px;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--white);
+}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-back{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-m);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+  transition:color .3s var(--ease);
+}
+.nav-back:hover{color:var(--white)}
+.nav-back .arrow{transition:transform .3s var(--ease-out)}
+.nav-back:hover .arrow{transform:translateX(-3px)}
+
+/* ══════════ PAGE HEADER ══════════ */
+.page-header{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:150px var(--gutter) 6px;
+  position:relative;
+  z-index:2;
+}
+.section-label{
+  display:flex;align-items:center;gap:12px;
+  font-family:var(--font-m);
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:22px;
+}
+.section-label::before{content:'';width:20px;height:1px;background:var(--line-lit)}
+.page-title{
+  font-family:var(--font-logo);
+  font-weight:400;
+  font-size:clamp(32px,4.6vw,54px);
+  letter-spacing:.02em;
+  color:var(--white);
+  line-height:1.1;
+  margin-bottom:18px;
+}
+.page-subtitle{
+  font-size:14.5px;
+  color:var(--muted);
+  max-width:62ch;
+}
+
+/* ══════════ META STRIP ══════════ */
+.meta-strip{
+  max-width:var(--container);
+  margin:44px auto 0;
+  padding:18px var(--gutter);
+  position:relative;
+  z-index:2;
+  display:flex;align-items:center;gap:32px;flex-wrap:wrap;
+  font-family:var(--font-m);font-size:11px;letter-spacing:.08em;
+  color:var(--muted);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.meta-item{display:flex;align-items:center;gap:9px}
+.meta-item strong{color:var(--white);font-weight:400}
+.meta-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.meta-strip .meta-note{margin-left:auto;color:var(--muted);opacity:.65;font-size:10px}
+@media(max-width:760px){
+  .meta-strip{gap:16px 28px}
+  .meta-strip .meta-note{margin-left:0;width:100%}
+}
+
+/* ══════════ SECTION SCAFFOLD ══════════ */
+.section{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:88px var(--gutter) 0;
+  position:relative;z-index:2;
+}
+.section-head{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:24px;flex-wrap:wrap;
+  margin-bottom:30px;
+}
+.section-eyebrow{
+  font-family:var(--font-m);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+}
+.section-title{
+  font-family:var(--font-logo);font-weight:400;
+  font-size:clamp(21px,2.4vw,27px);letter-spacing:.01em;color:var(--white);
+}
+.section-desc{
+  font-size:13.5px;color:var(--muted);max-width:48ch;
+  margin-top:10px;
+}
+
+/* ══════════ INSTRUMENT TABLE ══════════ */
+.table-wrap{
+  border:1px solid var(--line);
+  background:var(--panel);
+}
+.instrument-table{width:100%;border-collapse:collapse}
+.instrument-table thead th{
+  text-align:left;
+  font-family:var(--font-m);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);font-weight:400;
+  padding:16px 22px;
+  border-bottom:1px solid var(--line);
+}
+.instrument-table thead th.num{text-align:right}
+.instrument-table tbody td{
+  padding:20px 22px;
+  border-bottom:1px solid var(--line);
+  vertical-align:middle;
+}
+.instrument-table tbody tr:last-child td{border-bottom:none}
+.instrument-table tbody tr{transition:background .25s var(--ease)}
+.instrument-table tbody tr:hover{background:rgba(143,184,196,0.03)}
+
+.cell-symbol{display:flex;flex-direction:column;gap:3px}
+.cell-symbol .sym{
+  font-family:var(--font-logo);font-weight:400;font-size:16px;color:var(--white);
+  letter-spacing:.01em;
+}
+.cell-symbol .desc{font-family:var(--font-m);font-size:10px;color:var(--muted)}
+
+.cell-price{text-align:right;font-variant-numeric:tabular-nums}
+.cell-price .last{
+  font-family:var(--font-b);font-weight:500;font-size:16px;color:var(--white);
+  transition:color .3s var(--ease);
+}
+.cell-price .last.tick-up{color:var(--up)}
+.cell-price .last.tick-down{color:var(--down)}
+
+.cell-chg{text-align:right;font-variant-numeric:tabular-nums}
+.cell-chg .pct{
+  font-family:var(--font-m);font-size:12.5px;
+  transition:color .3s var(--ease);
+}
+.cell-chg .pct.pos{color:var(--up)}
+.cell-chg .pct.neg{color:var(--down)}
+
+.cell-range{min-width:180px}
+.range-labels{
+  display:flex;justify-content:space-between;
+  font-family:var(--font-m);font-size:9.5px;color:var(--muted);
+  margin-bottom:7px;
+}
+.range-track{position:relative;height:3px;background:var(--line);border-radius:2px}
+.range-marker{
+  position:absolute;top:50%;width:8px;height:8px;border-radius:50%;
+  background:var(--accent);border:2px solid var(--panel);
+  transform:translate(-50%,-50%);
+  transition:left .5s var(--ease);
+}
+
+.cell-flow{min-width:150px}
+.flow-labels{
+  display:flex;justify-content:space-between;
+  font-family:var(--font-m);font-size:9.5px;color:var(--muted);
+  margin-bottom:7px;
+}
+.flow-labels .buy-lbl{color:var(--accent)}
+.flow-track{display:flex;height:4px;border-radius:2px;overflow:hidden;background:var(--line)}
+.flow-buy{height:100%;background:var(--accent);transition:width .6s var(--ease)}
+.flow-sell{height:100%;background:var(--line-lit);transition:width .6s var(--ease)}
+
+/* mobile: collapse table to stacked rows */
+@media(max-width:820px){
+  .instrument-table thead{display:none}
+  .instrument-table, .instrument-table tbody, .instrument-table tr, .instrument-table td{display:block;width:100%}
+  .instrument-table tbody td{padding:0;border-bottom:none}
+  .instrument-table tbody tr{
+    padding:22px;
+    border-bottom:1px solid var(--line);
+    display:grid;gap:16px;
+  }
+  .cell-price,.cell-chg{text-align:left}
+  .cell-price::before,.cell-chg::before,.cell-range::before,.cell-flow::before{
+    content:attr(data-label);
+    display:block;
+    font-family:var(--font-m);font-size:9.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:6px;
+  }
+}
+
+/* ══════════ CORRELATION MATRIX (signature) ══════════ */
+.matrix-wrap{
+  border:1px solid var(--line);
+  background:var(--panel);
+  padding:36px clamp(20px,4vw,44px) 32px;
+}
+.matrix-grid{
+  display:grid;
+  grid-template-columns:88px repeat(5,1fr);
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.matrix-cell{
+  background:var(--black);
+  aspect-ratio:1;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.matrix-cell.head{
+  background:var(--panel);
+  font-family:var(--font-m);font-size:11px;letter-spacing:.04em;color:var(--muted);
+  aspect-ratio:auto;
+}
+.matrix-cell.corner{background:var(--panel)}
+.matrix-cell.row-head{
+  justify-content:flex-start;padding-left:14px;
+  font-family:var(--font-logo);font-size:13px;color:var(--white);
+}
+.matrix-cell .val{
+  font-family:var(--font-m);font-weight:700;font-size:13px;
+  color:var(--white);position:relative;z-index:1;
+}
+.matrix-cell .fill{
+  position:absolute;inset:0;
+  transition:opacity .6s var(--ease);
+}
+.matrix-cell.self{background:var(--panel)}
+.matrix-cell.self .val{color:var(--muted)}
+
+.matrix-legend{
+  display:flex;align-items:center;gap:14px;
+  margin-top:26px;
+  font-family:var(--font-m);font-size:10px;color:var(--muted);
+}
+.matrix-legend .bar{
+  flex:1;max-width:280px;height:4px;border-radius:2px;
+  background:linear-gradient(90deg, var(--down), var(--line) 50%, var(--accent));
+}
+
+.matrix-foot{
+  margin-top:28px;
+  font-size:13px;color:var(--muted);
+  max-width:64ch;
+  padding-top:22px;
+  border-top:1px solid var(--line);
+}
+.matrix-foot strong{color:var(--text);font-weight:400}
+
+@media(max-width:700px){
+  .matrix-grid{grid-template-columns:64px repeat(5,minmax(44px,1fr));font-size:10px}
+  .matrix-cell.row-head{padding-left:8px;font-size:11px}
+  .matrix-cell .val{font-size:11px}
+}
+
+/* ══════════ NOTE ══════════ */
+.data-note{
+  max-width:var(--container);
+  margin:22px auto 0;
+  padding:0 var(--gutter);
+  font-family:var(--font-m);font-size:10.5px;color:var(--muted);opacity:.6;
+}
+
+/* ══════════ FOOTER (matches ea-selection) ══════════ */
+footer{
+  border-top:1px solid var(--line);
+  margin-top:110px;
+  padding:60px var(--gutter) 32px;
+  position:relative;
+  z-index:2;
+  background:rgba(3,5,7,0.45);
+}
+.footer-content{max-width:var(--container);margin:0 auto}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-logo{font-family:var(--font-logo);font-weight:400;font-size:14px;letter-spacing:.05em;color:var(--muted)}
+.footer-copy{font-size:11px;color:var(--muted)}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{font-size:11px;color:var(--muted);transition:color .3s var(--ease)}
+.footer-links a:hover{color:var(--white)}
+@media(max-width:640px){.footer-bottom{flex-direction:column;align-items:flex-start}}
+
+@media (max-width: 480px) {
+  nav{padding:16px 18px}
+  .nav-logo-img{width:26px;height:26px}
+  .page-header{padding:112px 20px 6px}
+  .meta-strip{padding:16px 20px}
+  .section{padding:64px 20px 0}
+  .matrix-wrap{padding:26px 16px 24px}
+}
+</style>
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<div class="bg-glow"></div>
+
+<nav>
+  <div class="nav-logo-container">
+    <a href="index.html" class="nav-logo-img"><img src="assets/logo.png" alt="NUKRAX Logo"></a>
+    <a href="index.html" class="nav-logo">nukrax</a>
+  </div>
+  <div class="nav-right"><a href="index.html" class="nav-back"><span class="arrow">←</span> Back to Hub</a></div>
+</nav>
+
+<div class="page-header">
+  <div class="section-label reveal">03 — Market Overview</div>
+  <h1 class="page-title reveal">Market Map</h1>
+  <p class="page-subtitle reveal">A consolidated read on price, order-flow bias, and cross-instrument correlation across the five instruments tracked by the NUKRAX execution layer.</p>
+</div>
+
+<div class="meta-strip reveal">
+  <div class="meta-item"><span class="meta-dot"></span>Session — <strong id="sessionLabel">London / New York Overlap</strong></div>
+  <div class="meta-item">Instruments — <strong>5</strong></div>
+  <div class="meta-item">Updated — <strong id="lastTick">--:--:--</strong></div>
+  <div class="meta-note">Illustrative data, for demonstration only</div>
+</div>
+
+<div class="section">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-eyebrow">Instruments</div>
+      <div class="section-title">Price &amp; Order Flow</div>
+    </div>
+    <p class="section-desc">Day range and net order-flow bias for each instrument, updated on a fixed interval.</p>
+  </div>
+
+  <div class="table-wrap reveal">
+    <table class="instrument-table">
+      <thead>
+        <tr>
+          <th>Instrument</th>
+          <th class="num">Last</th>
+          <th class="num">Chg %</th>
+          <th>Day Range</th>
+          <th>Flow Bias</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-eyebrow">Signature — Cross-Asset Correlation</div>
+      <div class="section-title">Correlation Matrix</div>
+    </div>
+    <p class="section-desc">20-day rolling correlation coefficient between each pair of instruments.</p>
+  </div>
+
+  <div class="matrix-wrap reveal">
+    <div class="matrix-grid" id="matrixGrid"></div>
+    <div class="matrix-legend">
+      <span>−1.0</span>
+      <div class="bar"></div>
+      <span>+1.0</span>
+    </div>
+    <p class="matrix-foot">Values near <strong>+1.00</strong> indicate instruments moving in the same direction; values near <strong>−1.00</strong> indicate inverse movement. Values near <strong>0.00</strong> indicate little relationship between the two.</p>
+  </div>
+</div>
+
+<div class="data-note">Simulated data — illustrative of the format used across the NUKRAX signal layer, not live market pricing.</div>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-bottom">
+      <a href="index.html" class="footer-logo">NUKRAX</a>
+      <div class="footer-copy">© 2024 NUKRAX. All rights reserved. Built by @CosmoLanex</div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="ea-selection.html">Expert Advisors</a>
+        <a href="p.html" target="_blank">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── PAGE TRANSITIONS ── */
+const curtain=document.getElementById('page-curtain');
+document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach(a=>{
+  a.addEventListener('click',function(e){
+    const href=this.getAttribute('href');
+    if(!href||href.startsWith('http')||href.startsWith('mailto')) return;
+    e.preventDefault();
+    curtain.classList.add('active');
+    setTimeout(()=>{ window.location.href=href; },500);
+  });
+});
+window.addEventListener('pageshow', function(event) {
+  if (event.persisted || (window.performance && window.performance.navigation && window.performance.navigation.type === 2)) {
+    curtain.classList.remove('active');
+  }
+});
+
+/* ── REVEAL ON SCROLL ── */
+const revealIO=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.classList.add('visible'); });
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>revealIO.observe(el));
+
+/* ══════════════════════════════════════════════════
+   MARKET MAP DATA ENGINE — simulated for demonstration.
+   Drives the instrument table and correlation matrix.
+   ══════════════════════════════════════════════════ */
+(function(){
+  const PAIRS = [
+    { id:'xauusd', label:'XAUUSD', desc:'Gold / U.S. Dollar',       price:2412.50, decimals:2, vol:0.35 },
+    { id:'dxy',    label:'DXY',    desc:'U.S. Dollar Index',        price:104.320, decimals:3, vol:0.020 },
+    { id:'eurusd', label:'EURUSD', desc:'Euro / U.S. Dollar',       price:1.08650, decimals:5, vol:0.00022 },
+    { id:'gbpjpy', label:'GBPJPY', desc:'Sterling / Japanese Yen',  price:199.850, decimals:3, vol:0.045 },
+    { id:'jpyusd', label:'JPYUSD', desc:'Yen / U.S. Dollar',        price:0.006700, decimals:6, vol:0.000013 },
+  ];
+
+  function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+  function rand(min,max){ return min + Math.random()*(max-min); }
+  function fmt(v,d){ return v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+
+  PAIRS.forEach(p=>{
+    p.startPrice = p.price;
+    p.low  = p.price * (1 - rand(0.004,0.012));
+    p.high = p.price * (1 + rand(0.004,0.012));
+    p.buy  = rand(42,60);
+  });
+
+  /* ── build table rows ── */
+  const tbody = document.getElementById('tableBody');
+  PAIRS.forEach((p,idx)=>{
+    const tr = document.createElement('tr');
+    tr.className = 'reveal reveal-delay-' + ((idx % 5) + 1);
+    tr.innerHTML = `
+      <td>
+        <div class="cell-symbol"><span class="sym">${p.label}</span><span class="desc">${p.desc}</span></div>
+      </td>
+      <td class="cell-price" data-label="Last"><span class="last" id="price-${p.id}">--</span></td>
+      <td class="cell-chg" data-label="Chg %"><span class="pct" id="pct-${p.id}">--</span></td>
+      <td class="cell-range" data-label="Day Range">
+        <div class="range-labels"><span id="low-${p.id}">--</span><span id="high-${p.id}">--</span></div>
+        <div class="range-track"><div class="range-marker" id="marker-${p.id}" style="left:50%"></div></div>
+      </td>
+      <td class="cell-flow" data-label="Flow Bias">
+        <div class="flow-labels"><span class="buy-lbl" id="buyval-${p.id}">--</span><span id="sellval-${p.id}">--</span></div>
+        <div class="flow-track"><div class="flow-buy" id="buyfill-${p.id}"></div><div class="flow-sell" id="sellfill-${p.id}"></div></div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.querySelectorAll('.reveal').forEach(el=>revealIO.observe(el));
+
+  PAIRS.forEach(p=>{
+    p.el = {
+      price: document.getElementById('price-'+p.id),
+      pct: document.getElementById('pct-'+p.id),
+      low: document.getElementById('low-'+p.id),
+      high: document.getElementById('high-'+p.id),
+      marker: document.getElementById('marker-'+p.id),
+      buyFill: document.getElementById('buyfill-'+p.id),
+      sellFill: document.getElementById('sellfill-'+p.id),
+      buyVal: document.getElementById('buyval-'+p.id),
+      sellVal: document.getElementById('sellval-'+p.id),
+    };
+  });
+
+  function flash(el,dir){
+    if(!el) return;
+    el.classList.remove('tick-up','tick-down');
+    if(dir==='up') el.classList.add('tick-up');
+    else if(dir==='down') el.classList.add('tick-down');
+    setTimeout(()=>el.classList.remove('tick-up','tick-down'), 900);
+  }
+
+  function tick(){
+    const now = new Date();
+    const ts = now.toTimeString().slice(0,8);
+    const lastTickEl = document.getElementById('lastTick');
+    if(lastTickEl) lastTickEl.textContent = ts;
+
+    PAIRS.forEach(p=>{
+      const prev = p.price;
+      p.price = Math.max(0.000001, p.price + rand(-p.vol,p.vol));
+      p.low  = Math.min(p.low, p.price);
+      p.high = Math.max(p.high, p.price);
+      const dir = p.price > prev ? 'up' : (p.price < prev ? 'down' : null);
+
+      if(p.el.price){ p.el.price.textContent = fmt(p.price,p.decimals); flash(p.el.price,dir); }
+
+      const pct = ((p.price - p.startPrice)/p.startPrice)*100;
+      if(p.el.pct){
+        p.el.pct.textContent = (pct>=0?'+':'') + pct.toFixed(2) + '%';
+        p.el.pct.classList.toggle('pos', pct>=0);
+        p.el.pct.classList.toggle('neg', pct<0);
+      }
+
+      if(p.el.low) p.el.low.textContent = fmt(p.low,p.decimals);
+      if(p.el.high) p.el.high.textContent = fmt(p.high,p.decimals);
+      const range = p.high - p.low || 1;
+      const posPct = clamp(((p.price - p.low)/range)*100, 2, 98);
+      if(p.el.marker) p.el.marker.style.left = posPct.toFixed(1) + '%';
+
+      p.buy = clamp(p.buy + rand(-2.5,2.5), 30, 70);
+      const sell = 100 - p.buy;
+      if(p.el.buyFill) p.el.buyFill.style.width = p.buy.toFixed(0)+'%';
+      if(p.el.sellFill) p.el.sellFill.style.width = sell.toFixed(0)+'%';
+      if(p.el.buyVal) p.el.buyVal.textContent = 'Buy ' + p.buy.toFixed(0) + '%';
+      if(p.el.sellVal) p.el.sellVal.textContent = 'Sell ' + sell.toFixed(0) + '%';
+    });
+  }
+
+  tick();
+  setInterval(tick, 2200);
+
+  /* ── correlation matrix ── */
+  const LABELS = PAIRS.map(p=>p.label);
+  const BASE = [
+    [ 1.00, -0.71,  0.52,  0.34,  0.61],
+    [-0.71,  1.00, -0.93, -0.38, -0.55],
+    [ 0.52, -0.93,  1.00,  0.41,  0.48],
+    [ 0.34, -0.38,  0.41,  1.00, -0.22],
+    [ 0.61, -0.55,  0.48, -0.22,  1.00],
+  ];
+  const matrix = BASE.map(row=>row.slice());
+
+  const grid = document.getElementById('matrixGrid');
+  function buildMatrix(){
+    grid.innerHTML = '';
+    const corner = document.createElement('div');
+    corner.className = 'matrix-cell corner';
+    grid.appendChild(corner);
+    LABELS.forEach(l=>{
+      const h = document.createElement('div');
+      h.className = 'matrix-cell head';
+      h.textContent = l;
+      grid.appendChild(h);
+    });
+    LABELS.forEach((rowLabel,r)=>{
+      const rh = document.createElement('div');
+      rh.className = 'matrix-cell row-head';
+      rh.textContent = rowLabel;
+      grid.appendChild(rh);
+      LABELS.forEach((_,c)=>{
+        const cell = document.createElement('div');
+        const isSelf = r===c;
+        cell.className = 'matrix-cell' + (isSelf ? ' self' : '');
+        cell.id = `mx-${r}-${c}`;
+        const fill = document.createElement('div');
+        fill.className = 'fill';
+        fill.id = `mxfill-${r}-${c}`;
+        const val = document.createElement('div');
+        val.className = 'val';
+        val.id = `mxval-${r}-${c}`;
+        cell.appendChild(fill);
+        cell.appendChild(val);
+        grid.appendChild(cell);
+      });
+    });
+  }
+  buildMatrix();
+
+  function paintMatrix(){
+    for(let r=0;r<5;r++){
+      for(let c=0;c<5;c++){
+        const v = matrix[r][c];
+        const val = document.getElementById(`mxval-${r}-${c}`);
+        const fill = document.getElementById(`mxfill-${r}-${c}`);
+        if(val) val.textContent = (r===c ? '1.00' : (v>=0?'+':'') + v.toFixed(2));
+        if(fill && r!==c){
+          const mag = clamp(Math.abs(v), 0, 1);
+          const color = v >= 0 ? '143,184,196' : '217,130,130';
+          fill.style.background = `rgba(${color},${(mag*0.38).toFixed(2)})`;
+        }
+      }
+    }
+  }
+  paintMatrix();
+
+  function driftMatrix(){
+    for(let r=0;r<5;r++){
+      for(let c=0;c<5;c++){
+        if(r===c) continue;
+        const drifted = clamp(matrix[r][c] + rand(-0.015,0.015), -0.97, 0.97);
+        matrix[r][c] = drifted;
+        matrix[c][r] = drifted;
+      }
+    }
+    paintMatrix();
+  }
+  setInterval(driftMatrix, 4000);
+})();
+</script>
+
+<script type="module" src="assets/auth/auth-widget.js"></script>
+<script type="module" src="assets/auth/guard.js"></script>
+</body>
+</html>
