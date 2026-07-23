@@ -20,7 +20,7 @@ systems, and live trading infrastructure for serious market participants.
 <a href="https://t.me/CosmoLanex">
   <img src="https://img.shields.io/badge/GET_EA-8FB8C4?style=for-the-badge&logo=telegram&logoColor=030507&labelColor=030507" alt="Get EA on Telegram" />
 </a>
-<a href="https://nukrax.cosmolanex.workers.dev/nukrax-cr">
+<a href="https://nukrax.shop/nukrax-cr">
   <img src="https://img.shields.io/badge/FUEL_THE_PROJECT-46626B?style=for-the-badge&logoColor=F2F5F5&labelColor=030507" alt="Fuel the project" />
 </a>
 
