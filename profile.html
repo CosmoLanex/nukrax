@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
+<title>Profile — NUKRAX</title>
+<meta name="description" content="Manage your NUKRAX account."/>
+<link rel="icon" href="assets/logo.png" type="image/png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>body{visibility:hidden}</style>
+<style>
+@font-face{
+  font-family:'NKX Display';
+  src:url('assets/fonts/nukrax-display.woff2') format('woff2'),
+      url('assets/fonts/nukrax-display.otf') format('opentype');
+  font-weight:400;font-style:normal;font-display:swap;
+}
+:root{
+  --black:#030507;--panel:#0A0F13;--line:#1B2328;--line-lit:#2A353C;
+  --muted:#8A9BA3;--text:#D3DBDD;--white:#F2F5F5;--accent:#8FB8C4;--accent-dim:#46626B;
+  --font-logo:'NKX Display','Outfit',sans-serif;--font-m:'Space Mono',monospace;--font-b:'Outfit',sans-serif;
+  --ease:cubic-bezier(0.22,1,0.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
+
+.pf-nav{display:flex;align-items:center;justify-content:space-between;padding:22px clamp(24px,5vw,64px);
+  border-bottom:1px solid var(--line)}
+.pf-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.pf-logo img{width:30px;height:30px;border-radius:6px}
+.pf-logo span{font-family:var(--font-logo);font-size:20px;color:var(--white);letter-spacing:.02em}
+.nav-right{display:flex;align-items:center;gap:16px}
+.pf-back{font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+.pf-back:hover{color:var(--accent)}
+
+.pf-page{width:100%;max-width:640px;margin:0 auto;padding:40px clamp(20px,5vw,40px) 100px}
+
+/* ── view mode ── */
+.pf-top{display:flex;align-items:center;gap:clamp(20px,5vw,44px);margin-bottom:22px}
+.pf-avatar{width:clamp(76px,18vw,104px);height:clamp(76px,18vw,104px);border-radius:50%;background:var(--accent);
+  color:var(--black);display:flex;align-items:center;justify-content:center;font-family:var(--font-m);
+  font-size:32px;font-weight:700;overflow:hidden;flex-shrink:0;border:1px solid var(--line)}
+.pf-avatar img{width:100%;height:100%;object-fit:cover}
+.pf-stats{display:flex;gap:clamp(18px,5vw,36px);flex:1}
+.pf-stat{text-align:center;cursor:pointer;background:none;border:none;color:var(--text);font-family:var(--font-b)}
+.pf-stat strong{display:block;font-size:18px;color:var(--white)}
+.pf-stat span{font-size:12.5px;color:var(--muted)}
+.pf-stat:not(.pf-stat-static):hover strong{color:var(--accent)}
+
+.pf-identity{margin-bottom:18px}
+.pf-name{font-size:16px;color:var(--white);font-weight:600}
+.pf-handle{font-size:13px;color:var(--muted);font-family:var(--font-m);margin-top:2px}
+.pf-category{display:inline-block;margin-top:8px;font-size:11.5px;color:var(--accent);background:rgba(143,184,196,.1);
+  border:1px solid var(--line);padding:4px 10px;border-radius:12px}
+.pf-bio{font-size:13.5px;color:var(--text);margin-top:10px;line-height:1.5;white-space:pre-wrap}
+
+.pf-actions{display:flex;gap:10px;margin-top:20px}
+.pf-btn{flex:1;background:var(--accent);color:var(--black);border:none;padding:11px;border-radius:6px;
+  font-family:var(--font-m);font-size:11px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.pf-btn:hover{opacity:.9}
+.pf-btn-outline{flex:1;background:transparent;border:1px solid var(--line);color:var(--text);padding:11px;
+  border-radius:6px;font-family:var(--font-m);font-size:11px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.pf-btn-outline:hover{border-color:var(--accent);color:var(--white)}
+
+/* ── posts grid ── */
+.pf-posts-head{font-family:var(--font-m);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin:36px 0 14px;border-top:1px solid var(--line);padding-top:24px}
+.pf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.pf-grid-cell{aspect-ratio:1;background:var(--panel);border:1px solid var(--line);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;padding:6px;cursor:default}
+.pf-grid-cell img{width:100%;height:100%;object-fit:cover}
+.pf-grid-cell .pf-grid-text{font-size:11px;color:var(--muted);text-align:center;overflow:hidden;
+  display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical}
+.pf-empty{padding:40px 10px;text-align:center;color:var(--muted);font-size:13px}
+
+/* ── edit mode ── */
+.pf-edit-head{font-family:var(--font-logo);font-size:clamp(26px,5vw,34px);color:var(--white);margin-bottom:24px}
+.pf-edit-avatar-wrap{position:relative;width:88px;margin-bottom:24px}
+.pf-edit-upload{position:absolute;bottom:0;right:0;width:28px;height:28px;border-radius:50%;
+  background:var(--panel);border:1px solid var(--line);color:var(--text);display:flex;align-items:center;
+  justify-content:center;cursor:pointer}
+.pf-edit-upload:hover{border-color:var(--accent);color:var(--white)}
+.pf-edit-upload svg{width:13px;height:13px}
+.pf-form input,.pf-form textarea{width:100%;background:transparent;border:1px solid var(--line);color:var(--text);
+  padding:12px 13px;border-radius:6px;font-family:var(--font-b);font-size:14px;margin-bottom:12px;outline:none}
+.pf-form textarea{min-height:80px;resize:vertical}
+.pf-form input:focus,.pf-form textarea:focus{border-color:var(--accent)}
+.pf-form label{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pf-form-row{margin-bottom:16px}
+
+.pf-msg{font-size:12.5px;margin-bottom:12px;min-height:16px}
+.pf-msg.err{color:#D98787}
+.pf-msg.ok{color:var(--accent)}
+
+/* ── followers/following modal ── */
+.pf-modal-overlay{position:fixed;inset:0;background:rgba(3,5,7,.8);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;z-index:900;padding:20px}
+.pf-modal{background:var(--panel);border:1px solid var(--line);border-radius:10px;width:min(380px,100%);
+  max-height:70vh;display:flex;flex-direction:column}
+.pf-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
+.pf-modal-head h3{font-family:var(--font-m);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--white)}
+.pf-modal-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}
+.pf-modal-close:hover{color:var(--white)}
+.pf-modal-list{overflow-y:auto;padding:8px}
+.pf-modal-row{display:flex;align-items:center;gap:12px;padding:10px 10px;border-radius:6px;cursor:pointer}
+.pf-modal-row:hover{background:var(--line)}
+.pf-modal-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--black);
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-m);font-weight:700;font-size:13px;overflow:hidden;flex-shrink:0}
+.pf-modal-avatar img{width:100%;height:100%;object-fit:cover}
+.pf-modal-empty{padding:30px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<nav class="pf-nav">
+  <a href="index.html" class="pf-logo">
+    <img src="assets/logo.png" alt="NUKRAX"/>
+    <span>nukrax</span>
+  </a>
+  <div class="nav-right"></div>
+</nav>
+
+<div class="pf-page" id="pf-page">Loading...</div>
+
+<script type="module">
+import { supabase } from './assets/auth/auth-widget.js';
+import { compressImage } from './assets/utils/compress-image.js';
+
+const page = document.getElementById('pf-page');
+let currentUser = null;
+let currentProfile = null;
+let counts = { posts: 0, followers: 0, following: 0 };
+
+async function loadProfile() {
+  const { data } = await supabase.auth.getSession();
+  currentUser = data.session?.user || null;
+  if (!currentUser) { window.location.replace('index.html?authRequired=1'); return; }
+  if (!currentUser.user_metadata) currentUser.user_metadata = {};
+
+  const [{ data: profile }, postsRes, followersRes, followingRes] = await Promise.all([
+    supabase.from('profiles').select('*').eq('id', currentUser.id).maybeSingle(),
+    supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', currentUser.id),
+    supabase.from('follows').select('follower_id', { count: 'exact', head: true }).eq('following_id', currentUser.id),
+    supabase.from('follows').select('following_id', { count: 'exact', head: true }).eq('follower_id', currentUser.id),
+  ]);
+  currentProfile = profile;
+  counts = { posts: postsRes.count || 0, followers: followersRes.count || 0, following: followingRes.count || 0 };
+
+  renderView();
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+// ── VIEW MODE ──
+async function renderView() {
+  const username = currentProfile?.username || '';
+  const displayName = currentProfile?.display_name || username || currentUser.email;
+  const avatarUrl = currentProfile?.avatar_url || '';
+  const category = currentProfile?.position || '';
+  const bio = currentProfile?.bio || '';
+  const initial = (displayName || '?').charAt(0).toUpperCase();
+
+  page.innerHTML = `
+    <div class="pf-top">
+      <div class="pf-avatar">${avatarUrl ? `<img src="${escapeHtml(avatarUrl)}" alt="">` : initial}</div>
+      <div class="pf-stats">
+        <div class="pf-stat pf-stat-static"><strong>${counts.posts}</strong><span>Posts</span></div>
+        <button class="pf-stat" id="pf-followers-btn"><strong>${counts.followers}</strong><span>Followers</span></button>
+        <button class="pf-stat" id="pf-following-btn"><strong>${counts.following}</strong><span>Following</span></button>
+      </div>
+    </div>
+    <div class="pf-identity">
+      <div class="pf-name">${escapeHtml(displayName)}</div>
+      <div class="pf-handle">${username ? '@' + escapeHtml(username) : ''}</div>
+      ${category ? `<div class="pf-category">${escapeHtml(category)}</div>` : ''}
+      ${bio ? `<div class="pf-bio">${escapeHtml(bio)}</div>` : ''}
+    </div>
+    <div class="pf-actions">
+      <button class="pf-btn-outline" id="pf-edit-btn">Edit Profile</button>
+      <button class="pf-btn-outline" id="pf-share-btn">Share Profile</button>
+    </div>
+    <div class="pf-posts-head">Posts</div>
+    <div class="pf-grid" id="pf-grid"></div>
+  `;
+
+  document.getElementById('pf-edit-btn').addEventListener('click', renderEdit);
+  document.getElementById('pf-share-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('pf-share-btn');
+    const link = `${window.location.origin}/u.html?u=${encodeURIComponent(username)}`;
+    await navigator.clipboard.writeText(link);
+    const old = btn.textContent;
+    btn.textContent = 'Link Copied';
+    setTimeout(() => { btn.textContent = old; }, 1500);
+  });
+  document.getElementById('pf-followers-btn').addEventListener('click', () => openListModal('followers'));
+  document.getElementById('pf-following-btn').addEventListener('click', () => openListModal('following'));
+
+  loadOwnPosts();
+}
+
+async function loadOwnPosts() {
+  const grid = document.getElementById('pf-grid');
+  const { data: posts } = await supabase.from('posts').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(30);
+  if (!posts || !posts.length) { grid.innerHTML = `<div class="pf-empty" style="grid-column:1/-1">No posts yet.</div>`; return; }
+  grid.innerHTML = posts.map(p => `
+    <div class="pf-grid-cell">
+      ${p.image_url ? `<img src="${escapeHtml(p.image_url)}" alt="">` : `<div class="pf-grid-text">${escapeHtml(p.content || '')}</div>`}
+    </div>
+  `).join('');
+}
+
+// ── followers/following modal ──
+async function openListModal(kind) {
+  const overlay = document.createElement('div');
+  overlay.className = 'pf-modal-overlay';
+  overlay.innerHTML = `
+    <div class="pf-modal">
+      <div class="pf-modal-head">
+        <h3>${kind === 'followers' ? 'Followers' : 'Following'}</h3>
+        <button class="pf-modal-close">×</button>
+      </div>
+      <div class="pf-modal-list"><div class="pf-modal-empty">Loading...</div></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  overlay.querySelector('.pf-modal-close').addEventListener('click', () => overlay.remove());
+
+  const listEl = overlay.querySelector('.pf-modal-list');
+  const col = kind === 'followers' ? 'follower_id' : 'following_id';
+  const matchCol = kind === 'followers' ? 'following_id' : 'follower_id';
+  const { data: rows } = await supabase.from('follows').select(col).eq(matchCol, currentUser.id);
+  const ids = (rows || []).map(r => r[col]);
+
+  if (!ids.length) { listEl.innerHTML = `<div class="pf-modal-empty">No one here yet.</div>`; return; }
+
+  const { data: profiles } = await supabase.from('profiles').select('*').in('id', ids);
+  listEl.innerHTML = (profiles || []).map(p => {
+    const initial = (p.display_name || p.username || '?').charAt(0).toUpperCase();
+    return `
+      <div class="pf-modal-row" data-username="${escapeHtml(p.username || '')}">
+        <div class="pf-modal-avatar">${p.avatar_url ? `<img src="${escapeHtml(p.avatar_url)}" alt="">` : initial}</div>
+        <div>${escapeHtml(p.display_name || p.username || 'User')}</div>
+      </div>
+    `;
+  }).join('') || `<div class="pf-modal-empty">No one here yet.</div>`;
+
+  listEl.querySelectorAll('.pf-modal-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const u = row.dataset.username;
+      if (u) window.location.href = `u.html?u=${encodeURIComponent(u)}`;
+    });
+  });
+}
+
+// ── EDIT MODE ──
+let pendingAvatarFile = null;
+
+function renderEdit() {
+  const username = currentProfile?.username || '';
+  const displayName = currentProfile?.display_name || '';
+  const avatarUrl = currentProfile?.avatar_url || '';
+  const category = currentProfile?.position || '';
+  const bio = currentProfile?.bio || '';
+  const initial = (displayName || username || '?').charAt(0).toUpperCase();
+  pendingAvatarFile = null;
+
+  page.innerHTML = `
+    <div class="pf-edit-head">Edit Profile</div>
+    <div class="pf-edit-avatar-wrap">
+      <div class="pf-avatar" id="pf-edit-avatar" style="width:88px;height:88px">${avatarUrl ? `<img src="${escapeHtml(avatarUrl)}" alt="">` : initial}</div>
+      <div class="pf-edit-upload" id="pf-edit-upload-btn" title="Upload picture">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg>
+      </div>
+      <input type="file" id="pf-edit-file" accept="image/*" style="display:none"/>
+    </div>
+    <div class="pf-msg" id="pf-edit-msg"></div>
+    <form class="pf-form" id="pf-edit-form">
+      <div class="pf-form-row"><label>Username</label><input type="text" id="pf-edit-username" value="${escapeHtml(username)}" placeholder="username"/></div>
+      <div class="pf-form-row"><label>Display Name</label><input type="text" id="pf-edit-displayname" value="${escapeHtml(displayName)}" placeholder="Your name"/></div>
+      <div class="pf-form-row"><label>Category</label><input type="text" id="pf-edit-category" value="${escapeHtml(category)}" placeholder="e.g. Trader, Builder"/></div>
+      <div class="pf-form-row"><label>Bio</label><textarea id="pf-edit-bio" placeholder="A short description about you" maxlength="200">${escapeHtml(bio)}</textarea></div>
+      <div class="pf-actions">
+        <button type="button" class="pf-btn-outline" id="pf-edit-cancel">Cancel</button>
+        <button type="submit" class="pf-btn">Save</button>
+      </div>
+    </form>
+  `;
+
+  document.getElementById('pf-edit-cancel').addEventListener('click', renderView);
+
+  const fileInput = document.getElementById('pf-edit-file');
+  document.getElementById('pf-edit-upload-btn').addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => {
+    pendingAvatarFile = fileInput.files[0] || null;
+    if (pendingAvatarFile) {
+      document.getElementById('pf-edit-avatar').innerHTML = `<img src="${URL.createObjectURL(pendingAvatarFile)}" alt="">`;
+    }
+  });
+
+  document.getElementById('pf-edit-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('pf-edit-msg');
+    msg.textContent = 'Saving...'; msg.className = 'pf-msg';
+
+    const newUsername = document.getElementById('pf-edit-username').value.trim();
+    const newDisplayName = document.getElementById('pf-edit-displayname').value.trim();
+    const newCategory = document.getElementById('pf-edit-category').value.trim();
+    const newBio = document.getElementById('pf-edit-bio').value.trim();
+
+    if (!newUsername) { msg.textContent = 'Username is required.'; msg.className = 'pf-msg err'; return; }
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(newUsername)) {
+      msg.textContent = '3-20 characters: letters, numbers, underscores only.';
+      msg.className = 'pf-msg err';
+      return;
+    }
+
+    let avatarUrlToSave = currentProfile?.avatar_url || '';
+    if (pendingAvatarFile) {
+      const compressed = await compressImage(pendingAvatarFile, { maxDimension: 512, quality: 0.85 });
+      const ext = compressed.name.split('.').pop();
+      const path = `${currentUser.id}/avatar-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from('avatars').upload(path, compressed, { upsert: true });
+      if (upErr) { msg.textContent = upErr.message; msg.className = 'pf-msg err'; return; }
+      const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path);
+      avatarUrlToSave = pub.publicUrl;
+    }
+
+    const { error } = await supabase.from('profiles').upsert({
+      id: currentUser.id,
+      username: newUsername,
+      display_name: newDisplayName,
+      position: newCategory,
+      bio: newBio,
+      avatar_url: avatarUrlToSave,
+    }, { onConflict: 'id' });
+
+    if (error) {
+      msg.textContent = error.message.includes('reserved') ? 'That username is reserved.' :
+                         (error.message.toLowerCase().includes('duplicate') || error.code === '23505') ? 'That username is already taken.' :
+                         error.message;
+      msg.className = 'pf-msg err';
+      return;
+    }
+
+    await supabase.auth.updateUser({ data: { username: newUsername, avatar_url: avatarUrlToSave } });
+
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
+    currentProfile = profile;
+    renderView();
+  });
+}
+
+loadProfile().then(() => { document.body.style.visibility = 'visible'; });
+</script>
+
+</body>
+</html>
