@@ -1,0 +1,42 @@
+/* ═══════════════════════════════════════════════
+   assets/cube/cube.css
+   Container + canvas sizing only. All geometry/material/lighting/
+   animation logic lives in cube.js — this file is layout-only.
+   ═══════════════════════════════════════════════ */
+
+.cube-scene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cube-scene::before {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  background: radial-gradient(circle at 50% 55%, rgba(143,184,196,0.10), transparent 68%);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.cube-scene canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.hero-globe-label {
+  font-family: var(--font-m);
+  font-size: 9.5px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.hero-globe-label .nav-dot { width: 4px; height: 4px; }
