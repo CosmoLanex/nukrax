@@ -20,7 +20,7 @@ systems, and live trading infrastructure for serious market participants.
 <a href="https://t.me/CosmoLanex">
   <img src="https://img.shields.io/badge/GET_EA-8FB8C4?style=for-the-badge&logo=telegram&logoColor=030507&labelColor=030507" alt="Get EA on Telegram" />
 </a>
-<a href="https://nukrax.com/nukrax-cr">
+<a href="https://nukrax.shop/cr">
   <img src="https://img.shields.io/badge/FUEL_THE_PROJECT-46626B?style=for-the-badge&logoColor=F2F5F5&labelColor=030507" alt="Fuel the project" />
 </a>
 
@@ -30,7 +30,7 @@ systems, and live trading infrastructure for serious market participants.
 
 <div align="center">
 
-[Live Site](https://nukrax.com) · [Expert Advisors](#-expert-advisors) · [Design System](#-design-system) · [Structure](#-project-structure)
+[Live Site](https://nukrax.cosmolanex.workers.dev) · [Expert Advisors](#-expert-advisors) · [Design System](#-design-system) · [Structure](#-project-structure)
 
 </div>
 
@@ -42,6 +42,7 @@ systems, and live trading infrastructure for serious market participants.
 
 - A **web frontend** — homepage, Expert Advisor selection portal, trading journal, and crypto deposit gateway — deployed on Cloudflare Workers.
 - **MQL5 Expert Advisors** for MetaTrader 5, covering tick-scalping, Supply & Demand + FVG confluence, and ICT/SMC concept strategies across XAUUSD, EURUSD, USDJPY, and GBPUSD.
+- **Arduino / ESP32 firmware** powering companion hardware — OLED status terminals and live trading displays.
 
 The whole system is built around a single design language: dark, minimal, quietly alive — closer to a trading terminal than a marketing site.
 
@@ -101,11 +102,10 @@ nukrax/
 ├── index.html           # Homepage
 ├── ea-selection.html    # Expert Advisor selection portal
 ├── crypto.html          # Crypto deposit portal
-├── nukrax-tr.html       # Trading journal / results
-├── nukrax-cr.html       # Client records / dashboard
+├── tr.html              # Trading journal / results
+├── cr.html              # Client records / dashboard
 ├── feedback.html        # Feedback form
 ├── privacy-policy.html  # Privacy policy
-├── redirect.html        # Redirect handler
 ├── cr-redirect.html     # Redirect handler (CR)
 ├── data.js              # Shared data layer
 └── wrangler.jsonc       # Cloudflare Workers config
