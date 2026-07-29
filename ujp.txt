@@ -1,4 +1,4 @@
-boss  jhbvbkuvskvkquevfkcyueqgvfcagEVFUKYEQFGIYWEGFIWYEFGKUWEYGFKGUWF
+boss  
 
 
 
@@ -8,3 +8,358 @@ boss  jhbvbkuvskvkquevfkcyueqgvfcagEVFUKYEQFGIYWEGFIWYEFGKUWEYGFKGUWF
 
 
 WYOOOOO DEMONS SLAYER IS BEST AF
+best of LL TIME HSBGJSRGFUSBEFJKWQGBADFqhFBKJefVshvDFBJEHSBFJSehfbMjehfbHJMEVFwmhfev 
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You've been invited</title>
+<style>
+  @font-face {
+    font-family: 'NKX Display';
+    src: url('https://nukrax.com/assets/fonts/nukrax-display.woff2') format('woff2');
+  }
+  a.nkx-btn:hover { opacity: 0.92; }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#030507;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#030507;">
+<tr><td align="center" style="padding:48px 16px;">
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;">
+    <tr><td style="height:3px;line-height:3px;font-size:0;background-color:#8FB8C4;border-radius:10px 10px 0 0;">&nbsp;</td></tr>
+    <tr>
+      <td style="background-color:#0A0F13;border:1px solid #1B2328;border-top:none;border-radius:0 0 10px 10px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="center" style="padding:36px 32px 20px;">
+              <img src="https://nukrax.com/assets/c-logo.png" width="42" height="42" alt="Nukrax" style="border-radius:9px;display:block;margin:0 auto 14px;">
+              <div style="font-family:'NKX Display','Courier New',monospace;font-size:21px;color:#F2F5F5;letter-spacing:0.03em;">nukrax</div>
+              <div style="font-family:'Courier New',monospace;font-size:10px;color:#46626B;letter-spacing:0.22em;text-transform:uppercase;margin-top:8px;">You're Invited</div>
+            </td>
+          </tr>
+          <tr><td style="padding:0 32px;"><div style="height:1px;background-color:#1B2328;"></div></td></tr>
+          <tr>
+            <td align="center" style="padding:34px 36px 6px;">
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:20px;color:#F2F5F5;font-weight:700;letter-spacing:-0.01em;">Join Nukrax</div>
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:13.5px;color:#8A9BA3;margin-top:12px;line-height:1.65;">
+                You've been invited to join Nukrax. Click below to accept and set up your account.
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:26px 32px 8px;">
+              <a href="{{ .ConfirmationURL }}" class="nkx-btn" style="display:inline-block;background-color:#8FB8C4;color:#030507;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:16px 40px;border-radius:6px;">
+                Accept Invite →
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:28px 32px 36px;">
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:11.5px;color:#46626B;line-height:1.5;">Weren't expecting this? You can safely ignore this email.</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;margin-top:24px;">
+    <tr>
+      <td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#3A4449;line-height:1.6;">
+        NUKRAX · Institutional-grade trading systems<br>
+        <a href="https://nukrax.com" style="color:#46626B;text-decoration:none;">nukrax.com</a>
+      </td>
+    </tr>
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You've been invited</title>
+<style>
+  @font-face {
+    font-family: 'NKX Display';
+    src: url('https://nukrax.com/assets/fonts/nukrax-display.woff2') format('woff2');
+  }
+  a.nkx-btn:hover { opacity: 0.92; }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#030507;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#030507;">
+<tr><td align="center" style="padding:48px 16px;">
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;">
+    <tr><td style="height:3px;line-height:3px;font-size:0;background-color:#8FB8C4;border-radius:10px 10px 0 0;">&nbsp;</td></tr>
+    <tr>
+      <td style="background-color:#0A0F13;border:1px solid #1B2328;border-top:none;border-radius:0 0 10px 10px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="center" style="padding:36px 32px 20px;">
+              <img src="https://nukrax.com/assets/c-logo.png" width="42" height="42" alt="Nukrax" style="border-radius:9px;display:block;margin:0 auto 14px;">
+              <div style="font-family:'NKX Display','Courier New',monospace;font-size:21px;color:#F2F5F5;letter-spacing:0.03em;">nukrax</div>
+              <div style="font-family:'Courier New',monospace;font-size:10px;color:#46626B;letter-spacing:0.22em;text-transform:uppercase;margin-top:8px;">You're Invited</div>
+            </td>
+          </tr>
+          <tr><td style="padding:0 32px;"><div style="height:1px;background-color:#1B2328;"></div></td></tr>
+          <tr>
+            <td align="center" style="padding:34px 36px 6px;">
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:20px;color:#F2F5F5;font-weight:700;letter-spacing:-0.01em;">Join Nukrax</div>
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:13.5px;color:#8A9BA3;margin-top:12px;line-height:1.65;">
+                You've been invited to join Nukrax. Click below to accept and set up your account.
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:26px 32px 8px;">
+              <a href="{{ .ConfirmationURL }}" class="nkx-btn" style="display:inline-block;background-color:#8FB8C4;color:#030507;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:16px 40px;border-radius:6px;">
+                Accept Invite →
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:28px 32px 36px;">
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:11.5px;color:#46626B;line-height:1.5;">Weren't expecting this? You can safely ignore this email.</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;margin-top:24px;">
+    <tr>
+      <td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#3A4449;line-height:1.6;">
+        NUKRAX · Institutional-grade trading systems<br>
+        <a href="https://nukrax.com" style="color:#46626B;text-decoration:none;">nukrax.com</a>
+      </td>
+    </tr>
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You've been invited</title>
+<style>
+  @font-face {
+    font-family: 'NKX Display';
+    src: url('https://nukrax.com/assets/fonts/nukrax-display.woff2') format('woff2');
+  }
+  a.nkx-btn:hover { opacity: 0.92; }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#030507;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#030507;">
+<tr><td align="center" style="padding:48px 16px;">
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;">
+    <tr><td style="height:3px;line-height:3px;font-size:0;background-color:#8FB8C4;border-radius:10px 10px 0 0;">&nbsp;</td></tr>
+    <tr>
+      <td style="background-color:#0A0F13;border:1px solid #1B2328;border-top:none;border-radius:0 0 10px 10px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="center" style="padding:36px 32px 20px;">
+              <img src="https://nukrax.com/assets/c-logo.png" width="42" height="42" alt="Nukrax" style="border-radius:9px;display:block;margin:0 auto 14px;">
+              <div style="font-family:'NKX Display','Courier New',monospace;font-size:21px;color:#F2F5F5;letter-spacing:0.03em;">nukrax</div>
+              <div style="font-family:'Courier New',monospace;font-size:10px;color:#46626B;letter-spacing:0.22em;text-transform:uppercase;margin-top:8px;">You're Invited</div>
+            </td>
+          </tr>
+          <tr><td style="padding:0 32px;"><div style="height:1px;background-color:#1B2328;"></div></td></tr>
+          <tr>
+            <td align="center" style="padding:34px 36px 6px;">
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:20px;color:#F2F5F5;font-weight:700;letter-spacing:-0.01em;">Join Nukrax</div>
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:13.5px;color:#8A9BA3;margin-top:12px;line-height:1.65;">
+                You've been invited to join Nukrax. Click below to accept and set up your account.
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:26px 32px 8px;">
+              <a href="{{ .ConfirmationURL }}" class="nkx-btn" style="display:inline-block;background-color:#8FB8C4;color:#030507;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:16px 40px;border-radius:6px;">
+                Accept Invite →
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:28px 32px 36px;">
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:11.5px;color:#46626B;line-height:1.5;">Weren't expecting this? You can safely ignore this email.</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;margin-top:24px;">
+    <tr>
+      <td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#3A4449;line-height:1.6;">
+        NUKRAX · Institutional-grade trading systems<br>
+        <a href="https://nukrax.com" style="color:#46626B;text-decoration:none;">nukrax.com</a>
+      </td>
+    </tr>
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You've been invited</title>
+<style>
+  @font-face {
+    font-family: 'NKX Display';
+    src: url('https://nukrax.com/assets/fonts/nukrax-display.woff2') format('woff2');
+  }
+  a.nkx-btn:hover { opacity: 0.92; }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#030507;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#030507;">
+<tr><td align="center" style="padding:48px 16px;">
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;">
+    <tr><td style="height:3px;line-height:3px;font-size:0;background-color:#8FB8C4;border-radius:10px 10px 0 0;">&nbsp;</td></tr>
+    <tr>
+      <td style="background-color:#0A0F13;border:1px solid #1B2328;border-top:none;border-radius:0 0 10px 10px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="center" style="padding:36px 32px 20px;">
+              <img src="https://nukrax.com/assets/c-logo.png" width="42" height="42" alt="Nukrax" style="border-radius:9px;display:block;margin:0 auto 14px;">
+              <div style="font-family:'NKX Display','Courier New',monospace;font-size:21px;color:#F2F5F5;letter-spacing:0.03em;">nukrax</div>
+              <div style="font-family:'Courier New',monospace;font-size:10px;color:#46626B;letter-spacing:0.22em;text-transform:uppercase;margin-top:8px;">You're Invited</div>
+            </td>
+          </tr>
+          <tr><td style="padding:0 32px;"><div style="height:1px;background-color:#1B2328;"></div></td></tr>
+          <tr>
+            <td align="center" style="padding:34px 36px 6px;">
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:20px;color:#F2F5F5;font-weight:700;letter-spacing:-0.01em;">Join Nukrax</div>
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:13.5px;color:#8A9BA3;margin-top:12px;line-height:1.65;">
+                You've been invited to join Nukrax. Click below to accept and set up your account.
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:26px 32px 8px;">
+              <a href="{{ .ConfirmationURL }}" class="nkx-btn" style="display:inline-block;background-color:#8FB8C4;color:#030507;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:16px 40px;border-radius:6px;">
+                Accept Invite →
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:28px 32px 36px;">
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:11.5px;color:#46626B;line-height:1.5;">Weren't expecting this? You can safely ignore this email.</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;margin-top:24px;">
+    <tr>
+      <td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#3A4449;line-height:1.6;">
+        NUKRAX · Institutional-grade trading systems<br>
+        <a href="https://nukrax.com" style="color:#46626B;text-decoration:none;">nukrax.com</a>
+      </td>
+    </tr>
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You've been invited</title>
+<style>
+  @font-face {
+    font-family: 'NKX Display';
+    src: url('https://nukrax.com/assets/fonts/nukrax-display.woff2') format('woff2');
+  }
+  a.nkx-btn:hover { opacity: 0.92; }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#030507;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#030507;">
+<tr><td align="center" style="padding:48px 16px;">
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;">
+    <tr><td style="height:3px;line-height:3px;font-size:0;background-color:#8FB8C4;border-radius:10px 10px 0 0;">&nbsp;</td></tr>
+    <tr>
+      <td style="background-color:#0A0F13;border:1px solid #1B2328;border-top:none;border-radius:0 0 10px 10px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="center" style="padding:36px 32px 20px;">
+              <img src="https://nukrax.com/assets/c-logo.png" width="42" height="42" alt="Nukrax" style="border-radius:9px;display:block;margin:0 auto 14px;">
+              <div style="font-family:'NKX Display','Courier New',monospace;font-size:21px;color:#F2F5F5;letter-spacing:0.03em;">nukrax</div>
+              <div style="font-family:'Courier New',monospace;font-size:10px;color:#46626B;letter-spacing:0.22em;text-transform:uppercase;margin-top:8px;">You're Invited</div>
+            </td>
+          </tr>
+          <tr><td style="padding:0 32px;"><div style="height:1px;background-color:#1B2328;"></div></td></tr>
+          <tr>
+            <td align="center" style="padding:34px 36px 6px;">
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:20px;color:#F2F5F5;font-weight:700;letter-spacing:-0.01em;">Join Nukrax</div>
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:13.5px;color:#8A9BA3;margin-top:12px;line-height:1.65;">
+                You've been invited to join Nukrax. Click below to accept and set up your account.
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:26px 32px 8px;">
+              <a href="{{ .ConfirmationURL }}" class="nkx-btn" style="display:inline-block;background-color:#8FB8C4;color:#030507;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:16px 40px;border-radius:6px;">
+                Accept Invite →
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:28px 32px 36px;">
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:11.5px;color:#46626B;line-height:1.5;">Weren't expecting this? You can safely ignore this email.</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;margin-top:24px;">
+    <tr>
+      <td align="center" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#3A4449;line-height:1.6;">
+        NUKRAX · Institutional-grade trading systems<br>
+        <a href="https://nukrax.com" style="color:#46626B;text-decoration:none;">nukrax.com</a>
+      </td>
+    </tr>
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html>
