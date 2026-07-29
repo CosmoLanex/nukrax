@@ -359,6 +359,28 @@ nav.scrolled{
   .nav-status{display:none}
 }
 
+/* ── Auth-state conditional nav (new/logged-out visitors see a simpler nav) ── */
+.nav-login-link{
+  display:none;font-family:var(--font-b);font-size:var(--fs-13);color:var(--text);text-decoration:none;padding:9px 4px;
+}
+@media (hover:hover) and (pointer:fine){.nav-login-link:hover{color:var(--white)}}
+.nav-get-started-link{
+  display:none;align-items:center;
+  font-family:var(--font-b);font-size:var(--fs-12);font-weight:600;letter-spacing:.03em;
+  color:var(--black);background:var(--white);border:1px solid var(--white);
+  padding:9px 18px;border-radius:20px;text-decoration:none;
+  transition:background .25s var(--ease),border-color .25s var(--ease),transform .15s var(--ease-out);
+}
+@media (hover:hover) and (pointer:fine){.nav-get-started-link:hover{background:var(--accent);border-color:var(--accent)}}
+.nav-get-started-link:active{transform:scale(.93)}
+
+body.nkx-logged-out .nav-status,
+body.nkx-logged-out .nav-map-btn,
+body.nkx-logged-out #nkx-w-login-wrap,
+body.nkx-logged-out #nkx-w-menu-wrap{display:none!important}
+body.nkx-logged-out .nav-login-link{display:inline-block}
+body.nkx-logged-out .nav-get-started-link{display:inline-flex}
+
 @media(max-width:860px){.nav-links{display:none}}
 
 
@@ -505,6 +527,10 @@ nav.scrolled{
   display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:28px;
   animation:fade-up .9s .24s var(--ease-out) both;
 }
+.hero-ctas-loggedin{display:contents}
+.hero-ctas-loggedout{display:none}
+body.nkx-logged-out .hero-ctas-loggedin{display:none}
+body.nkx-logged-out .hero-ctas-loggedout{display:contents}
 
 /* ── Global Market Network — rotating wireframe globe, replaces the old
    scroll hint. Fills the freed hero space with a live, on-theme visual
@@ -1669,6 +1695,8 @@ a.testimonial-card:hover{transform:translateY(-3px)}
       <span>Systems Online</span>
     </div>
     <a href="map.html" class="nav-map-btn" id="nav-map-btn"><span class="map-live-dot" aria-hidden="true"></span>Market Map</a>
+    <a href="login.html" class="nav-login-link" id="nav-login-link">Login</a>
+    <a href="signup.html" class="nav-get-started-link" id="nav-get-started-link">Get Started</a>
   </div>
 </nav>
 
@@ -1683,6 +1711,7 @@ a.testimonial-card:hover{transform:translateY(-3px)}
     <p class="hero-tagline">Precision tools for elite traders.</p>
     <div class="hero-divider"></div>
     <div class="hero-ctas">
+      <div class="hero-ctas-loggedin" id="heroCtasLoggedIn">
       <a href="ea-selection.html" class="btn btn-primary" id="btn-ea">
         Explore Expert Advisors
         <span class="btn-arrow">→</span>
@@ -1696,6 +1725,16 @@ a.testimonial-card:hover{transform:translateY(-3px)}
       <a href="tr.html" class="link-inline" id="btn-tr">
         nukrax.tr <span class="btn-arrow">↗</span>
       </a>
+      </div>
+      <div class="hero-ctas-loggedout" id="heroCtasLoggedOut">
+      <a href="signup.html" class="btn btn-primary" id="btn-get-started">
+        Get Started
+        <span class="btn-arrow">→</span>
+      </a>
+      <a href="docs/introduction.html" class="link-inline" id="btn-docs">
+        Documentation
+      </a>
+      </div>
     </div>
   </div>
   <div class="hero-globe-wrap" id="heroGlobeWrap">
@@ -3294,6 +3333,20 @@ if(!REDUCE_MOTION && window.matchMedia('(hover: hover) and (pointer: fine)').mat
 </script>
 
 <script type="module" src="assets/auth/auth-widget.js"></script>
+<script type="module">
+/* ── Logged-in vs new-visitor nav/hero state ──
+   Both states are hidden by default (see CSS) to avoid ever flashing the
+   wrong one; whichever this resolves to gets revealed as soon as we know. */
+import { supabase } from './assets/auth/auth-widget.js';
+
+function applyAuthState(session) {
+  document.body.classList.remove('nkx-logged-in', 'nkx-logged-out');
+  document.body.classList.add(session ? 'nkx-logged-in' : 'nkx-logged-out');
+}
+
+supabase.auth.getSession().then(({ data }) => applyAuthState(data.session));
+supabase.auth.onAuthStateChange((_event, session) => applyAuthState(session));
+</script>
 <script type="module">
   import { initCube } from './assets/cube/cube.js?v=4';
   initCube({ canvasId: 'heroCubeCanvas', hostId: 'cubeScene', wrapId: 'heroGlobeWrap' });
