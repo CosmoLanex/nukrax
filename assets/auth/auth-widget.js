@@ -33,6 +33,7 @@ const SITE_LINKS = [
   { label: 'Home', href: `${BASE}index.html` },
   { label: 'Community', href: `${BASE}community.html` },
   { label: 'Expert Advisors', href: `${BASE}ea-selection.html` },
+  { label: 'Documentation', href: `${BASE}docs/introduction.html` },
   { label: 'AI Assistant', href: `${BASE}chat.html` },
   { label: 'Market Map', href: `${BASE}map.html` },
   { label: 'Feedback', href: `${BASE}feedback.html` },
