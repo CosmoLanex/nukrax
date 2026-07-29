@@ -361,18 +361,25 @@ nav.scrolled{
 
 /* ── Auth-state conditional nav (new/logged-out visitors see a simpler nav) ── */
 .nav-login-link{
-  display:none;font-family:var(--font-b);font-size:var(--fs-13);color:var(--text);text-decoration:none;padding:9px 4px;
+  display:none;font-family:var(--font-b);font-size:var(--fs-13);font-weight:500;color:var(--muted);text-decoration:none;padding:9px 4px;
+  transition:color .2s var(--ease);
 }
 @media (hover:hover) and (pointer:fine){.nav-login-link:hover{color:var(--white)}}
 .nav-get-started-link{
   display:none;align-items:center;
-  font-family:var(--font-b);font-size:var(--fs-12);font-weight:600;letter-spacing:.03em;
-  color:var(--black);background:var(--white);border:1px solid var(--white);
-  padding:9px 18px;border-radius:20px;text-decoration:none;
+  font-family:var(--font-b);font-size:var(--fs-13);font-weight:700;letter-spacing:.01em;
+  color:var(--white);
+  background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.14);
+  box-shadow:0 1px 0 rgba(255,255,255,0.07) inset, 0 6px 18px rgba(0,0,0,0.35);
+  padding:9px 20px;border-radius:999px;text-decoration:none;
   transition:background .25s var(--ease),border-color .25s var(--ease),transform .15s var(--ease-out);
 }
-@media (hover:hover) and (pointer:fine){.nav-get-started-link:hover{background:var(--accent);border-color:var(--accent)}}
-.nav-get-started-link:active{transform:scale(.93)}
+@media (hover:hover) and (pointer:fine){.nav-get-started-link:hover{
+  background:linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04));
+  border-color:rgba(255,255,255,0.24);
+}}
+.nav-get-started-link:active{transform:scale(.95)}
 
 body.nkx-logged-out .nav-status,
 body.nkx-logged-out .nav-map-btn,
@@ -405,6 +412,20 @@ body.nkx-logged-out .nav-get-started-link{display:inline-flex}
   font-weight:600;
 }
 @media (hover:hover) and (pointer:fine){.btn-primary:hover{background:var(--white);border-color:var(--white);color:var(--black)}}
+
+.btn-premium{
+  background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
+  color:var(--white);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:999px;
+  font-weight:700;
+  box-shadow:0 1px 0 rgba(255,255,255,0.07) inset, 0 8px 22px rgba(0,0,0,0.4);
+}
+@media (hover:hover) and (pointer:fine){.btn-premium:hover{
+  background:linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04));
+  border-color:rgba(255,255,255,0.24);
+}}
+.btn-premium:active{transform:scale(.97)}
 
 .link-row{display:flex;flex-wrap:wrap;justify-content:center;gap:30px}
 .link-inline{
@@ -1727,7 +1748,7 @@ a.testimonial-card:hover{transform:translateY(-3px)}
       </a>
       </div>
       <div class="hero-ctas-loggedout" id="heroCtasLoggedOut">
-      <a href="signup.html" class="btn btn-primary" id="btn-get-started">
+      <a href="signup.html" class="btn btn-premium" id="btn-get-started">
         Get Started
         <span class="btn-arrow">→</span>
       </a>
