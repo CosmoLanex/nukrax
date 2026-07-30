@@ -13,7 +13,7 @@
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NUKRAX">
-<meta property="og:title" content="nukrax">
+<meta property="og:title" content="NUKRAX — Institutional-Grade MT5 Expert Advisors & Trading Systems">
 <meta property="og:description" content="A private ecosystem.">
 <meta property="og:image" content="https://nukrax.com/assets/c-logo.png">
 <meta property="og:image:width" content="1200">
@@ -23,7 +23,7 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="nukrax">
+<meta name="twitter:title" content="NUKRAX — Institutional-Grade MT5 Expert Advisors & Trading Systems">
 <meta name="twitter:description" content="A private ecosystem.">
 <meta name="twitter:image" content="https://nukrax.com/assets/c-logo.png">
 <meta name="twitter:image:alt" content="NUKRAX logo">
@@ -420,12 +420,33 @@ body.nkx-logged-out .nav-get-started-link{display:inline-flex}
   border-radius:999px;
   font-weight:700;
   box-shadow:0 1px 0 rgba(255,255,255,0.07) inset, 0 8px 22px rgba(0,0,0,0.4);
+  transition:background .25s var(--ease),border-color .25s var(--ease),
+             transform .25s var(--ease-out),box-shadow .25s var(--ease-out);
+}
+.btn-premium::before{
+  content:'';position:absolute;top:-60%;left:-35%;width:35%;height:220%;
+  background:linear-gradient(90deg, transparent, rgba(143,184,196,0.6), transparent);
+  filter:blur(10px);transform:skewX(-20deg) translateX(-260%);
+  animation:btn-wave 4.5s ease-in-out infinite;pointer-events:none;
+}
+@keyframes btn-wave{
+  0%{transform:skewX(-20deg) translateX(-260%)}
+  28%{transform:skewX(-20deg) translateX(260%)}
+  100%{transform:skewX(-20deg) translateX(260%)}
 }
 @media (hover:hover) and (pointer:fine){.btn-premium:hover{
   background:linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04));
   border-color:rgba(255,255,255,0.24);
+  transform:translateY(-2px);
+  box-shadow:0 1px 0 rgba(255,255,255,0.09) inset, 0 12px 26px rgba(0,0,0,0.45);
 }}
-.btn-premium:active{transform:scale(.97)}
+.btn-premium:active{
+  transform:scale(.96) translateY(0);
+  box-shadow:0 1px 0 rgba(255,255,255,0.05) inset, 0 4px 12px rgba(0,0,0,0.35);
+  transition:transform .12s var(--ease-out),box-shadow .12s var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce){.btn-premium::before{animation:none;display:none}}
+@media(max-width:600px){#btn-get-started{border-radius:16px}}
 
 .hero-doc-link{
   display:inline-flex;align-items:center;
@@ -583,6 +604,12 @@ body.nkx-logged-out .hero-ctas-loggedout{display:contents}
 }
 @media(max-width:380px){
   .hero-logo{font-size:var(--fs-hero-logo-sm);letter-spacing:.02em}
+  nav{padding-left:16px;padding-right:16px}
+  .nav-logo{font-size:var(--fs-14)}
+  .nav-logo-img{width:26px;height:26px}
+  .nav-right{gap:10px}
+  .nav-login-link{font-size:var(--fs-12);padding:9px 2px}
+  .nav-get-started-link{font-size:var(--fs-12);padding:8px 14px}
 }
 
 /* ══════════ ABOUT / INFRASTRUCTURE ══════════ */
