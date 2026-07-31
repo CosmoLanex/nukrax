@@ -7,11 +7,11 @@
 <title>nukrax.cr</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<link rel="icon" href="assets/logo.png" type="image/png"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root {
-  --bg:       #030507;
+  --bg:       #07090B;
   --layer1:   #0A0F13;
   --layer2:   #0E141A;
   --layer3:   #131A21;
@@ -67,11 +67,11 @@ canvas#bg { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.25
 /* NAV */
 nav {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--border);
-  height: 60px; padding: 0 clamp(16px,4vw,40px);
+  background: rgba(7,9,11,0.55);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: 1px solid rgba(242,245,245,0.06);
+  height: 64px; padding: 0 clamp(16px,4vw,40px);
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
 .nav-left { display:flex; align-items:center; gap:14px; }
@@ -112,6 +112,25 @@ nav {
 }
 .nav-breadcrumb .sep { color: var(--border2); }
 .nav-breadcrumb .curr { color: var(--accent); }
+.nav-visit-btn {
+  display: inline-flex; align-items: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.01em;
+  color: var(--white);
+  background: linear-gradient(180deg, rgba(242,245,245,0.10), rgba(242,245,245,0.02));
+  border: 1px solid rgba(242,245,245,0.14);
+  box-shadow: 0 1px 0 rgba(242,245,245,0.07) inset, 0 6px 18px rgba(0,0,0,0.35);
+  padding: 9px 20px; border-radius: 14px; text-decoration: none;
+  transition: background .25s cubic-bezier(0.22,1,0.36,1), border-color .25s cubic-bezier(0.22,1,0.36,1), transform .15s cubic-bezier(0.16,1,0.3,1);
+  white-space: nowrap;
+}
+@media (hover:hover) and (pointer:fine){
+  .nav-visit-btn:hover {
+    background: linear-gradient(180deg, rgba(242,245,245,0.15), rgba(242,245,245,0.04));
+    border-color: rgba(242,245,245,0.24);
+  }
+}
+.nav-visit-btn:active { transform: scale(.95); }
 
 /* MAIN */
 main {
@@ -143,11 +162,12 @@ main {
 
 .asset-icon {
   width: 52px; height: 52px; border-radius: 14px;
-  background: var(--layer3); border: 1px solid var(--border2);
+  background: var(--layer3); border: 1px solid rgba(242,245,245,0.08);
   display: flex; align-items:center; justify-content:center;
-  font-size: 22px; flex-shrink: 0;
-  font-family: 'Space Mono', monospace;
+  flex-shrink: 0; color: var(--accent);
+  box-shadow: 0 1px 0 rgba(242,245,245,0.04) inset, 0 0 20px rgba(143,184,196,0.10);
 }
+.asset-icon svg { width: 30px; height: 30px; display: block; }
 .asset-info { flex: 1; min-width: 0; }
 .asset-name {
   font-family: 'Outfit', sans-serif;
@@ -360,6 +380,7 @@ footer {
 
 /* ── RESPONSIVE ── */
 @media(max-width:480px) {
+  .nav-visit-btn { padding: 7px 14px; font-size: 12px; }
   .asset-badge { display:none; }
   .nav-breadcrumb { display:none; }
   .switch-row { flex-direction:column; }
@@ -391,6 +412,7 @@ footer {
         <span class="sep">/</span>
         <span class="curr" id="bcNet">—</span>
       </div>
+      <a href="https://nukrax.com" class="nav-visit-btn" target="_blank" rel="noopener">Visit Site</a>
     </div>
   </nav>
 
@@ -474,6 +496,7 @@ footer {
   </footer>
 </div>
 
+<script src="assets/address.js"></script>
 <script src="data.js"></script>
 <script>
 // ── Logo ──
@@ -497,7 +520,7 @@ if (!crypto || !net) {
   document.getElementById('bcNet').textContent    = net.badge;
 
   // asset header
-  document.getElementById('assetIcon').textContent = crypto.icon;
+  document.getElementById('assetIcon').innerHTML = `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">${crypto.iconSvg}</svg>`;
   document.getElementById('assetName').textContent  = `${crypto.name} (${crypto.ticker})`;
   document.getElementById('assetNet').textContent   = net.name;
   document.getElementById('assetBadge').textContent = net.badge;
@@ -526,7 +549,7 @@ if (!crypto || !net) {
   document.getElementById('tipNet').textContent    = net.name;
 
   // switch network button — go back to index with same crypto pre-selected
-  document.getElementById('changeNetBtn').href = `index.html?preselect=${cKey}`;
+  document.getElementById('changeNetBtn').href = `cr.html?preselect=${cKey}`;
 
   // QR
   setTimeout(() => {
@@ -590,7 +613,7 @@ document.getElementById('backBtn').addEventListener('click', (e) => {
 });
 
 // ── Preselect on index return ──
-// handled by index.html reading ?preselect param
+// handled by cr.html reading ?preselect param
 
 // ── Page show ──
 // Check if coming from back button
@@ -637,6 +660,5 @@ if (performance.navigation.type === 2 || sessionStorage.getItem('nukrax_from_cry
   draw(0);
 })();
 </script>
-<script type="module" src="assets/auth/auth-widget.js"></script>
 </body>
 </html>
