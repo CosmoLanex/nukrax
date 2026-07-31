@@ -4,8 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
-<title>Account</title>
-<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<title>Account — NUKRAX</title>
+<link rel="icon" href="assets/logo.png" type="image/png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
@@ -21,6 +21,7 @@
   --black:#030507;--panel:#0A0F13;--line:#1B2328;--line-lit:#2A353C;
   --muted:#8A9BA3;--text:#D3DBDD;--white:#F2F5F5;--accent:#8FB8C4;--accent-dim:#46626B;
   --font-logo:'NKX Display','Outfit',sans-serif;--font-m:'Space Mono',monospace;--font-b:'Outfit',sans-serif;
+  --ease:cubic-bezier(0.22,1,0.36,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
@@ -33,39 +34,106 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 .ac-back{font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none}
 @media (hover:hover) and (pointer:fine){.ac-back:hover{color:var(--accent)}}
 
-.ac-page{width:100%;max-width:560px;margin:0 auto;padding:56px clamp(24px,5vw,64px) 100px}
-.ac-page h1{font-family:var(--font-logo);font-size:clamp(28px,4vw,36px);color:var(--white);margin-bottom:40px}
+.ac-page{width:100%;max-width:640px;margin:0 auto;padding:56px clamp(24px,5vw,64px) 100px}
+.ac-page h1{font-family:var(--font-logo);font-size:clamp(28px,4vw,36px);color:var(--white);margin-bottom:12px}
+.ac-page-sub{font-size:13.5px;color:var(--muted);margin-bottom:40px}
+
+.ac-tabs{display:flex;gap:4px;margin-bottom:36px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.ac-tabs::-webkit-scrollbar{display:none}
+.ac-tab{background:none;border:none;color:var(--muted);font-family:var(--font-b);font-size:13.5px;
+  padding:12px 16px;cursor:pointer;white-space:nowrap;position:relative;flex-shrink:0;
+  transition:color .2s var(--ease)}
+.ac-tab.active{color:var(--white)}
+.ac-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent)}
+@media (hover:hover) and (pointer:fine){.ac-tab:not(.active):hover{color:var(--text)}}
+
+.ac-panel{display:none}
+.ac-panel.active{display:block;animation:ac-fade .35s var(--ease) both}
+@keyframes ac-fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 .ac-section{margin-bottom:36px;padding-bottom:36px;border-bottom:1px solid var(--line)}
+.ac-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
 .ac-section h2{font-family:var(--font-m);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
-.ac-info-row{display:flex;justify-content:space-between;padding:9px 0;font-size:14px}
-.ac-info-row .ac-label{color:var(--muted)}
-.ac-info-row .ac-value{color:var(--text);font-family:var(--font-m);font-size:13px}
+.ac-section-desc{font-size:12.5px;color:var(--muted);margin:-8px 0 18px;line-height:1.6}
 
+.ac-info-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;font-size:14px;border-bottom:1px solid var(--line)}
+.ac-info-row:last-child{border-bottom:none}
+.ac-info-row .ac-label{color:var(--muted);flex-shrink:0}
+.ac-info-row .ac-value{color:var(--text);font-family:var(--font-m);font-size:12.5px;text-align:right;word-break:break-all}
+.ac-value-row{display:flex;align-items:center;gap:8px}
+
+.ac-badge{font-family:var(--font-m);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 8px;border-radius:20px;flex-shrink:0}
+.ac-badge-ok{background:rgba(143,184,196,.14);color:var(--accent)}
+.ac-badge-warn{background:rgba(217,135,135,.14);color:#D98787}
+
+.ac-icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;display:flex;flex-shrink:0}
+@media (hover:hover) and (pointer:fine){.ac-icon-btn:hover{color:var(--white)}}
+
+/* ── avatar ── */
+.ac-avatar-row{display:flex;align-items:center;gap:20px;margin-bottom:28px}
+.ac-avatar{width:84px;height:84px;border-radius:50%;background:var(--accent);color:var(--black);
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-m);font-weight:700;font-size:28px;
+  overflow:hidden;flex-shrink:0;position:relative}
+.ac-avatar img{width:100%;height:100%;object-fit:cover}
+.ac-avatar-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ── fields ── */
+.ac-field{margin-bottom:16px}
+.ac-field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:7px}
+.ac-field input,.ac-field select,.ac-field textarea{
+  width:100%;background:var(--black);border:1px solid var(--line);color:var(--text);
+  padding:11px 14px;border-radius:6px;font-family:var(--font-b);font-size:13.5px;outline:none;
+  transition:border-color .25s var(--ease)}
+.ac-field input:focus,.ac-field select:focus,.ac-field textarea:focus{border-color:var(--accent)}
+.ac-field textarea{resize:vertical;min-height:70px}
+.ac-field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:480px){.ac-field-row{grid-template-columns:1fr}}
+.ac-field-hint{font-size:11.5px;color:var(--muted);margin-top:6px}
+.ac-field-hint.err{color:#D98787}
+.ac-field-hint.ok{color:var(--accent)}
+.ac-field-wrap{position:relative}
+.ac-field-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;
+  color:var(--muted);cursor:pointer;display:flex;padding:4px}
+@media (hover:hover) and (pointer:fine){.ac-field-eye:hover{color:var(--white)}}
+
+/* ── buttons ── */
 .ac-btn{background:var(--accent);color:var(--black);border:none;padding:12px 22px;border-radius:6px;
-  font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+  font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  transition:opacity .2s var(--ease)}
 @media (hover:hover) and (pointer:fine){.ac-btn:hover{opacity:.9}}
+.ac-btn:disabled{opacity:.5;cursor:default}
 .ac-btn-outline{background:transparent;border:1px solid var(--line);color:var(--text);padding:12px 22px;border-radius:6px;
-  font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+  font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  transition:border-color .2s var(--ease),color .2s var(--ease)}
 @media (hover:hover) and (pointer:fine){.ac-btn-outline:hover{border-color:var(--accent);color:var(--white)}}
+.ac-btn-outline:disabled{opacity:.5;cursor:default}
 .ac-btn-danger{background:transparent;border:1px solid #D98787;color:#D98787;padding:12px 22px;border-radius:6px;
-  font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+  font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  transition:background .2s var(--ease),color .2s var(--ease)}
 @media (hover:hover) and (pointer:fine){.ac-btn-danger:hover{background:#D98787;color:var(--black)}}
+.ac-btn-sm{padding:9px 16px;font-size:10px}
 
-.ac-danger-text{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6}
 .ac-msg{font-size:12.5px;margin-top:12px;min-height:16px}
 .ac-msg.err{color:#D98787}
 .ac-msg.ok{color:var(--accent)}
 
-.ac-confirm-overlay{position:fixed;inset:0;background:rgba(3,5,7,.8);display:none;align-items:center;justify-content:center;z-index:900;padding:20px}
-.ac-confirm-overlay.open{display:flex}
-.ac-confirm-box{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:26px;max-width:380px;width:100%}
-.ac-confirm-box h3{font-size:16px;color:var(--white);margin-bottom:10px}
-.ac-confirm-box p{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6}
-.ac-confirm-box input{width:100%;background:var(--black);border:1px solid var(--line);color:var(--text);padding:10px 12px;
-  border-radius:6px;font-family:var(--font-b);font-size:13px;margin-bottom:16px;outline:none}
-.ac-confirm-actions{display:flex;gap:10px}
-.ac-confirm-actions button{flex:1}
+/* ── password strength ── */
+.ac-strength{margin:-6px 0 16px}
+.ac-strength-bar{display:flex;gap:4px;margin-bottom:8px}
+.ac-strength-seg{height:4px;flex:1;background:var(--line);border-radius:2px;transition:background .25s var(--ease)}
+.ac-strength-label{font-size:11.5px;color:var(--muted)}
+.ac-req-list{list-style:none;margin:10px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
+.ac-req-item{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .2s var(--ease)}
+.ac-req-item.met{color:var(--accent)}
+.ac-req-item svg{width:12px;height:12px;flex-shrink:0}
+
+/* ── OTP ── */
+.ac-otp-row{display:flex;gap:8px;margin-bottom:14px}
+.ac-otp-row input{width:44px;height:52px;text-align:center;font-size:20px;font-family:var(--font-m);
+  background:var(--black);border:1px solid var(--line);color:var(--text);border-radius:8px;outline:none}
+.ac-otp-row input:focus{border-color:var(--accent)}
+.ac-countdown{font-size:12px;color:var(--muted);font-family:var(--font-m)}
 </style>
 </head>
 <body>
@@ -79,19 +147,231 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 
 <div class="ac-page">
   <h1>Account</h1>
+  <p class="ac-page-sub">Manage your profile, security, and how people see you on NUKRAX.</p>
 
-  <div class="ac-section">
-    <h2>Account Info</h2>
-    <div class="ac-info-row"><span class="ac-label">Email</span><span class="ac-value" id="ac-email">—</span></div>
-    <div class="ac-info-row"><span class="ac-label">Username</span><span class="ac-value" id="ac-username">—</span></div>
-    <div class="ac-info-row"><span class="ac-label">Joined</span><span class="ac-value" id="ac-joined">—</span></div>
+  <div class="ac-tabs" role="tablist">
+    <button class="ac-tab active" data-tab="profile" role="tab">Profile</button>
+    <button class="ac-tab" data-tab="security" role="tab">Security</button>
+    <button class="ac-tab" data-tab="phone" role="tab">Phone</button>
   </div>
 
-  <div class="ac-section" style="border-bottom:none">
-    <h2>Share</h2>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Share a link to your public profile.</p>
-    <button class="ac-btn-outline" id="ac-share">Copy profile link</button>
-    <div class="ac-msg" id="ac-share-msg"></div>
+  <!-- ── PROFILE ── -->
+  <div class="ac-panel active" id="panel-profile">
+    <div class="ac-section">
+      <h2>Profile Picture</h2>
+      <div class="ac-avatar-row">
+        <div class="ac-avatar" id="ac-avatar">?</div>
+        <div class="ac-avatar-actions">
+          <button class="ac-btn-outline ac-btn-sm" id="ac-avatar-upload-btn">Change picture</button>
+          <button class="ac-btn-danger ac-btn-sm" id="ac-avatar-remove-btn">Remove</button>
+          <input type="file" id="ac-avatar-file" accept="image/*" style="display:none"/>
+        </div>
+      </div>
+      <div class="ac-msg" id="ac-avatar-msg"></div>
+    </div>
+
+    <div class="ac-section">
+      <h2>Basic Info</h2>
+      <form id="ac-profile-form">
+        <div class="ac-field-row">
+          <div class="ac-field">
+            <label for="ac-displayname">Display name</label>
+            <input type="text" id="ac-displayname" maxlength="60" placeholder="Your name">
+          </div>
+          <div class="ac-field">
+            <label for="ac-username-input">Username</label>
+            <input type="text" id="ac-username-input" maxlength="20" placeholder="username">
+            <div class="ac-field-hint" id="ac-username-hint"></div>
+          </div>
+        </div>
+        <div class="ac-field">
+          <label for="ac-bio">Bio</label>
+          <textarea id="ac-bio" maxlength="200" placeholder="A short description about you"></textarea>
+        </div>
+        <div class="ac-field-row">
+          <div class="ac-field">
+            <label for="ac-country">Country</label>
+            <select id="ac-country"><option value="">Select country</option></select>
+          </div>
+          <div class="ac-field">
+            <label for="ac-timezone">Timezone</label>
+            <select id="ac-timezone"><option value="">Select timezone</option></select>
+          </div>
+        </div>
+        <div class="ac-field">
+          <label for="ac-language">Preferred language</label>
+          <select id="ac-language">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="pt">Português</option>
+            <option value="hi">हिन्दी</option>
+            <option value="ar">العربية</option>
+          </select>
+        </div>
+        <button type="submit" class="ac-btn">Save changes</button>
+        <div class="ac-msg" id="ac-profile-msg"></div>
+      </form>
+    </div>
+
+    <div class="ac-section">
+      <h2>Account Info</h2>
+      <div class="ac-info-row">
+        <span class="ac-label">Email</span>
+        <div class="ac-value-row">
+          <span class="ac-value" id="ac-email">—</span>
+          <span class="ac-badge" id="ac-email-badge"></span>
+        </div>
+      </div>
+      <div class="ac-info-row">
+        <span class="ac-label">Phone</span>
+        <div class="ac-value-row">
+          <span class="ac-value" id="ac-phone-display">Not added</span>
+          <span class="ac-badge" id="ac-phone-badge"></span>
+        </div>
+      </div>
+      <div class="ac-info-row"><span class="ac-label">Member since</span><span class="ac-value" id="ac-joined">—</span></div>
+      <div class="ac-info-row"><span class="ac-label">Last login</span><span class="ac-value" id="ac-lastlogin">—</span></div>
+      <div class="ac-info-row">
+        <span class="ac-label">Account ID</span>
+        <div class="ac-value-row">
+          <span class="ac-value" id="ac-id" style="max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</span>
+          <button class="ac-icon-btn" id="ac-id-copy" title="Copy account ID" aria-label="Copy account ID">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ac-section" style="border-bottom:none">
+      <h2>Share</h2>
+      <p class="ac-section-desc" style="margin-bottom:14px">Share a link to your public profile.</p>
+      <button class="ac-btn-outline" id="ac-share">Copy profile link</button>
+      <div class="ac-msg" id="ac-share-msg"></div>
+    </div>
+  </div>
+
+  <!-- ── SECURITY ── -->
+  <div class="ac-panel" id="panel-security">
+    <div class="ac-section">
+      <h2>Change Email</h2>
+      <p class="ac-section-desc">You'll need to confirm the new address before it replaces the old one.</p>
+      <form id="ac-email-form">
+        <div class="ac-field">
+          <label for="ac-new-email">New email address</label>
+          <input type="email" id="ac-new-email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <button type="submit" class="ac-btn-outline">Send confirmation</button>
+        <div class="ac-msg" id="ac-email-msg"></div>
+      </form>
+    </div>
+
+    <div class="ac-section">
+      <h2>Change Password</h2>
+      <form id="ac-password-form">
+        <div class="ac-field">
+          <label for="ac-current-pw">Current password</label>
+          <div class="ac-field-wrap">
+            <input type="password" id="ac-current-pw" autocomplete="current-password">
+            <button type="button" class="ac-field-eye" data-eye-for="ac-current-pw" aria-label="Show password">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="ac-field">
+          <label for="ac-new-pw">New password</label>
+          <div class="ac-field-wrap">
+            <input type="password" id="ac-new-pw" autocomplete="new-password">
+            <button type="button" class="ac-field-eye" data-eye-for="ac-new-pw" aria-label="Show password">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="ac-strength" id="ac-strength-wrap" style="display:none">
+            <div class="ac-strength-bar">
+              <div class="ac-strength-seg" data-seg="0"></div>
+              <div class="ac-strength-seg" data-seg="1"></div>
+              <div class="ac-strength-seg" data-seg="2"></div>
+              <div class="ac-strength-seg" data-seg="3"></div>
+            </div>
+            <div class="ac-strength-label" id="ac-strength-label"></div>
+            <ul class="ac-req-list">
+              <li class="ac-req-item" data-req="len">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                8+ characters
+              </li>
+              <li class="ac-req-item" data-req="upper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                Uppercase letter
+              </li>
+              <li class="ac-req-item" data-req="num">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                Number
+              </li>
+              <li class="ac-req-item" data-req="sym">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                Symbol
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="ac-field">
+          <label for="ac-confirm-pw">Confirm new password</label>
+          <div class="ac-field-wrap">
+            <input type="password" id="ac-confirm-pw" autocomplete="new-password">
+            <button type="button" class="ac-field-eye" data-eye-for="ac-confirm-pw" aria-label="Show password">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="ac-btn-outline">Update password</button>
+        <div class="ac-msg" id="ac-password-msg"></div>
+      </form>
+      <p class="ac-section-desc" style="margin-top:16px;margin-bottom:0">
+        Forgot your current password instead? <a href="login.html" style="color:var(--accent)">Reset it from the login page</a>.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── PHONE ── -->
+  <div class="ac-panel" id="panel-phone">
+    <div class="ac-section" style="border-bottom:none">
+      <h2>Phone Verification</h2>
+      <p class="ac-section-desc">A verified phone number is required on your account.</p>
+
+      <div class="ac-info-row">
+        <span class="ac-label">Status</span>
+        <span class="ac-badge" id="ac-phone-status-badge"></span>
+      </div>
+
+      <div id="ac-phone-step-number" style="margin-top:16px">
+        <div class="ac-field">
+          <label for="ac-phone-input">Phone number</label>
+          <input type="tel" id="ac-phone-input" placeholder="+1 555 555 5555">
+          <div class="ac-field-hint">Include your country code, e.g. +1 for the US.</div>
+        </div>
+        <button class="ac-btn" id="ac-phone-send-btn">Send verification code</button>
+        <div class="ac-msg" id="ac-phone-msg"></div>
+      </div>
+
+      <div id="ac-phone-step-otp" style="display:none;margin-top:16px">
+        <div class="ac-field">
+          <label>Enter the 6-digit code</label>
+          <div class="ac-otp-row">
+            <input type="text" inputmode="numeric" maxlength="1" class="ac-otp-digit">
+            <input type="text" inputmode="numeric" maxlength="1" class="ac-otp-digit">
+            <input type="text" inputmode="numeric" maxlength="1" class="ac-otp-digit">
+            <input type="text" inputmode="numeric" maxlength="1" class="ac-otp-digit">
+            <input type="text" inputmode="numeric" maxlength="1" class="ac-otp-digit">
+            <input type="text" inputmode="numeric" maxlength="1" class="ac-otp-digit">
+          </div>
+        </div>
+        <button class="ac-btn" id="ac-phone-verify-btn">Verify</button>
+        <button class="ac-btn-outline" id="ac-phone-resend-btn" style="margin-left:8px" disabled>Resend</button>
+        <span class="ac-countdown" id="ac-phone-countdown"></span>
+        <div class="ac-msg" id="ac-phone-otp-msg"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -99,29 +379,344 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 import { supabase } from './assets/auth/auth-widget.js';
 
 let currentUser = null;
+let currentProfile = null;
+
+const COUNTRIES = ["United States","United Kingdom","Canada","Australia","India","Germany","France","Spain","Italy","Netherlands","Brazil","Mexico","Japan","South Korea","Singapore","United Arab Emirates","South Africa","Nigeria","Pakistan","Bangladesh","Philippines","Indonesia","Turkey","Saudi Arabia","Egypt","Other"];
+const TIMEZONES = (typeof Intl.supportedValuesOf === 'function') ? Intl.supportedValuesOf('timeZone') : ["UTC","America/New_York","America/Los_Angeles","America/Chicago","Europe/London","Europe/Paris","Europe/Berlin","Asia/Kolkata","Asia/Dubai","Asia/Singapore","Asia/Tokyo","Australia/Sydney"];
+
+function setMsg(el, text, isErr) {
+  el.textContent = text || '';
+  el.className = 'ac-msg' + (text ? (isErr ? ' err' : ' ok') : '');
+}
+
+function escapeHtml(s) {
+  return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ── tabs ── */
+document.querySelectorAll('.ac-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.ac-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.ac-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ── populate selects ── */
+function populateSelects() {
+  const countrySel = document.getElementById('ac-country');
+  COUNTRIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    countrySel.appendChild(opt);
+  });
+  const tzSel = document.getElementById('ac-timezone');
+  TIMEZONES.forEach(tz => {
+    const opt = document.createElement('option');
+    opt.value = tz; opt.textContent = tz;
+    tzSel.appendChild(opt);
+  });
+}
+
+/* ── password show/hide ── */
+document.querySelectorAll('.ac-field-eye').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = document.getElementById(btn.dataset.eyeFor);
+    input.type = input.type === 'password' ? 'text' : 'password';
+  });
+});
+
+/* ── password strength ── */
+function checkStrength(pw) {
+  return {
+    len: pw.length >= 8,
+    upper: /[A-Z]/.test(pw),
+    num: /[0-9]/.test(pw),
+    sym: /[^A-Za-z0-9]/.test(pw),
+  };
+}
+document.getElementById('ac-new-pw').addEventListener('input', (e) => {
+  const pw = e.target.value;
+  const wrap = document.getElementById('ac-strength-wrap');
+  wrap.style.display = pw ? 'block' : 'none';
+  if (!pw) return;
+  const checks = checkStrength(pw);
+  const metCount = Object.values(checks).filter(Boolean).length;
+  document.querySelectorAll('.ac-strength-seg').forEach((seg, i) => {
+    seg.style.background = i < metCount ? (metCount <= 1 ? '#D98787' : metCount === 2 ? '#D9B877' : 'var(--accent)') : 'var(--line)';
+  });
+  const labels = ['Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+  document.getElementById('ac-strength-label').textContent = labels[metCount];
+  Object.keys(checks).forEach(k => {
+    document.querySelector(`[data-req="${k}"]`).classList.toggle('met', checks[k]);
+  });
+});
+
+/* ── OTP input auto-advance ── */
+document.querySelectorAll('.ac-otp-digit').forEach((input, i, all) => {
+  input.addEventListener('input', () => {
+    input.value = input.value.replace(/[^0-9]/g, '').slice(0, 1);
+    if (input.value && all[i + 1]) all[i + 1].focus();
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !input.value && all[i - 1]) all[i - 1].focus();
+  });
+});
+
+/* ── avatar ── */
+function renderAvatar() {
+  const avatarUrl = currentProfile?.avatar_url || '';
+  const displayName = currentProfile?.display_name || currentProfile?.username || '';
+  const initial = (displayName || '?').charAt(0).toUpperCase();
+  const el = document.getElementById('ac-avatar');
+  el.innerHTML = avatarUrl ? `<img src="${escapeHtml(avatarUrl)}" alt="">` : initial;
+}
+
+document.getElementById('ac-avatar-upload-btn').addEventListener('click', () => document.getElementById('ac-avatar-file').click());
+document.getElementById('ac-avatar-file').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const msg = document.getElementById('ac-avatar-msg');
+  setMsg(msg, 'Uploading...', false);
+  try {
+    const { compressImage } = await import('./assets/utils/compress-image.js');
+    const compressed = await compressImage(file, { maxDimension: 512, quality: 0.85 });
+    const ext = compressed.name.split('.').pop();
+    const path = `${currentUser.id}/avatar-${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from('avatars').upload(path, compressed, { upsert: true });
+    if (upErr) { setMsg(msg, upErr.message, true); return; }
+    const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path);
+    const { error } = await supabase.from('profiles').update({ avatar_url: pub.publicUrl }).eq('id', currentUser.id);
+    if (error) { setMsg(msg, error.message, true); return; }
+    currentProfile.avatar_url = pub.publicUrl;
+    renderAvatar();
+    setMsg(msg, 'Profile picture updated.', false);
+  } catch (err) {
+    setMsg(msg, err.message || 'Upload failed.', true);
+  }
+});
+
+document.getElementById('ac-avatar-remove-btn').addEventListener('click', async () => {
+  const msg = document.getElementById('ac-avatar-msg');
+  const { error } = await supabase.from('profiles').update({ avatar_url: null }).eq('id', currentUser.id);
+  if (error) { setMsg(msg, error.message, true); return; }
+  currentProfile.avatar_url = null;
+  renderAvatar();
+  setMsg(msg, 'Profile picture removed.', false);
+});
+
+/* ── profile form ── */
+let usernameCheckTimer = null;
+document.getElementById('ac-username-input').addEventListener('input', (e) => {
+  const val = e.target.value.trim();
+  const hint = document.getElementById('ac-username-hint');
+  clearTimeout(usernameCheckTimer);
+  if (!val) { hint.textContent = ''; hint.className = 'ac-field-hint'; return; }
+  if (!/^[a-zA-Z0-9_]{3,20}$/.test(val)) {
+    hint.textContent = '3-20 characters: letters, numbers, underscores only.';
+    hint.className = 'ac-field-hint err';
+    return;
+  }
+  if (val.toLowerCase() === (currentProfile?.username || '').toLowerCase()) {
+    hint.textContent = 'This is your current username.';
+    hint.className = 'ac-field-hint';
+    return;
+  }
+  hint.textContent = 'Checking availability...';
+  hint.className = 'ac-field-hint';
+  usernameCheckTimer = setTimeout(async () => {
+    const { data } = await supabase.from('profiles').select('id').ilike('username', val).maybeSingle();
+    if (data) { hint.textContent = 'Username already taken.'; hint.className = 'ac-field-hint err'; }
+    else { hint.textContent = 'Username available.'; hint.className = 'ac-field-hint ok'; }
+  }, 450);
+});
+
+document.getElementById('ac-profile-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('ac-profile-msg');
+  const username = document.getElementById('ac-username-input').value.trim();
+  const displayName = document.getElementById('ac-displayname').value.trim();
+  const bio = document.getElementById('ac-bio').value.trim();
+  const country = document.getElementById('ac-country').value;
+  const timezone = document.getElementById('ac-timezone').value;
+  const language = document.getElementById('ac-language').value;
+
+  if (!username) { setMsg(msg, 'Username is required.', true); return; }
+  if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+    setMsg(msg, '3-20 characters: letters, numbers, underscores only.', true);
+    return;
+  }
+  if (username.toLowerCase() !== (currentProfile?.username || '').toLowerCase()) {
+    const { data: taken } = await supabase.from('profiles').select('id').ilike('username', username).maybeSingle();
+    if (taken) { setMsg(msg, 'That username is already taken.', true); return; }
+  }
+
+  setMsg(msg, 'Saving...', false);
+  const { error } = await supabase.from('profiles').update({
+    username, display_name: displayName, bio, country, timezone, language,
+  }).eq('id', currentUser.id);
+  if (error) { setMsg(msg, error.message, true); return; }
+  currentProfile = { ...currentProfile, username, display_name: displayName, bio, country, timezone, language };
+  document.getElementById('ac-username-hint').textContent = '';
+  setMsg(msg, 'Profile saved.', false);
+});
+
+/* ── share ── */
+document.getElementById('ac-share').addEventListener('click', async () => {
+  const msg = document.getElementById('ac-share-msg');
+  if (!currentProfile?.username) { setMsg(msg, 'Finish setting up your profile first.', true); return; }
+  const link = `${window.location.origin}/community.html?user=${currentProfile.username}`;
+  await navigator.clipboard.writeText(link);
+  setMsg(msg, 'Link copied.', false);
+});
+
+/* ── account ID copy ── */
+document.getElementById('ac-id-copy').addEventListener('click', async () => {
+  await navigator.clipboard.writeText(currentUser.id);
+  const el = document.getElementById('ac-id-copy');
+  const original = el.innerHTML;
+  el.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+  setTimeout(() => { el.innerHTML = original; }, 1500);
+});
+
+/* ── change email ── */
+document.getElementById('ac-email-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('ac-email-msg');
+  const newEmail = document.getElementById('ac-new-email').value.trim();
+  if (!newEmail) { setMsg(msg, 'Enter a new email address.', true); return; }
+  if (newEmail.toLowerCase() === currentUser.email.toLowerCase()) { setMsg(msg, 'That is already your current email.', true); return; }
+  setMsg(msg, 'Sending confirmation...', false);
+  const { error } = await supabase.auth.updateUser({ email: newEmail });
+  if (error) { setMsg(msg, error.message, true); return; }
+  setMsg(msg, 'Confirmation link(s) sent. Click the link in your inbox to finish changing your email.', false);
+});
+
+/* ── change password ── */
+document.getElementById('ac-password-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('ac-password-msg');
+  const current = document.getElementById('ac-current-pw').value;
+  const next = document.getElementById('ac-new-pw').value;
+  const confirmVal = document.getElementById('ac-confirm-pw').value;
+
+  if (!current || !next || !confirmVal) { setMsg(msg, 'Fill in all password fields.', true); return; }
+  if (next !== confirmVal) { setMsg(msg, "New passwords don't match.", true); return; }
+  const checks = checkStrength(next);
+  if (!checks.len) { setMsg(msg, 'New password must be at least 8 characters.', true); return; }
+
+  setMsg(msg, 'Verifying current password...', false);
+  const { error: verifyErr } = await supabase.auth.signInWithPassword({ email: currentUser.email, password: current });
+  if (verifyErr) { setMsg(msg, 'Current password is incorrect.', true); return; }
+
+  setMsg(msg, 'Updating password...', false);
+  const { error } = await supabase.auth.updateUser({ password: next });
+  if (error) { setMsg(msg, error.message, true); return; }
+  document.getElementById('ac-password-form').reset();
+  document.getElementById('ac-strength-wrap').style.display = 'none';
+  setMsg(msg, 'Password updated.', false);
+});
+
+/* ── phone verification (requires an SMS provider configured in Supabase — see chat notes) ── */
+let phoneCountdownTimer = null;
+function startPhoneCountdown() {
+  let seconds = 60;
+  const resendBtn = document.getElementById('ac-phone-resend-btn');
+  const countdownEl = document.getElementById('ac-phone-countdown');
+  resendBtn.disabled = true;
+  clearInterval(phoneCountdownTimer);
+  phoneCountdownTimer = setInterval(() => {
+    seconds--;
+    countdownEl.textContent = seconds > 0 ? `Resend available in ${seconds}s` : '';
+    if (seconds <= 0) { clearInterval(phoneCountdownTimer); resendBtn.disabled = false; }
+  }, 1000);
+}
+
+async function sendPhoneOtp() {
+  const msg = document.getElementById('ac-phone-msg');
+  const phone = document.getElementById('ac-phone-input').value.trim();
+  if (!phone || !/^\+[1-9]\d{6,14}$/.test(phone)) {
+    setMsg(msg, 'Enter a valid phone number with country code (e.g. +15555555555).', true);
+    return;
+  }
+  setMsg(msg, 'Sending code...', false);
+  const { error } = await supabase.auth.updateUser({ phone });
+  if (error) { setMsg(msg, error.message, true); return; }
+  setMsg(msg, '', false);
+  document.getElementById('ac-phone-step-number').style.display = 'none';
+  document.getElementById('ac-phone-step-otp').style.display = 'block';
+  startPhoneCountdown();
+}
+
+document.getElementById('ac-phone-send-btn').addEventListener('click', sendPhoneOtp);
+document.getElementById('ac-phone-resend-btn').addEventListener('click', sendPhoneOtp);
+
+document.getElementById('ac-phone-verify-btn').addEventListener('click', async () => {
+  const msg = document.getElementById('ac-phone-otp-msg');
+  const code = Array.from(document.querySelectorAll('.ac-otp-digit')).map(i => i.value).join('');
+  if (code.length !== 6) { setMsg(msg, 'Enter the full 6-digit code.', true); return; }
+  const phone = document.getElementById('ac-phone-input').value.trim();
+  setMsg(msg, 'Verifying...', false);
+  const { error } = await supabase.auth.verifyOtp({ phone, token: code, type: 'phone_change' });
+  if (error) { setMsg(msg, error.message, true); return; }
+  setMsg(msg, 'Phone verified.', false);
+  await loadUserAndProfile();
+  renderPhoneStatus();
+});
+
+function renderPhoneStatus() {
+  const badge = document.getElementById('ac-phone-status-badge');
+  const displayBadge = document.getElementById('ac-phone-badge');
+  const display = document.getElementById('ac-phone-display');
+  const verified = !!currentUser.phone_confirmed_at;
+  const hasPhone = !!currentUser.phone;
+  badge.textContent = verified ? 'Verified' : hasPhone ? 'Pending verification' : 'Not added';
+  badge.className = 'ac-badge ' + (verified ? 'ac-badge-ok' : 'ac-badge-warn');
+  displayBadge.textContent = verified ? 'Verified' : hasPhone ? 'Pending' : 'Not added';
+  displayBadge.className = 'ac-badge ' + (verified ? 'ac-badge-ok' : 'ac-badge-warn');
+  display.textContent = currentUser.phone || 'Not added';
+}
+
+/* ── load user + profile ── */
+async function loadUserAndProfile() {
+  const { data: userData } = await supabase.auth.getUser();
+  currentUser = userData.user;
+  const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
+  currentProfile = profile || {};
+}
 
 async function init() {
   const { data } = await supabase.auth.getSession();
-  currentUser = data.session?.user || null;
-  if (!currentUser) { window.location.replace('index.html?authRequired=1'); return; }
+  if (!data.session) { window.location.replace('index.html?authRequired=1'); return; }
+
+  populateSelects();
+  await loadUserAndProfile();
 
   document.getElementById('ac-email').textContent = currentUser.email;
-  document.getElementById('ac-joined').textContent = new Date(currentUser.created_at).toLocaleDateString();
+  const emailBadge = document.getElementById('ac-email-badge');
+  const emailVerified = !!currentUser.email_confirmed_at;
+  emailBadge.textContent = emailVerified ? 'Verified' : 'Unverified';
+  emailBadge.className = 'ac-badge ' + (emailVerified ? 'ac-badge-ok' : 'ac-badge-warn');
 
-  const { data: profile } = await supabase.from('profiles').select('username').eq('id', currentUser.id).maybeSingle();
-  document.getElementById('ac-username').textContent = profile ? '@' + profile.username : '(not set up yet)';
+  document.getElementById('ac-joined').textContent = new Date(currentUser.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('ac-lastlogin').textContent = currentUser.last_sign_in_at
+    ? new Date(currentUser.last_sign_in_at).toLocaleString()
+    : '—';
+  document.getElementById('ac-id').textContent = currentUser.id;
+
+  document.getElementById('ac-displayname').value = currentProfile.display_name || '';
+  document.getElementById('ac-username-input').value = currentProfile.username || '';
+  document.getElementById('ac-bio').value = currentProfile.bio || '';
+  document.getElementById('ac-country').value = currentProfile.country || '';
+  document.getElementById('ac-timezone').value = currentProfile.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+  document.getElementById('ac-language').value = currentProfile.language || 'en';
+
+  renderAvatar();
+  renderPhoneStatus();
 
   document.body.style.visibility = 'visible';
 }
-
-document.getElementById('ac-share').addEventListener('click', async () => {
-  const { data: profile } = await supabase.from('profiles').select('username').eq('id', currentUser.id).maybeSingle();
-  const msg = document.getElementById('ac-share-msg');
-  if (!profile) { msg.textContent = 'Finish setting up your profile first.'; msg.className = 'ac-msg err'; return; }
-  const link = `${window.location.origin}/community.html?user=${profile.username}`;
-  await navigator.clipboard.writeText(link);
-  msg.textContent = 'Link copied.'; msg.className = 'ac-msg ok';
-});
 
 init();
 </script>
