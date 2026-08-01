@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Introduction — nukrax docs</title>
 <meta name="description" content="nukrax - documentation">
@@ -14,19 +16,9 @@
 <link rel="preload" href="../assets/fonts/nukrax-display.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
-@font-face{
-  font-family:'NKX Display';
-  src:url('../assets/fonts/nukrax-display.woff2') format('woff2'),
-      url('../assets/fonts/nukrax-display.otf') format('opentype');
-  font-weight:400;font-style:normal;font-display:swap;
-}
-:root{
-  --black:#07090B;--panel:#0A0F13;--line:#1B2328;--line-lit:#2A353C;
-  --muted:#8A9BA3;--text:#D3DBDD;--white:#F2F5F5;--accent:#8FB8C4;--accent-dim:#46626B;
-  --font-logo:'NKX Display','Outfit',sans-serif;--font-m:'Space Mono',monospace;--font-b:'Outfit',sans-serif;
-  --ease:cubic-bezier(0.22,1,0.36,1);--ease-out:cubic-bezier(0.16,1,0.3,1);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+
+
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{background:var(--black);color:var(--text);font-family:var(--font-b);overflow-x:hidden}
 
