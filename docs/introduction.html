@@ -42,6 +42,8 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);overflo
 .nav-get-started{font-family:var(--font-b);font-size:13.5px;font-weight:500;color:var(--black);
   background:var(--white);text-decoration:none;padding:9px 18px;border-radius:20px;
   transition:background .25s var(--ease),transform .2s var(--ease)}
+/* Desktop only — same premium rounded-rect treatment used across the site. */
+@media(min-width:601px){.nav-get-started{border-radius:16px}}
 @media (hover:hover) and (pointer:fine){.nav-get-started:hover{background:var(--accent);transform:translateY(-1px)}}
 
 /* ── layout ── */
@@ -192,14 +194,27 @@ const sections = document.querySelectorAll('.docs-section[id]');
 const tocLinks = document.querySelectorAll('.docs-toc-link');
 const sideLinks = document.querySelectorAll('.docs-nav-link');
 
+// Cache each section's offset once (instead of reading offsetTop — a
+// forced layout read — on every scroll event) and only recompute it when
+// the layout could actually have changed (resize).
+let sectionOffsets = Array.from(sections).map(sec => ({ id: sec.id, top: sec.offsetTop }));
+window.addEventListener('resize', () => {
+  sectionOffsets = Array.from(sections).map(sec => ({ id: sec.id, top: sec.offsetTop }));
+}, { passive: true });
+
 function syncActive(){
-  let current = sections[0]?.id;
+  let current = sectionOffsets[0]?.id;
   const scrollPos = window.scrollY + 120;
-  sections.forEach(sec => { if (sec.offsetTop <= scrollPos) current = sec.id; });
+  sectionOffsets.forEach(sec => { if (sec.top <= scrollPos) current = sec.id; });
   tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
   sideLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
 }
-document.addEventListener('scroll', syncActive, { passive:true });
+let syncTicking = false;
+document.addEventListener('scroll', () => {
+  if(syncTicking) return;
+  syncTicking = true;
+  requestAnimationFrame(() => { syncActive(); syncTicking = false; });
+}, { passive:true });
 syncActive();
 
 /* ── PAGE TRANSITIONS — same pattern used across the site ── */
