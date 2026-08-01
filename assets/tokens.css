@@ -1,0 +1,127 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   NUKRAX — assets/css/tokens.css
+   Centralized design tokens + base reset.
+
+   This file is the single source of truth for the design tokens that were
+   previously copy-pasted, near-identically, into every page's inline
+   <style> block. It is linked from every page BEFORE that page's own
+   <style> block, so the cascade behaves exactly as before:
+
+     - Where a page's local :root declared the *same* value this file
+       does, the local (duplicate) declaration was removed from that page
+       — it now simply inherits the value from here. Zero visual change.
+     - Where a page's local :root declared a *different* value (a few
+       pages intentionally use different accent colors etc.), that local
+       declaration was LEFT IN PLACE. Because it's declared later in the
+       document than this linked file, it still wins the cascade exactly
+       as it always has. Zero visual change there either.
+
+   Two independent token "dialects" exist in the codebase and both are
+   defined here without conflict (their custom property names don't
+   overlap):
+     1. The primary scheme — --black/--panel/--line/--accent/--fs-* — used
+        by index.html, tr.html, ea-selection.html, account/chat/community/
+        settings/profile/etc., and most of the site.
+     2. The EA-detail-page scheme — --bg/--surface/--border/--silver/etc.
+        — used by ea/apex.html and ea/aurum.html (byte-identical to each
+        other). ea/smc-ict.html and ea/404.html use a related but distinct
+        set of values/names for a couple of tokens (different accent
+        colors, extra tokens) and were left with their own complete local
+        :root blocks untouched for that reason — no risk of collision
+        since this file doesn't declare those pages' page-specific names.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: 'NKX Display';
+  src: url('../fonts/nukrax-display.woff2') format('woff2'),
+       url('../fonts/nukrax-display.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ── Scheme 1 — primary site palette ── */
+  --black:      #07090B;
+  --panel:      #0A0F13;
+  --line:       #1B2328;
+  --line-lit:   #2A353C;
+  --muted:      #8A9BA3;
+  --text:       #D3DBDD;
+  --white:      #F2F5F5;
+  --accent:     #8FB8C4;
+  --accent-dim: #46626B;
+
+  --font-logo: 'NKX Display', 'Outfit', sans-serif;
+  --font-m:    'Space Mono', monospace;
+  --font-b:    'Outfit', sans-serif;
+  --ease:      cubic-bezier(0.22,1,0.36,1);
+  --ease-out:  cubic-bezier(0.16,1,0.3,1);
+
+  --container: 1180px;
+  --gutter: clamp(24px, 5vw, 64px);
+
+  /* Type scale — tokenized font sizes (rem-based, respects user font-size preference) */
+  --fs-9-5: 0.5938rem;
+  --fs-10: 0.625rem;
+  --fs-10-5: 0.6562rem;
+  --fs-11: 0.6875rem;
+  --fs-11-5: 0.7188rem;
+  --fs-12: 0.75rem;
+  --fs-12-5: 0.7812rem;
+  --fs-13: 0.8125rem;
+  --fs-13-5: 0.8438rem;
+  --fs-14: 0.875rem;
+  --fs-14-5: 0.9062rem;
+  --fs-15: 0.9375rem;
+  --fs-15-5: 0.9688rem;
+  --fs-16: 1rem;
+  --fs-19: 1.1875rem;
+  --fs-20: 1.25rem;
+  --fs-38: 2.375rem;
+
+  /* Fluid heading sizes (clamp, rem-based) */
+  --fs-hero-logo: clamp(3.625rem,12vw,9.875rem);
+  --fs-hero-logo-lg: clamp(2.25rem,4.6vw,3.5rem);
+  --fs-hero-logo-sm: clamp(2.75rem,14vw,3.625rem);
+  --fs-hero-tagline: clamp(1.0625rem,2vw,1.375rem);
+  --fs-hero-tagline-lg: clamp(0.875rem,1.5vw,1.125rem);
+  --fs-heading-lg: clamp(2rem,4vw,2.875rem);
+  --fs-heading-md: clamp(1.625rem,3vw,2.375rem);
+  --fs-heading-sm: clamp(1.375rem,2.4vw,1.875rem);
+  --fs-heading-xl: clamp(2.125rem,6vw,4rem);
+
+  /* ── Scheme 2 — EA detail page palette (ea/apex.html, ea/aurum.html) ── */
+  --bg:         #030507;
+  --surface:    #0A0F13;
+  --surface2:   #0A0F13;
+  --border:     #1B2328;
+  --border2:    #2A353C;
+  --silver:     #8FB8C4;
+  --silver-dim: #46626B;
+  --silver-hi:  #F2F5F5;
+  --green:      #4ade80;
+  --red:        #f87171;
+  --amber:      #fbbf24;
+  --card:       #0A0F13;
+  --premium:    #46626B;
+
+  /* Centralized breakpoint scale, mirrored from assets/data/breakpoints.js.
+     NOTE: CSS media-query FEATURES cannot read custom properties (this is
+     a CSS-spec limitation, not something fixable without a build step), so
+     these do not drive any @media rule — they exist purely as documentation
+     so the same named scale is visible from both the JS and CSS sides. */
+  --bp-sm: 480px;
+  --bp-md: 640px;
+  --bp-ml: 760px;
+  --bp-lg: 860px;
+  --bp-tab: 900px;
+  --bp-tl: 1000px;
+  --bp-xl: 1100px;
+  --bp-xxl: 1440px;
+}
+
+/* Shared base reset — identical across the project (verified byte-for-byte
+   modulo whitespace) and duplicated in every page's own <style> block. */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
