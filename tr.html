@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
 <title>nukrax.tr</title>
@@ -15,16 +17,10 @@
    NUKRAX.TR — ELITE 3D DESIGN SYSTEM
 ═══════════════════════════════════════════════════════════════ */
 :root {
-  --accent:    #8FB8C4;
   --black:     #030507;
   --graphite:  #0A0F13;
-  --panel:     #0A0F13;
   --card:      #0E141A;
   --card-gl:   rgba(10,15,19,.65);
-  --border:    #1B2328;
-  --border2:   #2A353C;
-  --text:      #D3DBDD;
-  --muted:     #8A9BA3;
   --subtle:    #46626B;
   --blue:      #8FB8C4;
   --blue2:     #8A9BA3;
@@ -39,8 +35,6 @@
   --gold:      #8FB8C4;
   --gold-glow: rgba(143,184,196,.24);
   --gold-dim:  rgba(143,184,196,.08);
-  --white:     #F2F5F5;
-  --font-logo: 'NKX Display', 'Outfit', sans-serif;
   --font-head: 'Outfit', sans-serif;
   --font-mono: 'Space Mono', monospace;
   --r:         6px;
@@ -52,16 +46,9 @@
 }
 
 /* Wordmark display face — matches main page, loaded from assets/fonts */
-@font-face{
-  font-family:'NKX Display';
-  src:url('assets/fonts/nukrax-display.woff2') format('woff2'),
-      url('assets/fonts/nukrax-display.otf') format('opentype');
-  font-weight:400;
-  font-style:normal;
-  font-display:swap;
-}
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+
 html{scroll-behavior:smooth}
 body{
   font-family:var(--font-mono);

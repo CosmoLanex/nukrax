@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
 <title>Set up your account</title>
@@ -11,18 +13,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
 <style>body{visibility:hidden}</style>
 <style>
-@font-face{
-  font-family:'NKX Display';
-  src:url('assets/fonts/nukrax-display.woff2') format('woff2'),
-      url('assets/fonts/nukrax-display.otf') format('opentype');
-  font-weight:400;font-style:normal;font-display:swap;
-}
+
 :root{
-  --black:#030507;--panel:#0A0F13;--line:#1B2328;--line-lit:#2A353C;
-  --muted:#8A9BA3;--text:#D3DBDD;--white:#F2F5F5;--accent:#8FB8C4;--accent-dim:#46626B;
-  --font-logo:'NKX Display','Outfit',sans-serif;--font-m:'Space Mono',monospace;--font-b:'Outfit',sans-serif;
+  --black:#030507;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
 body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh;
   display:flex;align-items:center;justify-content:center;padding:24px}
 

@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>nukrax</title>
 <meta name="description" content="A private ecosystem.">
@@ -80,67 +82,12 @@
 <style>
 
 /* ── Wordmark display face — used ONLY for the NUKRAX logotype ── */
-@font-face{
-  font-family:'NKX Display';
-  src:url('assets/fonts/nukrax-display.woff2') format('woff2'),
-      url('assets/fonts/nukrax-display.otf') format('opentype');
-  font-weight:400;
-  font-style:normal;
-  font-display:swap;
-}
 
-:root {
-  --black:    #07090B;
-  --panel:    #0A0F13;
-  --line:     #1B2328;
-  --line-lit: #2A353C;
-  --muted:    #8A9BA3;
-  --text:     #D3DBDD;
-  --white:    #F2F5F5;
-  --accent:   #8FB8C4;
-  --accent-dim: #46626B;
 
-  --font-logo: 'NKX Display', 'Outfit', sans-serif;
-  --font-m:   'Space Mono', monospace;
-  --font-b:   'Outfit', sans-serif;
-  --ease:     cubic-bezier(0.22,1,0.36,1);
-  --ease-out: cubic-bezier(0.16,1,0.3,1);
 
-  --container: 1180px;
-  --gutter: clamp(24px, 5vw, 64px);
-  /* ── Type scale — tokenized font sizes (rem-based, respects user font-size preference) ── */
-  --fs-9-5: 0.5938rem;
-  --fs-10: 0.625rem;
-  --fs-10-5: 0.6562rem;
-  --fs-11: 0.6875rem;
-  --fs-11-5: 0.7188rem;
-  --fs-12: 0.75rem;
-  --fs-12-5: 0.7812rem;
-  --fs-13: 0.8125rem;
-  --fs-13-5: 0.8438rem;
-  --fs-14: 0.875rem;
-  --fs-14-5: 0.9062rem;
-  --fs-15: 0.9375rem;
-  --fs-15-5: 0.9688rem;
-  --fs-16: 1rem;
-  --fs-19: 1.1875rem;
-  --fs-20: 1.25rem;
-  --fs-38: 2.375rem;
 
-  /* Fluid heading sizes (clamp, rem-based) */
-  --fs-hero-logo: clamp(3.625rem,12vw,9.875rem);
-  --fs-hero-logo-lg: clamp(2.25rem,4.6vw,3.5rem);
-  --fs-hero-logo-sm: clamp(2.75rem,14vw,3.625rem);
-  --fs-hero-tagline: clamp(1.0625rem,2vw,1.375rem);
-  --fs-hero-tagline-lg: clamp(0.875rem,1.5vw,1.125rem);
-  --fs-heading-lg: clamp(2rem,4vw,2.875rem);
-  --fs-heading-md: clamp(1.625rem,3vw,2.375rem);
-  --fs-heading-sm: clamp(1.375rem,2.4vw,1.875rem);
-  --fs-heading-xl: clamp(2.125rem,6vw,4rem);
-}
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-size:16px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+
 
 /* Backgrounded tab: pause every always-on decorative CSS animation
    (nav-dot pulse, card breathing, glow, scan lines, etc). Nothing visual

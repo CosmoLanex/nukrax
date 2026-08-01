@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
 <title>nukrax.cr</title>
@@ -15,13 +17,8 @@
   --layer2:   #0E141A;
   --layer3:   #131A21;
   --layer4:   #1B2328;
-  --border:   #1B2328;
-  --border2:  #2A353C;
   --mid:      #46626B;
   --secondary:#8A9BA3;
-  --accent:   #8FB8C4;
-  --text:     #D3DBDD;
-  --white:    #F2F5F5;
   --warn:     #D9667A;
   --warn-bg:  rgba(217,102,122,0.08);
   --glass:    rgba(242,245,245,0.03);
@@ -33,14 +30,7 @@
 }
 
 /* Wordmark display face — matches main page, loaded from assets/fonts */
-@font-face{
-  font-family:'NKX Display';
-  src:url('assets/fonts/nukrax-display.woff2') format('woff2'),
-      url('assets/fonts/nukrax-display.otf') format('opentype');
-  font-weight:400;
-  font-style:normal;
-  font-display:swap;
-}
+
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
