@@ -322,6 +322,8 @@ nav.scrolled{
   padding:9px 20px;border-radius:999px;text-decoration:none;
   transition:background .25s var(--ease),border-color .25s var(--ease),transform .15s var(--ease-out);
 }
+/* Desktop only — same premium rounded-rect treatment as the hero button. */
+@media(min-width:601px){.nav-get-started-link{border-radius:16px}}
 @media (hover:hover) and (pointer:fine){.nav-get-started-link:hover{
   background:linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04));
   border-color:rgba(255,255,255,0.24);
@@ -394,6 +396,9 @@ body.nkx-logged-out .nav-get-started-link{display:inline-flex}
 }
 @media (prefers-reduced-motion: reduce){.btn-premium::before{animation:none;display:none}}
 @media(max-width:600px){#btn-get-started{border-radius:16px}}
+/* Desktop only — reduce the pill (999px) down to a premium rounded-rect,
+   matching the treatment already used on mobile. Mobile is untouched. */
+@media(min-width:601px){#btn-get-started{border-radius:18px}}
 
 .hero-doc-link{
   display:inline-flex;align-items:center;
@@ -919,14 +924,19 @@ footer{
 
 /* ══════════ PREMIUM MOTION ENHANCEMENTS ══════════ */
 
-/* Heading reveal — words animate individually */
+/* Heading reveal — words animate individually. `will-change` for this is
+   applied/cleared by JS right around the one-shot reveal transition (see
+   the reveal script near the end of <body>) rather than declared here
+   permanently — a permanent will-change on every word-span of every
+   heading keeps dozens of GPU-composited layers alive for the entire page
+   lifetime long after the (one-time) animation finishes, which adds
+   avoidable compositing overhead to every subsequent scroll. */
 .reveal-word{
   display:inline-block;
   opacity:0;
   transform:translateY(22px);
   filter:blur(4px);
   transition:opacity .7s var(--ease),transform .7s var(--ease),filter .7s var(--ease);
-  will-change:transform,opacity,filter;
 }
 .reveal-heading.visible .reveal-word{opacity:1;transform:translateY(0);filter:blur(0)}
 
@@ -2571,7 +2581,12 @@ function updateProgress(){
   const max = Math.max(1, doc.scrollHeight - window.innerHeight);
   progressBar.style.width = (Math.min(1, window.scrollY / max) * 100) + '%';
 }
-window.addEventListener('scroll', updateProgress, { passive:true });
+let progressTicking = false;
+window.addEventListener('scroll', ()=>{
+  if(progressTicking) return;
+  progressTicking = true;
+  requestAnimationFrame(()=>{ updateProgress(); progressTicking = false; });
+}, { passive:true });
 updateProgress();
 
 /* ── HERO GLOW — cursor-reactive + scroll-linked parallax volumetric light ── */
@@ -2714,9 +2729,15 @@ window.addEventListener('pageshow', function(event) {
 
 /* ── NAVBAR SCROLL ── */
 const navbar=document.getElementById('navbar');
+let navScrollTicking = false;
 window.addEventListener('scroll',()=>{
-  navbar.classList.toggle('scrolled',window.scrollY>60);
-});
+  if(navScrollTicking) return;
+  navScrollTicking = true;
+  requestAnimationFrame(()=>{
+    navbar.classList.toggle('scrolled',window.scrollY>60);
+    navScrollTicking = false;
+  });
+}, { passive:true });
 
 /* ── PAUSE DECORATIVE ANIMATIONS WHEN TAB IS BACKGROUNDED ── */
 document.addEventListener('visibilitychange', ()=>{
@@ -2794,12 +2815,22 @@ function setupAutoScrollTrack(wrapSelector, trackSelector, { skipBelowWidth = 0,
   const isMobile = window.matchMedia('(max-width:700px)').matches;
   const effectiveSpeed = (isMobile && mobileSpeed !== null) ? mobileSpeed : speed;
 
+  // Cache the scrollable range instead of reading scrollWidth/clientWidth
+  // (a forced layout read) on every single animation frame — these only
+  // change on resize or when the track's own content size changes, so a
+  // cached value recomputed on those events is functionally identical.
+  let max = track.scrollWidth - track.clientWidth;
+  function recalcMax(){ max = track.scrollWidth - track.clientWidth; }
+  window.addEventListener('resize', recalcMax, { passive:true });
+  if(typeof ResizeObserver !== 'undefined'){
+    new ResizeObserver(recalcMax).observe(track);
+  }
+
   function updateEdgeFade(){
     wrap.classList.toggle('at-start', track.scrollLeft <= 2);
   }
   function step(){
     if(!paused){
-      const max = track.scrollWidth - track.clientWidth;
       if(max > 0){
         track.scrollLeft += effectiveSpeed * direction;
         if(track.scrollLeft >= max - 1) direction = -1;
@@ -2852,8 +2883,23 @@ try {
     const primaryIO = new IntersectionObserver((entries, obs)=>{
       entries.forEach(entry=>{
         if(entry.isIntersecting){
-          entry.target.classList.add('visible');
-          obs.unobserve(entry.target);
+          const target = entry.target;
+          if(target.classList.contains('reveal-heading')){
+            // Promote each word to its own layer only for the duration of
+            // this one-shot reveal transition, then release it — avoids
+            // leaving dozens of permanently-composited layers behind for
+            // the rest of the page's life (see .reveal-word CSS comment).
+            const words = target.querySelectorAll('.reveal-word');
+            words.forEach(w=>{ w.style.willChange = 'transform, opacity, filter'; });
+            target.classList.add('visible');
+            const maxStagger = words.length ? (words.length - 1) * 45 : 0;
+            setTimeout(()=>{
+              words.forEach(w=>{ w.style.willChange = ''; });
+            }, 700 + maxStagger + 100);
+          } else {
+            target.classList.add('visible');
+          }
+          obs.unobserve(target);
         }
       });
     },{ threshold:0.12, rootMargin:'0px 0px -8% 0px' });

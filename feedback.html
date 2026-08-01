@@ -826,7 +826,12 @@ function updateProgress(){
   const max = Math.max(1, doc.scrollHeight - window.innerHeight);
   progressBar.style.width = (Math.min(1, window.scrollY / max) * 100) + '%';
 }
-window.addEventListener('scroll', updateProgress, { passive:true });
+let progressTicking = false;
+window.addEventListener('scroll', ()=>{
+  if(progressTicking) return;
+  progressTicking = true;
+  requestAnimationFrame(()=>{ updateProgress(); progressTicking = false; });
+}, { passive:true });
 updateProgress();
 
 /* ── RIPPLE ── */
@@ -871,9 +876,15 @@ window.addEventListener('pageshow', function(event){
 
 /* ── NAVBAR SCROLL ── */
 const navbar = document.getElementById('navbar');
+let navScrollTicking = false;
 window.addEventListener('scroll', ()=>{
-  navbar.classList.toggle('scrolled', window.scrollY > 60);
-});
+  if(navScrollTicking) return;
+  navScrollTicking = true;
+  requestAnimationFrame(()=>{
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+    navScrollTicking = false;
+  });
+}, { passive:true });
 
 /* ── REVEAL ON SCROLL — reversible, word-split headings ── */
 const REDUCE_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
