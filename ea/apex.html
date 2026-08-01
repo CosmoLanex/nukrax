@@ -1670,11 +1670,27 @@
   // Nav active highlight
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a');
-  window.addEventListener('scroll', () => {
+  // Cache each section's offset once (instead of reading offsetTop — a
+  // forced layout read — on every scroll event) and only recompute it
+  // when the layout could actually have changed (resize).
+  let sectionOffsets = Array.from(sections).map(s => ({ id: s.id, top: s.offsetTop }));
+  window.addEventListener('resize', () => {
+    sectionOffsets = Array.from(sections).map(s => ({ id: s.id, top: s.offsetTop }));
+  }, { passive: true });
+  let navActive = '';
+  function updateNavHighlight(){
     let cur = '';
-    sections.forEach(s => { if(window.scrollY >= s.offsetTop - 140) cur = s.id; });
+    sectionOffsets.forEach(s => { if(window.scrollY >= s.top - 140) cur = s.id; });
+    if(cur === navActive) return; // skip DOM writes when nothing changed
+    navActive = cur;
     navLinks.forEach(a => { a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--silver-hi)' : ''; });
-  });
+  }
+  let navTicking = false;
+  window.addEventListener('scroll', () => {
+    if(navTicking) return;
+    navTicking = true;
+    requestAnimationFrame(() => { updateNavHighlight(); navTicking = false; });
+  }, { passive: true });
 
   // Handle navigation to index.html
   document.querySelectorAll('a[href="../index.html"]').forEach(link => {

@@ -991,15 +991,28 @@
   // Smooth active nav highlight
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a');
-  window.addEventListener('scroll', () => {
+  let sectionOffsets = Array.from(sections).map(s => ({ id: s.id, top: s.offsetTop }));
+  window.addEventListener('resize', () => {
+    sectionOffsets = Array.from(sections).map(s => ({ id: s.id, top: s.offsetTop }));
+  }, { passive: true });
+  let navActive = '';
+  function updateNavHighlight(){
     let current = '';
-    sections.forEach(s => {
-      if(window.scrollY >= s.offsetTop - 120) current = s.id;
+    sectionOffsets.forEach(s => {
+      if(window.scrollY >= s.top - 120) current = s.id;
     });
+    if(current === navActive) return;
+    navActive = current;
     navLinks.forEach(a => {
       a.style.color = a.getAttribute('href') === '#' + current ? 'var(--gold)' : '';
     });
-  });
+  }
+  let navTicking = false;
+  window.addEventListener('scroll', () => {
+    if(navTicking) return;
+    navTicking = true;
+    requestAnimationFrame(() => { updateNavHighlight(); navTicking = false; });
+  }, { passive: true });
 
   // Handle navigation to index.html
   document.querySelectorAll('a[href="../index.html"]').forEach(link => {

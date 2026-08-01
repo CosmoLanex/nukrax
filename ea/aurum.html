@@ -1752,13 +1752,27 @@
   // Nav active highlight on scroll
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a');
-  window.addEventListener('scroll', () => {
+  let sectionOffsets = Array.from(sections).map(s => ({ id: s.id, top: s.offsetTop }));
+  window.addEventListener('resize', () => {
+    sectionOffsets = Array.from(sections).map(s => ({ id: s.id, top: s.offsetTop }));
+  }, { passive: true });
+  let navActive = '';
+  function updateNavHighlight(){
     let cur = '';
-    sections.forEach(s => { if(window.scrollY >= s.offsetTop - 140) cur = s.id; });
+    sectionOffsets.forEach(s => { if(window.scrollY >= s.top - 140) cur = s.id; });
+    if(cur === navActive) return;
+    navActive = cur;
     navLinks.forEach(a => {
       a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--silver)' : '';
     });
+  }
+  let navTicking = false;
+  window.addEventListener('scroll', () => {
+    if(navTicking) return;
+    navTicking = true;
+    requestAnimationFrame(() => { updateNavHighlight(); navTicking = false; });
   }, { passive: true });
+
 
   // Handle navigation to index.html
   document.querySelectorAll('a[href="../index.html"]').forEach(link => {
