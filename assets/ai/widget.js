@@ -301,9 +301,15 @@ if (!document.getElementById(ROOT_ID)) {
   const basePath = location.pathname.includes('/ea/') ? '../' : '';
 
   // ── Back to top ──
+  let topBtnTicking = false;
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 420) topBtn.classList.add('show');
-    else topBtn.classList.remove('show');
+    if (topBtnTicking) return;
+    topBtnTicking = true;
+    requestAnimationFrame(() => {
+      if (window.scrollY > 420) topBtn.classList.add('show');
+      else topBtn.classList.remove('show');
+      topBtnTicking = false;
+    });
   }, { passive: true });
   topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
