@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Layout System — NUKRAX Docs</title>
+<meta name="description" content="The layout system behind NUKRAX: container width, gutter, spacing scale, z-index scale, and common grid patterns.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="../assets/logo.png" type="image/png" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs/docs.css">
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo-container">
+    <img src="../assets/logo.png" alt="NUKRAX Logo">
+    <span class="nav-logo">nukrax</span>
+    <span class="nav-doc-tag">Docs</span>
+  </a>
+  <div class="nav-actions">
+    <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../signup.html" class="nav-get-started">Get Started</a>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <div class="docs-sidebar-overlay" data-sidebar-overlay></div>
+  <aside class="docs-sidebar" data-sidebar>
+    <div class="docs-search">
+    <input type="search" class="docs-search-input" placeholder="Search docs…" aria-label="Search documentation" data-docs-search>
+    <kbd class="docs-search-kbd">/</kbd>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Get Started</div>
+    <a href="introduction.html" class="docs-nav-link">Introduction</a>
+    <a href="getting-started.html" class="docs-nav-link">Getting Started</a>
+    <a href="quick-start.html" class="docs-nav-link">Quick Start</a>
+    <a href="installation.html" class="docs-nav-link">Installation</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Platform</div>
+    <a href="project-structure.html" class="docs-nav-link">Project Structure</a>
+    <a href="features.html" class="docs-nav-link">Features</a>
+    <a href="components.html" class="docs-nav-link">Components</a>
+    <a href="layout.html" class="docs-nav-link active" aria-current="page">Layout System</a>
+    <a href="responsive.html" class="docs-nav-link">Responsive Design</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Configuration</div>
+    <a href="configuration.html" class="docs-nav-link">Configuration</a>
+    <a href="customization.html" class="docs-nav-link">Customization</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Architecture</div>
+    <a href="api.html" class="docs-nav-link">API &amp; Integrations</a>
+    <a href="javascript.html" class="docs-nav-link">JavaScript Architecture</a>
+    <a href="css.html" class="docs-nav-link">CSS &amp; Design System</a>
+    <a href="performance.html" class="docs-nav-link">Performance</a>
+    <a href="animations.html" class="docs-nav-link">Animations</a>
+    <a href="accessibility.html" class="docs-nav-link">Accessibility</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Operations</div>
+    <a href="deployment.html" class="docs-nav-link">Deployment</a>
+    <a href="changelog.html" class="docs-nav-link">Changelog</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Support</div>
+    <a href="faq.html" class="docs-nav-link">FAQ</a>
+    <a href="troubleshooting.html" class="docs-nav-link">Troubleshooting</a>
+    <a href="contributing.html" class="docs-nav-link">Feedback &amp; Contributing</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><a href="introduction.html">Docs</a><span>/</span><span aria-current="page">Layout System</span>
+    </nav>
+    <p class="docs-eyebrow">Platform</p>
+    <h1 class="docs-h1">Layout System</h1>
+    <p class="docs-lead">The shared layout primitives — container, gutter, spacing, and z-index scales — used across every page.</p>
+
+    <section class="docs-section" id="overview">
+  <h2 class="docs-h2">Layout primitives</h2>
+  
+      <p class="docs-p">Every page shares the same layout primitives, defined once as CSS
+      custom properties in <code class="docs-inline-code">assets/css/tokens.css</code> and
+      mirrored on the JS side in <code class="docs-inline-code">assets/data/layout.js</code>
+      for anything that needs to compute layout in code (canvas sizing, dynamic spacing, etc).</p>
+    
+</section>
+
+<section class="docs-section" id="container-gutter">
+  <h2 class="docs-h2">Container & gutter</h2>
+  <div class="docs-table-wrap"><table class="docs-table">
+  <thead><tr><th>Token</th><th>Value</th><th>Used for</th></tr></thead>
+  <tbody><tr><td class="docs-td"><code class="docs-inline-code">--container</code></td><td class="docs-td">1180px</td><td class="docs-td">Max content width for page sections.</td></tr><tr><td class="docs-td"><code class="docs-inline-code">--gutter</code></td><td class="docs-td">clamp(24px, 5vw, 64px)</td><td class="docs-td">Fluid horizontal page padding.</td></tr></tbody>
+</table></div>
+</section>
+
+<section class="docs-section" id="spacing-scale">
+  <h2 class="docs-h2">Spacing scale</h2>
+  
+      <p class="docs-p">The JS-side spacing scale (<code class="docs-inline-code">SPACING</code>
+      in <code class="docs-inline-code">assets/data/layout.js</code>) mirrors the visual rhythm
+      used throughout the CSS, for anything computing layout in script rather than pure CSS:</p>
+    <div class="docs-code">
+  <div class="docs-code-head">
+    <span>JAVASCRIPT</span>
+    <button class="docs-copy-btn" data-copy-target="code-3" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="docs-copy-label">Copy</span></button>
+  </div>
+  <pre><code id="code-3">import { SPACING } from "../assets/data/data.js";
+
+SPACING.xxs   // 4
+SPACING.xs    // 8
+SPACING.sm    // 12
+SPACING.md    // 16
+SPACING.lg    // 24
+SPACING.xl    // 32
+SPACING.xxl   // 48
+SPACING.xxxl  // 64</code></pre>
+</div>
+</section>
+
+<section class="docs-section" id="z-index">
+  <h2 class="docs-h2">Z-index scale</h2>
+  
+      <p class="docs-p">A shared z-index scale keeps stacking contexts predictable as new
+      overlays get added — sticky nav, modals, toasts, and tooltips all have a defined layer
+      instead of ad hoc numbers:</p>
+    <div class="docs-code">
+  <div class="docs-code-head">
+    <span>JAVASCRIPT</span>
+    <button class="docs-copy-btn" data-copy-target="code-4" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="docs-copy-label">Copy</span></button>
+  </div>
+  <pre><code id="code-4">import { Z_INDEX } from "../assets/data/data.js";
+
+Z_INDEX.stickyNav    // 100
+Z_INDEX.overlay      // 500
+Z_INDEX.modal        // 900
+Z_INDEX.toast        // 950</code></pre>
+</div>
+</section>
+
+<section class="docs-section" id="grid-patterns">
+  <h2 class="docs-h2">Common grid patterns</h2>
+  
+      <p class="docs-p">Card grids across the site (feature highlights, EA comparison cards,
+      documentation cards) use the same auto-fit pattern:</p>
+    <div class="docs-code">
+  <div class="docs-code-head">
+    <span>CSS</span>
+    <button class="docs-copy-btn" data-copy-target="code-5" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="docs-copy-label">Copy</span></button>
+  </div>
+  <pre><code id="code-5">display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 14px;</code></pre>
+</div>
+</section>
+
+<section class="docs-section" id="docs-layout">
+  <h2 class="docs-h2">This documentation's own layout</h2>
+  
+      <p class="docs-p">The docs system itself follows the same primitives: a fixed-width
+      sidebar, a reading-width main column (max <code class="docs-inline-code">760px</code> for
+      comfortable line length), and a right-hand table of contents — collapsing to a single
+      column with a slide-out drawer below <code class="docs-inline-code">860px</code>. See
+      <a href="responsive.html">Responsive Design</a> for the breakpoint system behind that.</p>
+    
+</section>
+
+    <div class="docs-pagenav">
+    <a href="components.html" class="docs-pagenav-link prev">
+      <span class="docs-pagenav-dir">← Previous</span>
+      <span class="docs-pagenav-title">Components</span>
+    </a>
+    <a href="responsive.html" class="docs-pagenav-link next">
+      <span class="docs-pagenav-dir">Next →</span>
+      <span class="docs-pagenav-title">Responsive Design</span>
+    </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc">
+    <div class="docs-toc-label">On this page</div>
+    <a href="#overview" class="docs-toc-link active">Layout primitives</a>
+    <a href="#container-gutter" class="docs-toc-link">Container & gutter</a>
+    <a href="#spacing-scale" class="docs-toc-link">Spacing scale</a>
+    <a href="#z-index" class="docs-toc-link">Z-index scale</a>
+    <a href="#grid-patterns" class="docs-toc-link">Common grid patterns</a>
+    <a href="#docs-layout" class="docs-toc-link">This documentation's own layout</a>
+  </aside>
+</div>
+
+<script type="module" src="../assets/docs/docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Performance — NUKRAX Docs</title>
+<meta name="description" content="Performance optimizations on NUKRAX: scroll handler patterns, will-change management, and per-frame layout reads.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="../assets/logo.png" type="image/png" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs/docs.css">
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo-container">
+    <img src="../assets/logo.png" alt="NUKRAX Logo">
+    <span class="nav-logo">nukrax</span>
+    <span class="nav-doc-tag">Docs</span>
+  </a>
+  <div class="nav-actions">
+    <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../signup.html" class="nav-get-started">Get Started</a>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <div class="docs-sidebar-overlay" data-sidebar-overlay></div>
+  <aside class="docs-sidebar" data-sidebar>
+    <div class="docs-search">
+    <input type="search" class="docs-search-input" placeholder="Search docs…" aria-label="Search documentation" data-docs-search>
+    <kbd class="docs-search-kbd">/</kbd>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Get Started</div>
+    <a href="introduction.html" class="docs-nav-link">Introduction</a>
+    <a href="getting-started.html" class="docs-nav-link">Getting Started</a>
+    <a href="quick-start.html" class="docs-nav-link">Quick Start</a>
+    <a href="installation.html" class="docs-nav-link">Installation</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Platform</div>
+    <a href="project-structure.html" class="docs-nav-link">Project Structure</a>
+    <a href="features.html" class="docs-nav-link">Features</a>
+    <a href="components.html" class="docs-nav-link">Components</a>
+    <a href="layout.html" class="docs-nav-link">Layout System</a>
+    <a href="responsive.html" class="docs-nav-link">Responsive Design</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Configuration</div>
+    <a href="configuration.html" class="docs-nav-link">Configuration</a>
+    <a href="customization.html" class="docs-nav-link">Customization</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Architecture</div>
+    <a href="api.html" class="docs-nav-link">API &amp; Integrations</a>
+    <a href="javascript.html" class="docs-nav-link">JavaScript Architecture</a>
+    <a href="css.html" class="docs-nav-link">CSS &amp; Design System</a>
+    <a href="performance.html" class="docs-nav-link active" aria-current="page">Performance</a>
+    <a href="animations.html" class="docs-nav-link">Animations</a>
+    <a href="accessibility.html" class="docs-nav-link">Accessibility</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Operations</div>
+    <a href="deployment.html" class="docs-nav-link">Deployment</a>
+    <a href="changelog.html" class="docs-nav-link">Changelog</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Support</div>
+    <a href="faq.html" class="docs-nav-link">FAQ</a>
+    <a href="troubleshooting.html" class="docs-nav-link">Troubleshooting</a>
+    <a href="contributing.html" class="docs-nav-link">Feedback &amp; Contributing</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><a href="introduction.html">Docs</a><span>/</span><span aria-current="page">Performance</span>
+    </nav>
+    <p class="docs-eyebrow">Architecture</p>
+    <h1 class="docs-h1">Performance</h1>
+    <p class="docs-lead">The concrete scroll and rendering optimizations already shipped — and the conventions that keep new code from regressing them.</p>
+
+    <section class="docs-section" id="overview">
+  <h2 class="docs-h2">What performance work has actually been done</h2>
+  
+      <p class="docs-p">Rather than a general performance philosophy, this page documents the
+      concrete optimizations already shipped on the site — useful if you're debugging a
+      similar issue or extending one of these patterns to new code.</p>
+    
+</section>
+
+<section class="docs-section" id="scroll-handlers">
+  <h2 class="docs-h2">Scroll handler discipline</h2>
+  
+      <p class="docs-p">Every scroll-linked handler on the site follows the same rule: never do
+      layout-triggering reads (like <code class="docs-inline-code">offsetTop</code>) inside a
+      handler that runs on every raw scroll event. Instead:</p>
+    <ol class="docs-list">
+<li><span class="num">01</span><span>Cache expensive reads once, recomputed only on <code class="docs-inline-code">resize</code> (or a <code class="docs-inline-code">ResizeObserver</code> for content-driven size changes).</span></li>
+<li><span class="num">02</span><span>Throttle the handler to at most once per frame with <code class="docs-inline-code">requestAnimationFrame</code>.</span></li>
+<li><span class="num">03</span><span>Skip the DOM write entirely when the computed value hasn't changed.</span></li>
+</ol><div class="docs-code">
+  <div class="docs-code-head">
+    <span>JAVASCRIPT</span>
+    <button class="docs-copy-btn" data-copy-target="code-9" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="docs-copy-label">Copy</span></button>
+  </div>
+  <pre><code id="code-9">let sectionOffsets = Array.from(sections).map(s =&gt; ({ id: s.id, top: s.offsetTop }));
+window.addEventListener('resize', () =&gt; {
+  sectionOffsets = Array.from(sections).map(s =&gt; ({ id: s.id, top: s.offsetTop }));
+}, { passive: true });
+
+let active = '';
+let ticking = false;
+window.addEventListener('scroll', () =&gt; {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() =&gt; {
+    let cur = '';
+    sectionOffsets.forEach(s =&gt; { if (window.scrollY &gt;= s.top - 140) cur = s.id; });
+    if (cur !== active) { active = cur; /* write DOM only here */ }
+    ticking = false;
+  });
+}, { passive: true });</code></pre>
+</div>
+</section>
+
+<section class="docs-section" id="will-change">
+  <h2 class="docs-h2">will-change is scoped to the animation, not permanent</h2>
+  <div class="docs-callout warning">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="m10.29 3.86-8.18 14.18A2 2 0 0 0 3.82 21h16.36a2 2 0 0 0 1.71-2.96L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg><span>Warning</span></div>
+  <div>A permanent <code class="docs-inline-code">will-change</code> on many elements (for example, one per word in an animated heading) keeps that many GPU-composited layers alive for the entire page's life — long after a one-shot animation finishes — which adds avoidable compositing overhead to every scroll afterward. On NUKRAX, <code class="docs-inline-code">will-change</code> for one-shot reveal animations is applied by JS right before the transition starts and cleared once it ends, rather than declared permanently in CSS.</div>
+</div>
+</section>
+
+<section class="docs-section" id="per-frame-reads">
+  <h2 class="docs-h2">No layout reads inside animation loops</h2>
+  
+      <p class="docs-p">Continuous <code class="docs-inline-code">requestAnimationFrame</code>
+      loops (like the auto-scrolling testimonial/timeline tracks) cache dimensions such as
+      <code class="docs-inline-code">scrollWidth</code>/<code class="docs-inline-code">clientWidth</code>
+      once, rather than reading them on every single frame at 60fps — recomputing only via
+      <code class="docs-inline-code">ResizeObserver</code> when the tracked element's size
+      actually changes.</p>
+    
+</section>
+
+<section class="docs-section" id="what-was-left-alone">
+  <h2 class="docs-h2">What was intentionally left alone</h2>
+  <ul class="docs-bullets">
+<li><code class="docs-inline-code">backdrop-filter</code> blur on the fixed nav — inherently resamples whatever's behind it every frame while scrolling; removing that cost means removing the blur effect, which would be a visual change.</li>
+<li><code class="docs-inline-code">transition: all</code> on hover-triggered elements — not scroll-continuous, and rewriting each to an explicit property list carries real regression risk for a benefit unrelated to scroll performance.</li>
+</ul>
+</section>
+
+<section class="docs-section" id="measuring">
+  <h2 class="docs-h2">How to check for regressions</h2>
+  <div class="docs-callout tip">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 2Z"/></svg><span>Tip</span></div>
+  <div>If you add a new scroll listener, check DevTools' Performance panel for forced synchronous layout warnings (usually shown as a red bar / “Forced reflow” label) while scrolling — that's the signal a read is happening where a write from an earlier frame hasn't settled yet.</div>
+</div>
+</section>
+
+    <div class="docs-pagenav">
+    <a href="css.html" class="docs-pagenav-link prev">
+      <span class="docs-pagenav-dir">← Previous</span>
+      <span class="docs-pagenav-title">CSS &amp; Design System</span>
+    </a>
+    <a href="animations.html" class="docs-pagenav-link next">
+      <span class="docs-pagenav-dir">Next →</span>
+      <span class="docs-pagenav-title">Animations</span>
+    </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc">
+    <div class="docs-toc-label">On this page</div>
+    <a href="#overview" class="docs-toc-link active">What performance work has actually been done</a>
+    <a href="#scroll-handlers" class="docs-toc-link">Scroll handler discipline</a>
+    <a href="#will-change" class="docs-toc-link">will-change is scoped to the animation, not permanent</a>
+    <a href="#per-frame-reads" class="docs-toc-link">No layout reads inside animation loops</a>
+    <a href="#what-was-left-alone" class="docs-toc-link">What was intentionally left alone</a>
+    <a href="#measuring" class="docs-toc-link">How to check for regressions</a>
+  </aside>
+</div>
+
+<script type="module" src="../assets/docs/docs.js"></script>
+</body>
+</html>

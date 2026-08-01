@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configuration — NUKRAX Docs</title>
+<meta name="description" content="How to configure NUKRAX Expert Advisor inputs and account settings.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="../assets/logo.png" type="image/png" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs/docs.css">
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo-container">
+    <img src="../assets/logo.png" alt="NUKRAX Logo">
+    <span class="nav-logo">nukrax</span>
+    <span class="nav-doc-tag">Docs</span>
+  </a>
+  <div class="nav-actions">
+    <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../signup.html" class="nav-get-started">Get Started</a>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <div class="docs-sidebar-overlay" data-sidebar-overlay></div>
+  <aside class="docs-sidebar" data-sidebar>
+    <div class="docs-search">
+    <input type="search" class="docs-search-input" placeholder="Search docs…" aria-label="Search documentation" data-docs-search>
+    <kbd class="docs-search-kbd">/</kbd>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Get Started</div>
+    <a href="introduction.html" class="docs-nav-link">Introduction</a>
+    <a href="getting-started.html" class="docs-nav-link">Getting Started</a>
+    <a href="quick-start.html" class="docs-nav-link">Quick Start</a>
+    <a href="installation.html" class="docs-nav-link">Installation</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Platform</div>
+    <a href="project-structure.html" class="docs-nav-link">Project Structure</a>
+    <a href="features.html" class="docs-nav-link">Features</a>
+    <a href="components.html" class="docs-nav-link">Components</a>
+    <a href="layout.html" class="docs-nav-link">Layout System</a>
+    <a href="responsive.html" class="docs-nav-link">Responsive Design</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Configuration</div>
+    <a href="configuration.html" class="docs-nav-link active" aria-current="page">Configuration</a>
+    <a href="customization.html" class="docs-nav-link">Customization</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Architecture</div>
+    <a href="api.html" class="docs-nav-link">API &amp; Integrations</a>
+    <a href="javascript.html" class="docs-nav-link">JavaScript Architecture</a>
+    <a href="css.html" class="docs-nav-link">CSS &amp; Design System</a>
+    <a href="performance.html" class="docs-nav-link">Performance</a>
+    <a href="animations.html" class="docs-nav-link">Animations</a>
+    <a href="accessibility.html" class="docs-nav-link">Accessibility</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Operations</div>
+    <a href="deployment.html" class="docs-nav-link">Deployment</a>
+    <a href="changelog.html" class="docs-nav-link">Changelog</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Support</div>
+    <a href="faq.html" class="docs-nav-link">FAQ</a>
+    <a href="troubleshooting.html" class="docs-nav-link">Troubleshooting</a>
+    <a href="contributing.html" class="docs-nav-link">Feedback &amp; Contributing</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><a href="introduction.html">Docs</a><span>/</span><span aria-current="page">Configuration</span>
+    </nav>
+    <p class="docs-eyebrow">Configuration</p>
+    <h1 class="docs-h1">Configuration</h1>
+    <p class="docs-lead">Expert Advisor inputs and account settings — what's configurable, and where.</p>
+
+    <section class="docs-section" id="overview">
+  <h2 class="docs-h2">Two layers of configuration</h2>
+  
+      <p class="docs-p">"Configuration" on NUKRAX covers two things: the <strong>inputs on each
+      Expert Advisor</strong> (risk, timing, symbol-specific behavior), and your
+      <strong>account settings</strong> on the website itself (notifications, security, display
+      preferences). This page covers both.</p>
+    
+</section>
+
+<section class="docs-section" id="ea-inputs">
+  <h2 class="docs-h2">Expert Advisor inputs</h2>
+  
+      <p class="docs-p">Every EA exposes its tunable inputs on the MetaTrader 5 <em>Inputs</em>
+      tab when you attach it to a chart. Exact parameters differ per system — check the
+      individual product page for the full list — but most NUKRAX EAs share a few common
+      categories:</p>
+    <div class="docs-table-wrap"><table class="docs-table">
+  <thead><tr><th>Category</th><th>Typical inputs</th></tr></thead>
+  <tbody><tr><td class="docs-td">Risk</td><td class="docs-td">Lot sizing method, max risk per trade, daily loss limit.</td></tr><tr><td class="docs-td">Timing</td><td class="docs-td">Session windows, news-event filters, broker GMT offset.</td></tr><tr><td class="docs-td">Execution</td><td class="docs-td">Entry model toggles, order type (market vs. laddered stop orders).</td></tr></tbody>
+</table></div><div class="docs-callout warning">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="m10.29 3.86-8.18 14.18A2 2 0 0 0 3.82 21h16.36a2 2 0 0 0 1.71-2.96L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg><span>Warning</span></div>
+  <div>Always confirm your broker's GMT offset before going live — session-based logic depends on it, and a mismatched offset can shift trades outside the intended window.</div>
+</div>
+</section>
+
+<section class="docs-section" id="account-settings">
+  <h2 class="docs-h2">Account settings</h2>
+  
+      <p class="docs-p">From <a href="../settings.html">Settings</a> you can manage security
+      (password, connected GitHub account), notification preferences, and basic display options.
+      Changes save immediately — there's no separate "save" step for most toggles.</p>
+    
+</section>
+
+<section class="docs-section" id="recommended-starting-point">
+  <h2 class="docs-h2">Recommended starting point</h2>
+  <div class="docs-callout tip">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 2Z"/></svg><span>Tip</span></div>
+  <div>Start with default inputs on a demo account before adjusting anything. It's much easier to judge whether a change actually helped once you've seen the default behavior first.</div>
+</div>
+</section>
+
+<section class="docs-section" id="planned-config">
+  <h2 class="docs-h2">Planned: config profiles</h2>
+  <div class="docs-callout planned">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>Planned</span></div>
+  <div>Saved configuration profiles (so you can switch between a conservative and aggressive input set without re-entering values) are on the roadmap — not available today.</div>
+</div>
+</section>
+
+    <div class="docs-pagenav">
+    <a href="responsive.html" class="docs-pagenav-link prev">
+      <span class="docs-pagenav-dir">← Previous</span>
+      <span class="docs-pagenav-title">Responsive Design</span>
+    </a>
+    <a href="customization.html" class="docs-pagenav-link next">
+      <span class="docs-pagenav-dir">Next →</span>
+      <span class="docs-pagenav-title">Customization</span>
+    </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc">
+    <div class="docs-toc-label">On this page</div>
+    <a href="#overview" class="docs-toc-link active">Two layers of configuration</a>
+    <a href="#ea-inputs" class="docs-toc-link">Expert Advisor inputs</a>
+    <a href="#account-settings" class="docs-toc-link">Account settings</a>
+    <a href="#recommended-starting-point" class="docs-toc-link">Recommended starting point</a>
+    <a href="#planned-config" class="docs-toc-link">Planned: config profiles</a>
+  </aside>
+</div>
+
+<script type="module" src="../assets/docs/docs.js"></script>
+</body>
+</html>

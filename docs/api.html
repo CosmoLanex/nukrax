@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API &amp; Integrations — NUKRAX Docs</title>
+<meta name="description" content="The services behind NUKRAX (Supabase, Cloudflare Workers, Resend) and the current state of API access.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="../assets/logo.png" type="image/png" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs/docs.css">
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo-container">
+    <img src="../assets/logo.png" alt="NUKRAX Logo">
+    <span class="nav-logo">nukrax</span>
+    <span class="nav-doc-tag">Docs</span>
+  </a>
+  <div class="nav-actions">
+    <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../signup.html" class="nav-get-started">Get Started</a>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <div class="docs-sidebar-overlay" data-sidebar-overlay></div>
+  <aside class="docs-sidebar" data-sidebar>
+    <div class="docs-search">
+    <input type="search" class="docs-search-input" placeholder="Search docs…" aria-label="Search documentation" data-docs-search>
+    <kbd class="docs-search-kbd">/</kbd>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Get Started</div>
+    <a href="introduction.html" class="docs-nav-link">Introduction</a>
+    <a href="getting-started.html" class="docs-nav-link">Getting Started</a>
+    <a href="quick-start.html" class="docs-nav-link">Quick Start</a>
+    <a href="installation.html" class="docs-nav-link">Installation</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Platform</div>
+    <a href="project-structure.html" class="docs-nav-link">Project Structure</a>
+    <a href="features.html" class="docs-nav-link">Features</a>
+    <a href="components.html" class="docs-nav-link">Components</a>
+    <a href="layout.html" class="docs-nav-link">Layout System</a>
+    <a href="responsive.html" class="docs-nav-link">Responsive Design</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Configuration</div>
+    <a href="configuration.html" class="docs-nav-link">Configuration</a>
+    <a href="customization.html" class="docs-nav-link">Customization</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Architecture</div>
+    <a href="api.html" class="docs-nav-link active" aria-current="page">API &amp; Integrations</a>
+    <a href="javascript.html" class="docs-nav-link">JavaScript Architecture</a>
+    <a href="css.html" class="docs-nav-link">CSS &amp; Design System</a>
+    <a href="performance.html" class="docs-nav-link">Performance</a>
+    <a href="animations.html" class="docs-nav-link">Animations</a>
+    <a href="accessibility.html" class="docs-nav-link">Accessibility</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Operations</div>
+    <a href="deployment.html" class="docs-nav-link">Deployment</a>
+    <a href="changelog.html" class="docs-nav-link">Changelog</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Support</div>
+    <a href="faq.html" class="docs-nav-link">FAQ</a>
+    <a href="troubleshooting.html" class="docs-nav-link">Troubleshooting</a>
+    <a href="contributing.html" class="docs-nav-link">Feedback &amp; Contributing</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><a href="introduction.html">Docs</a><span>/</span><span aria-current="page">API &amp; Integrations</span>
+    </nav>
+    <p class="docs-eyebrow">Architecture</p>
+    <h1 class="docs-h1">API &amp; Integrations</h1>
+    <p class="docs-lead">How NUKRAX's backend services fit together today — and what's planned for external integrations.</p>
+
+    <section class="docs-section" id="overview">
+  <h2 class="docs-h2">How NUKRAX's backend is composed today</h2>
+  
+      <p class="docs-p">NUKRAX doesn't (yet) expose a public API for third-party integrations.
+      Internally, the platform is composed of a few managed services rather than a single
+      monolithic backend:</p>
+    <div class="docs-table-wrap"><table class="docs-table">
+  <thead><tr><th>Service</th><th>Used for</th></tr></thead>
+  <tbody><tr><td class="docs-td">Supabase</td><td class="docs-td">Authentication, the Postgres database (profiles, posts, follows, notifications), and Realtime for the Community feed.</td></tr><tr><td class="docs-td">Cloudflare Workers</td><td class="docs-td">Serving the site itself, and proxying AI assistant requests.</td></tr><tr><td class="docs-td">Resend</td><td class="docs-td">Transactional email (confirmation, magic links) via Cloudflare DNS.</td></tr></tbody>
+</table></div>
+</section>
+
+<section class="docs-section" id="supabase-auth">
+  <h2 class="docs-h2">Authentication</h2>
+  
+      <p class="docs-p">Email/password, GitHub OAuth, and magic links are all handled through
+      Supabase Auth. Row-Level Security (RLS) policies on the database enforce that users can
+      only read/write data they're permitted to — there's no separate authorization layer
+      to configure.</p>
+    
+</section>
+
+<section class="docs-section" id="ai-proxy">
+  <h2 class="docs-h2">AI assistant proxy</h2>
+  
+      <p class="docs-p">The AI assistant ("Lanux") calls a Cloudflare Worker endpoint rather
+      than talking to an upstream AI provider directly from the browser — this keeps the
+      provider API key server-side, stored as a Worker secret rather than in client code. If
+      that network call isn't available, a local, offline knowledge-base responder answers
+      common questions instead.</p>
+    
+</section>
+
+<section class="docs-section" id="keep-alive">
+  <h2 class="docs-h2">Keeping the free-tier database warm</h2>
+  
+      <p class="docs-p">A scheduled GitHub Actions workflow pings the Supabase project
+      periodically to prevent the free-tier database from pausing due to inactivity.</p>
+    
+</section>
+
+<section class="docs-section" id="public-api">
+  <h2 class="docs-h2">Planned: public API</h2>
+  <div class="docs-callout planned">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>Planned</span></div>
+  <div>A public, authenticated API for reading account and trade performance data programmatically is on the roadmap. Nothing here today should be treated as a stable integration surface — there is no versioned public endpoint yet.</div>
+</div>
+</section>
+
+<section class="docs-section" id="webhooks">
+  <h2 class="docs-h2">Planned: trade event webhooks</h2>
+  <div class="docs-callout planned">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>Planned</span></div>
+  <div>Webhook notifications for trade events (opened, closed, risk-limit hit) are being explored for a future release, potentially to support the terminal dashboard and third-party alerting. Not available today.</div>
+</div>
+</section>
+
+    <div class="docs-pagenav">
+    <a href="customization.html" class="docs-pagenav-link prev">
+      <span class="docs-pagenav-dir">← Previous</span>
+      <span class="docs-pagenav-title">Customization</span>
+    </a>
+    <a href="javascript.html" class="docs-pagenav-link next">
+      <span class="docs-pagenav-dir">Next →</span>
+      <span class="docs-pagenav-title">JavaScript Architecture</span>
+    </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc">
+    <div class="docs-toc-label">On this page</div>
+    <a href="#overview" class="docs-toc-link active">How NUKRAX's backend is composed today</a>
+    <a href="#supabase-auth" class="docs-toc-link">Authentication</a>
+    <a href="#ai-proxy" class="docs-toc-link">AI assistant proxy</a>
+    <a href="#keep-alive" class="docs-toc-link">Keeping the free-tier database warm</a>
+    <a href="#public-api" class="docs-toc-link">Planned: public API</a>
+    <a href="#webhooks" class="docs-toc-link">Planned: trade event webhooks</a>
+  </aside>
+</div>
+
+<script type="module" src="../assets/docs/docs.js"></script>
+</body>
+</html>

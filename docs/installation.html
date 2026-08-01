@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Installation — NUKRAX Docs</title>
+<meta name="description" content="How to install and attach a NUKRAX Expert Advisor (.ex5) to a MetaTrader 5 chart.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="../assets/logo.png" type="image/png" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs/docs.css">
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo-container">
+    <img src="../assets/logo.png" alt="NUKRAX Logo">
+    <span class="nav-logo">nukrax</span>
+    <span class="nav-doc-tag">Docs</span>
+  </a>
+  <div class="nav-actions">
+    <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../signup.html" class="nav-get-started">Get Started</a>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <div class="docs-sidebar-overlay" data-sidebar-overlay></div>
+  <aside class="docs-sidebar" data-sidebar>
+    <div class="docs-search">
+    <input type="search" class="docs-search-input" placeholder="Search docs…" aria-label="Search documentation" data-docs-search>
+    <kbd class="docs-search-kbd">/</kbd>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Get Started</div>
+    <a href="introduction.html" class="docs-nav-link">Introduction</a>
+    <a href="getting-started.html" class="docs-nav-link">Getting Started</a>
+    <a href="quick-start.html" class="docs-nav-link">Quick Start</a>
+    <a href="installation.html" class="docs-nav-link active" aria-current="page">Installation</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Platform</div>
+    <a href="project-structure.html" class="docs-nav-link">Project Structure</a>
+    <a href="features.html" class="docs-nav-link">Features</a>
+    <a href="components.html" class="docs-nav-link">Components</a>
+    <a href="layout.html" class="docs-nav-link">Layout System</a>
+    <a href="responsive.html" class="docs-nav-link">Responsive Design</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Configuration</div>
+    <a href="configuration.html" class="docs-nav-link">Configuration</a>
+    <a href="customization.html" class="docs-nav-link">Customization</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Architecture</div>
+    <a href="api.html" class="docs-nav-link">API &amp; Integrations</a>
+    <a href="javascript.html" class="docs-nav-link">JavaScript Architecture</a>
+    <a href="css.html" class="docs-nav-link">CSS &amp; Design System</a>
+    <a href="performance.html" class="docs-nav-link">Performance</a>
+    <a href="animations.html" class="docs-nav-link">Animations</a>
+    <a href="accessibility.html" class="docs-nav-link">Accessibility</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Operations</div>
+    <a href="deployment.html" class="docs-nav-link">Deployment</a>
+    <a href="changelog.html" class="docs-nav-link">Changelog</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Support</div>
+    <a href="faq.html" class="docs-nav-link">FAQ</a>
+    <a href="troubleshooting.html" class="docs-nav-link">Troubleshooting</a>
+    <a href="contributing.html" class="docs-nav-link">Feedback &amp; Contributing</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><a href="introduction.html">Docs</a><span>/</span><span aria-current="page">Installation</span>
+    </nav>
+    <p class="docs-eyebrow">Get started</p>
+    <h1 class="docs-h1">Installation</h1>
+    <p class="docs-lead">Attach a NUKRAX Expert Advisor to MetaTrader 5, step by step.</p>
+
+    <section class="docs-section" id="requirements">
+  <h2 class="docs-h2">Requirements</h2>
+  <ul class="docs-bullets">
+<li>A MetaTrader 5 terminal (desktop) with algo trading permitted.</li>
+<li>A broker account — demo or live — connected in that terminal.</li>
+<li>The <code class="docs-inline-code">.ex5</code> file for your chosen EA, available from your account after purchase.</li>
+</ul>
+</section>
+
+<section class="docs-section" id="download">
+  <h2 class="docs-h2">1. Download the EA file</h2>
+  
+      <p class="docs-p">From your <a href="../account.html">Account</a> dashboard, open the EA
+      you've purchased and download its <code class="docs-inline-code">.ex5</code> file. This
+      is the compiled, ready-to-run Expert Advisor — no compilation step needed on your end.</p>
+    
+</section>
+
+<section class="docs-section" id="copy-to-terminal">
+  <h2 class="docs-h2">2. Copy it into MetaTrader 5</h2>
+  
+      <p class="docs-p">In MetaTrader 5: <strong>File → Open Data Folder</strong>, then place the
+      file in <code class="docs-inline-code">MQL5/Experts/</code>. Restart the terminal, or
+      right-click <strong>Expert Advisors</strong> in the Navigator panel and choose
+      <strong>Refresh</strong>.</p>
+    <div class="docs-code">
+  <div class="docs-code-head">
+    <span>File location</span>
+    <button class="docs-copy-btn" data-copy-target="code-1" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="docs-copy-label">Copy</span></button>
+  </div>
+  <pre><code id="code-1">MQL5/
+  Experts/
+    NUKRAX_APEX_HFT.ex5</code></pre>
+</div>
+</section>
+
+<section class="docs-section" id="attach-to-chart">
+  <h2 class="docs-h2">3. Attach it to a chart</h2>
+  <ol class="docs-list">
+<li><span class="num">01</span><span>Open the chart for the instrument the EA is designed for (check the product page for the recommended symbol and timeframe).</span></li>
+<li><span class="num">02</span><span>Drag the EA from the Navigator panel onto the chart.</span></li>
+<li><span class="num">03</span><span>In the settings dialog, enable <strong>Allow Algo Trading</strong> on the <em>Common</em> tab.</span></li>
+<li><span class="num">04</span><span>Review the <em>Inputs</em> tab — see <a href="configuration.html">Configuration</a> for what each setting controls.</span></li>
+<li><span class="num">05</span><span>Click <strong>OK</strong>. A smiley-face icon in the chart's top-right corner means the EA is running.</span></li>
+</ol>
+</section>
+
+<section class="docs-section" id="verify">
+  <h2 class="docs-h2">4. Verify it's running</h2>
+  <div class="docs-callout tip">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 2Z"/></svg><span>Tip</span></div>
+  <div>Check the terminal's <em>Experts</em> tab (bottom panel) for a startup log line from the EA. If algo trading is disabled globally, MetaTrader shows a red icon instead of a smile — toggle the main <strong>Algo Trading</strong> button in the toolbar.</div>
+</div>
+</section>
+
+<section class="docs-section" id="common-issues">
+  <h2 class="docs-h2">Common installation issues</h2>
+  <div class="docs-table-wrap"><table class="docs-table">
+  <thead><tr><th>Symptom</th><th>Likely cause</th></tr></thead>
+  <tbody><tr><td class="docs-td">EA doesn't appear in Navigator</td><td class="docs-td">File wasn't placed in the right <code class="docs-inline-code">Experts</code> folder, or the terminal wasn't restarted.</td></tr><tr><td class="docs-td">Red (not green) smiley icon</td><td class="docs-td">Algo trading is disabled — check both the chart's EA settings and the toolbar toggle.</td></tr><tr><td class="docs-td">No trades placed on demo</td><td class="docs-td">Market may be closed, or symbol/timeframe doesn't match the EA's requirements — check the product page.</td></tr></tbody>
+</table></div><p class="docs-p">For anything not covered here, see <a href="troubleshooting.html">Troubleshooting</a>.</p>
+</section>
+
+    <div class="docs-pagenav">
+    <a href="quick-start.html" class="docs-pagenav-link prev">
+      <span class="docs-pagenav-dir">← Previous</span>
+      <span class="docs-pagenav-title">Quick Start</span>
+    </a>
+    <a href="project-structure.html" class="docs-pagenav-link next">
+      <span class="docs-pagenav-dir">Next →</span>
+      <span class="docs-pagenav-title">Project Structure</span>
+    </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc">
+    <div class="docs-toc-label">On this page</div>
+    <a href="#requirements" class="docs-toc-link active">Requirements</a>
+    <a href="#download" class="docs-toc-link">1. Download the EA file</a>
+    <a href="#copy-to-terminal" class="docs-toc-link">2. Copy it into MetaTrader 5</a>
+    <a href="#attach-to-chart" class="docs-toc-link">3. Attach it to a chart</a>
+    <a href="#verify" class="docs-toc-link">4. Verify it's running</a>
+    <a href="#common-issues" class="docs-toc-link">Common installation issues</a>
+  </aside>
+</div>
+
+<script type="module" src="../assets/docs/docs.js"></script>
+</body>
+</html>

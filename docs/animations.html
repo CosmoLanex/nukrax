@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animations — NUKRAX Docs</title>
+<meta name="description" content="How animation is used across NUKRAX: reveal-on-scroll, the hero cube, live data motion, and reduced-motion support.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="../assets/logo.png" type="image/png" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs/docs.css">
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo-container">
+    <img src="../assets/logo.png" alt="NUKRAX Logo">
+    <span class="nav-logo">nukrax</span>
+    <span class="nav-doc-tag">Docs</span>
+  </a>
+  <div class="nav-actions">
+    <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../signup.html" class="nav-get-started">Get Started</a>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <div class="docs-sidebar-overlay" data-sidebar-overlay></div>
+  <aside class="docs-sidebar" data-sidebar>
+    <div class="docs-search">
+    <input type="search" class="docs-search-input" placeholder="Search docs…" aria-label="Search documentation" data-docs-search>
+    <kbd class="docs-search-kbd">/</kbd>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Get Started</div>
+    <a href="introduction.html" class="docs-nav-link">Introduction</a>
+    <a href="getting-started.html" class="docs-nav-link">Getting Started</a>
+    <a href="quick-start.html" class="docs-nav-link">Quick Start</a>
+    <a href="installation.html" class="docs-nav-link">Installation</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Platform</div>
+    <a href="project-structure.html" class="docs-nav-link">Project Structure</a>
+    <a href="features.html" class="docs-nav-link">Features</a>
+    <a href="components.html" class="docs-nav-link">Components</a>
+    <a href="layout.html" class="docs-nav-link">Layout System</a>
+    <a href="responsive.html" class="docs-nav-link">Responsive Design</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Configuration</div>
+    <a href="configuration.html" class="docs-nav-link">Configuration</a>
+    <a href="customization.html" class="docs-nav-link">Customization</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Architecture</div>
+    <a href="api.html" class="docs-nav-link">API &amp; Integrations</a>
+    <a href="javascript.html" class="docs-nav-link">JavaScript Architecture</a>
+    <a href="css.html" class="docs-nav-link">CSS &amp; Design System</a>
+    <a href="performance.html" class="docs-nav-link">Performance</a>
+    <a href="animations.html" class="docs-nav-link active" aria-current="page">Animations</a>
+    <a href="accessibility.html" class="docs-nav-link">Accessibility</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Operations</div>
+    <a href="deployment.html" class="docs-nav-link">Deployment</a>
+    <a href="changelog.html" class="docs-nav-link">Changelog</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Support</div>
+    <a href="faq.html" class="docs-nav-link">FAQ</a>
+    <a href="troubleshooting.html" class="docs-nav-link">Troubleshooting</a>
+    <a href="contributing.html" class="docs-nav-link">Feedback &amp; Contributing</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><a href="introduction.html">Docs</a><span>/</span><span aria-current="page">Animations</span>
+    </nav>
+    <p class="docs-eyebrow">Architecture</p>
+    <h1 class="docs-h1">Animations</h1>
+    <p class="docs-lead">The motion system across NUKRAX — reveal-on-scroll, the hero cube, and live data animation.</p>
+
+    <section class="docs-section" id="overview">
+  <h2 class="docs-h2">The motion system</h2>
+  
+      <p class="docs-p">Animation on NUKRAX is used to reinforce hierarchy and give live data a
+      sense of motion — not as decoration for its own sake. Every animated pattern respects
+      <code class="docs-inline-code">prefers-reduced-motion</code>.</p>
+    
+</section>
+
+<section class="docs-section" id="reveal-on-scroll">
+  <h2 class="docs-h2">Reveal-on-scroll</h2>
+  
+      <p class="docs-p">Headings and cards animate in as they enter the viewport, using
+      <code class="docs-inline-code">IntersectionObserver</code> rather than a scroll listener
+      — headings split into individual words that fade, rise, and un-blur with a slight
+      stagger; cards and images fade/rise as a whole. Once a heading has revealed, it's
+      unobserved (one-shot); decorative cards can reverse if scrolled back out of view.</p>
+    
+</section>
+
+<section class="docs-section" id="hero-cube">
+  <h2 class="docs-h2">Hero cube</h2>
+  
+      <p class="docs-p">The homepage hero features a Three.js 3×3×3 Rubik's-cube
+      animation (<code class="docs-inline-code">assets/cube/cube.js</code>), which checks
+      <code class="docs-inline-code">prefers-reduced-motion</code> before animating and pauses
+      when the tab is backgrounded.</p>
+    
+</section>
+
+<section class="docs-section" id="live-data-motion">
+  <h2 class="docs-h2">Live data motion</h2>
+  <ul class="docs-bullets">
+<li>The homepage scroll-progress bar tracks read position across the page.</li>
+<li>The equity graph on the trading terminal draws itself in on load.</li>
+<li>Count-up numbers animate from zero to their target value once visible.</li>
+<li>A subtle heartbeat/pulse effect marks live indicators (e.g. the Market Map).</li>
+</ul>
+</section>
+
+<section class="docs-section" id="auto-scroll-tracks">
+  <h2 class="docs-h2">Auto-scrolling tracks</h2>
+  
+      <p class="docs-p">Testimonial and timeline sections auto-scroll horizontally at a steady
+      pace, pausing on hover/touch and resuming after a short delay. These loops cache their
+      scrollable range rather than recomputing it every frame — see <a href="performance.html">Performance</a>.</p>
+    
+</section>
+
+<section class="docs-section" id="reduced-motion">
+  <h2 class="docs-h2">Respecting reduced motion</h2>
+  <div class="docs-callout note">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16v-4M12 8h.01"/><circle cx="12" cy="12" r="9"/></svg><span>Note</span></div>
+  <div>Every animated pattern on the site checks <code class="docs-inline-code">prefers-reduced-motion</code> (directly, or via the shared <code class="docs-inline-code">prefersReducedMotion()</code> helper in <code class="docs-inline-code">assets/data/device.js</code>) and either skips the animation or reduces it to an instant state change.</div>
+</div>
+</section>
+
+    <div class="docs-pagenav">
+    <a href="performance.html" class="docs-pagenav-link prev">
+      <span class="docs-pagenav-dir">← Previous</span>
+      <span class="docs-pagenav-title">Performance</span>
+    </a>
+    <a href="accessibility.html" class="docs-pagenav-link next">
+      <span class="docs-pagenav-dir">Next →</span>
+      <span class="docs-pagenav-title">Accessibility</span>
+    </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc">
+    <div class="docs-toc-label">On this page</div>
+    <a href="#overview" class="docs-toc-link active">The motion system</a>
+    <a href="#reveal-on-scroll" class="docs-toc-link">Reveal-on-scroll</a>
+    <a href="#hero-cube" class="docs-toc-link">Hero cube</a>
+    <a href="#live-data-motion" class="docs-toc-link">Live data motion</a>
+    <a href="#auto-scroll-tracks" class="docs-toc-link">Auto-scrolling tracks</a>
+    <a href="#reduced-motion" class="docs-toc-link">Respecting reduced motion</a>
+  </aside>
+</div>
+
+<script type="module" src="../assets/docs/docs.js"></script>
+</body>
+</html>

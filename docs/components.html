@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Components — NUKRAX Docs</title>
+<meta name="description" content="The three NUKRAX Expert Advisors and the shared UI components (auth widget, AI assistant, community composer) used across the site.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="../assets/logo.png" type="image/png" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs/docs.css">
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo-container">
+    <img src="../assets/logo.png" alt="NUKRAX Logo">
+    <span class="nav-logo">nukrax</span>
+    <span class="nav-doc-tag">Docs</span>
+  </a>
+  <div class="nav-actions">
+    <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../signup.html" class="nav-get-started">Get Started</a>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <div class="docs-sidebar-overlay" data-sidebar-overlay></div>
+  <aside class="docs-sidebar" data-sidebar>
+    <div class="docs-search">
+    <input type="search" class="docs-search-input" placeholder="Search docs…" aria-label="Search documentation" data-docs-search>
+    <kbd class="docs-search-kbd">/</kbd>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Get Started</div>
+    <a href="introduction.html" class="docs-nav-link">Introduction</a>
+    <a href="getting-started.html" class="docs-nav-link">Getting Started</a>
+    <a href="quick-start.html" class="docs-nav-link">Quick Start</a>
+    <a href="installation.html" class="docs-nav-link">Installation</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Platform</div>
+    <a href="project-structure.html" class="docs-nav-link">Project Structure</a>
+    <a href="features.html" class="docs-nav-link">Features</a>
+    <a href="components.html" class="docs-nav-link active" aria-current="page">Components</a>
+    <a href="layout.html" class="docs-nav-link">Layout System</a>
+    <a href="responsive.html" class="docs-nav-link">Responsive Design</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Configuration</div>
+    <a href="configuration.html" class="docs-nav-link">Configuration</a>
+    <a href="customization.html" class="docs-nav-link">Customization</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Architecture</div>
+    <a href="api.html" class="docs-nav-link">API &amp; Integrations</a>
+    <a href="javascript.html" class="docs-nav-link">JavaScript Architecture</a>
+    <a href="css.html" class="docs-nav-link">CSS &amp; Design System</a>
+    <a href="performance.html" class="docs-nav-link">Performance</a>
+    <a href="animations.html" class="docs-nav-link">Animations</a>
+    <a href="accessibility.html" class="docs-nav-link">Accessibility</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Operations</div>
+    <a href="deployment.html" class="docs-nav-link">Deployment</a>
+    <a href="changelog.html" class="docs-nav-link">Changelog</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Support</div>
+    <a href="faq.html" class="docs-nav-link">FAQ</a>
+    <a href="troubleshooting.html" class="docs-nav-link">Troubleshooting</a>
+    <a href="contributing.html" class="docs-nav-link">Feedback &amp; Contributing</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><a href="introduction.html">Docs</a><span>/</span><span aria-current="page">Components</span>
+    </nav>
+    <p class="docs-eyebrow">Platform</p>
+    <h1 class="docs-h1">Components</h1>
+    <p class="docs-lead">The Expert Advisor product lineup, and the shared UI pieces reused across pages.</p>
+
+    <section class="docs-section" id="overview">
+  <h2 class="docs-h2">Two kinds of “components”</h2>
+  
+      <p class="docs-p">On NUKRAX, "components" means two related things: the
+      <strong>Expert Advisor product lineup</strong> (the tradable systems themselves), and the
+      <strong>shared UI components</strong> reused across pages (the auth widget, the AI
+      assistant, the community composer). Both are documented here.</p>
+    
+</section>
+
+<section class="docs-section" id="ea-lineup">
+  <h2 class="docs-h2">Expert Advisor lineup</h2>
+  <div class="docs-cards">
+<a href="../ea/apex.html" class="docs-card">
+      <div class="docs-card-title">APEX HFT</div>
+      <div class="docs-card-desc">High-frequency execution across multiple timeframes.</div>
+    </a>
+<a href="../ea/aurum.html" class="docs-card">
+      <div class="docs-card-title">AURUM HFT</div>
+      <div class="docs-card-desc">Structured trade flow with layered risk controls.</div>
+    </a>
+<a href="../ea/smc-ict.html" class="docs-card">
+      <div class="docs-card-title">SMC ICT</div>
+      <div class="docs-card-desc">Pure Smart Money Concepts and ICT entry logic.</div>
+    </a>
+</div><p class="docs-p">Compare all three side by side on <a href="../ea-selection.html">Execution Systems</a>.</p>
+</section>
+
+<section class="docs-section" id="shared-ui">
+  <h2 class="docs-h2">Shared UI components</h2>
+  <div class="docs-table-wrap"><table class="docs-table">
+  <thead><tr><th>Component</th><th>Where it lives</th><th>Purpose</th></tr></thead>
+  <tbody><tr><td class="docs-td">Auth widget</td><td class="docs-td"><code class="docs-inline-code">assets/auth/auth-widget.js</code></td><td class="docs-td">Floating account menu shown across signed-in pages — profile, settings, sign out, and the Documentation link.</td></tr><tr><td class="docs-td">Guard script</td><td class="docs-td"><code class="docs-inline-code">guard.js</code></td><td class="docs-td">Redirects signed-out visitors away from account-gated pages.</td></tr><tr><td class="docs-td">AI widget</td><td class="docs-td"><code class="docs-inline-code">assets/ai/widget.js</code></td><td class="docs-td">The floating chat bubble available on every page.</td></tr><tr><td class="docs-td">Community composer</td><td class="docs-td"><code class="docs-inline-code">assets/community/composer.js</code></td><td class="docs-td">Post creation UI on the Community feed, including client-side image compression.</td></tr><tr><td class="docs-td">Hero cube</td><td class="docs-td"><code class="docs-inline-code">assets/cube/cube.js</code></td><td class="docs-td">The Three.js 3×3×3 Rubik's-cube animation in the homepage hero.</td></tr><tr><td class="docs-td">Docs shell</td><td class="docs-td"><code class="docs-inline-code">assets/docs/docs.js</code></td><td class="docs-td">This documentation system's sidebar, search filter, and code-copy behavior.</td></tr></tbody>
+</table></div>
+</section>
+
+<section class="docs-section" id="design-system">
+  <h2 class="docs-h2">Design-system components</h2>
+  
+      <p class="docs-p">Reusable visual components — cards, callouts, code blocks, buttons —
+      are documented in <a href="css.html">CSS &amp; Design System</a>. Layout primitives
+      (container, gutter, grid) are covered in <a href="layout.html">Layout System</a>.</p>
+    
+</section>
+
+    <div class="docs-pagenav">
+    <a href="features.html" class="docs-pagenav-link prev">
+      <span class="docs-pagenav-dir">← Previous</span>
+      <span class="docs-pagenav-title">Features</span>
+    </a>
+    <a href="layout.html" class="docs-pagenav-link next">
+      <span class="docs-pagenav-dir">Next →</span>
+      <span class="docs-pagenav-title">Layout System</span>
+    </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc">
+    <div class="docs-toc-label">On this page</div>
+    <a href="#overview" class="docs-toc-link active">Two kinds of “components”</a>
+    <a href="#ea-lineup" class="docs-toc-link">Expert Advisor lineup</a>
+    <a href="#shared-ui" class="docs-toc-link">Shared UI components</a>
+    <a href="#design-system" class="docs-toc-link">Design-system components</a>
+  </aside>
+</div>
+
+<script type="module" src="../assets/docs/docs.js"></script>
+</body>
+</html>

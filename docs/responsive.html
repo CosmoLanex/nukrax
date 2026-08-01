@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsive Design — NUKRAX Docs</title>
+<meta name="description" content="How NUKRAX's responsive architecture works: the shared breakpoint scale, device detection, and fluid sizing helpers in assets/data/.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="../assets/logo.png" type="image/png" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs/docs.css">
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo-container">
+    <img src="../assets/logo.png" alt="NUKRAX Logo">
+    <span class="nav-logo">nukrax</span>
+    <span class="nav-doc-tag">Docs</span>
+  </a>
+  <div class="nav-actions">
+    <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../signup.html" class="nav-get-started">Get Started</a>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <div class="docs-sidebar-overlay" data-sidebar-overlay></div>
+  <aside class="docs-sidebar" data-sidebar>
+    <div class="docs-search">
+    <input type="search" class="docs-search-input" placeholder="Search docs…" aria-label="Search documentation" data-docs-search>
+    <kbd class="docs-search-kbd">/</kbd>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Get Started</div>
+    <a href="introduction.html" class="docs-nav-link">Introduction</a>
+    <a href="getting-started.html" class="docs-nav-link">Getting Started</a>
+    <a href="quick-start.html" class="docs-nav-link">Quick Start</a>
+    <a href="installation.html" class="docs-nav-link">Installation</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Platform</div>
+    <a href="project-structure.html" class="docs-nav-link">Project Structure</a>
+    <a href="features.html" class="docs-nav-link">Features</a>
+    <a href="components.html" class="docs-nav-link">Components</a>
+    <a href="layout.html" class="docs-nav-link">Layout System</a>
+    <a href="responsive.html" class="docs-nav-link active" aria-current="page">Responsive Design</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Configuration</div>
+    <a href="configuration.html" class="docs-nav-link">Configuration</a>
+    <a href="customization.html" class="docs-nav-link">Customization</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Architecture</div>
+    <a href="api.html" class="docs-nav-link">API &amp; Integrations</a>
+    <a href="javascript.html" class="docs-nav-link">JavaScript Architecture</a>
+    <a href="css.html" class="docs-nav-link">CSS &amp; Design System</a>
+    <a href="performance.html" class="docs-nav-link">Performance</a>
+    <a href="animations.html" class="docs-nav-link">Animations</a>
+    <a href="accessibility.html" class="docs-nav-link">Accessibility</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Operations</div>
+    <a href="deployment.html" class="docs-nav-link">Deployment</a>
+    <a href="changelog.html" class="docs-nav-link">Changelog</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Support</div>
+    <a href="faq.html" class="docs-nav-link">FAQ</a>
+    <a href="troubleshooting.html" class="docs-nav-link">Troubleshooting</a>
+    <a href="contributing.html" class="docs-nav-link">Feedback &amp; Contributing</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><a href="introduction.html">Docs</a><span>/</span><span aria-current="page">Responsive Design</span>
+    </nav>
+    <p class="docs-eyebrow">Platform</p>
+    <h1 class="docs-h1">Responsive Design</h1>
+    <p class="docs-lead">The breakpoint scale, device detection, and fluid-sizing helpers that keep every page working across screen sizes.</p>
+
+    <section class="docs-section" id="overview">
+  <h2 class="docs-h2">A centralized responsive architecture</h2>
+  
+      <p class="docs-p">NUKRAX is built without a bundler or CSS preprocessor, so
+      "centralizing" responsive logic means two related but distinct things: a shared set of
+      design tokens for CSS, and a shared JS module for anything that needs to branch on screen
+      size, device type, or viewport in script.</p>
+    
+</section>
+
+<section class="docs-section" id="breakpoint-scale">
+  <h2 class="docs-h2">The canonical breakpoint scale</h2>
+  
+      <p class="docs-p">Defined once in <code class="docs-inline-code">assets/data/breakpoints.js</code>,
+      matching the values already in real use across the site's CSS rather than an arbitrary
+      industry-standard scale:</p>
+    <div class="docs-table-wrap"><table class="docs-table">
+  <thead><tr><th>Name</th><th>Width</th><th>Roughly</th></tr></thead>
+  <tbody><tr><td class="docs-td"><code class="docs-inline-code">sm</code></td><td class="docs-td">480px</td><td class="docs-td">Large phones</td></tr><tr><td class="docs-td"><code class="docs-inline-code">md</code></td><td class="docs-td">640px</td><td class="docs-td">Small tablets / large phones landscape</td></tr><tr><td class="docs-td"><code class="docs-inline-code">ml</code></td><td class="docs-td">760px</td><td class="docs-td">Most common page breakpoint</td></tr><tr><td class="docs-td"><code class="docs-inline-code">lg</code></td><td class="docs-td">860px</td><td class="docs-td">Small tablets</td></tr><tr><td class="docs-td"><code class="docs-inline-code">tab</code></td><td class="docs-td">900px</td><td class="docs-td">Tablets</td></tr><tr><td class="docs-td"><code class="docs-inline-code">tl</code></td><td class="docs-td">1000px</td><td class="docs-td">Large tablets / small laptops</td></tr><tr><td class="docs-td"><code class="docs-inline-code">xl</code></td><td class="docs-td">1100px</td><td class="docs-td">Small laptops</td></tr><tr><td class="docs-td"><code class="docs-inline-code">xxl</code></td><td class="docs-td">1440px</td><td class="docs-td">Large desktop</td></tr></tbody>
+</table></div>
+</section>
+
+<section class="docs-section" id="why-no-css-vars-in-media">
+  <h2 class="docs-h2">Why CSS breakpoints aren't driven by variables</h2>
+  <div class="docs-callout info">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16v-4M12 8h.01"/><circle cx="12" cy="12" r="9"/></svg><span>Info</span></div>
+  <div>CSS media-query <em>features</em> (the part inside <code class="docs-inline-code">@media (max-width: …)</code>) can't read custom properties in any browser — only literal lengths are allowed there. Without a build step to generate one from the other, the breakpoint scale is kept in sync by hand between <code class="docs-inline-code">breakpoints.js</code> and each page's CSS, rather than the CSS reading from the JS.</div>
+</div>
+</section>
+
+<section class="docs-section" id="device-detection">
+  <h2 class="docs-h2">Device detection</h2>
+  
+      <p class="docs-p"><code class="docs-inline-code">assets/data/device.js</code> centralizes
+      the checks that used to be re-implemented per script — device class, touch vs. pointer
+      input, reduced motion, and viewport size:</p>
+    <div class="docs-code">
+  <div class="docs-code-head">
+    <span>JAVASCRIPT</span>
+    <button class="docs-copy-btn" data-copy-target="code-6" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="docs-copy-label">Copy</span></button>
+  </div>
+  <pre><code id="code-6">import { getDeviceClass, prefersReducedMotion, isTouchDevice } from "../assets/data/data.js";
+
+getDeviceClass();        // "mobile" | "tablet" | "laptop" | "desktop"
+prefersReducedMotion();  // true/false — honored by the reveal + hero animations
+isTouchDevice();         // true when there's no fine hover-capable pointer</code></pre>
+</div>
+</section>
+
+<section class="docs-section" id="fluid-sizing">
+  <h2 class="docs-h2">Fluid sizing in JS</h2>
+  
+      <p class="docs-p"><code class="docs-inline-code">assets/data/responsive.js</code> mirrors
+      the CSS <code class="docs-inline-code">clamp()</code> type scale for anything computed in
+      script — canvas drawing, dynamic element sizing — so JS-driven and CSS-driven sizing stay
+      on the same curve:</p>
+    <div class="docs-code">
+  <div class="docs-code-head">
+    <span>JAVASCRIPT</span>
+    <button class="docs-copy-btn" data-copy-target="code-7" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="docs-copy-label">Copy</span></button>
+  </div>
+  <pre><code id="code-7">import { fluidSize, scaleByViewport } from "../assets/data/data.js";
+
+fluidSize(16, 2, 24);   // same as CSS clamp(16px, 2vw, 24px)
+scaleByViewport(count, { minWidth: 480, maxWidth: 1440, minValue: 40, maxValue: 160 });</code></pre>
+</div>
+</section>
+
+<section class="docs-section" id="mobile-first-testing">
+  <h2 class="docs-h2">What's been tested</h2>
+  
+      <p class="docs-p">The layout has been checked across small phones, large phones,
+      foldables, tablets, small laptops, standard laptops, desktop monitors, and ultrawide
+      displays — with a focus on no overflow, no overlapping elements, and no inaccessible
+      controls at any width.</p>
+    
+</section>
+
+    <div class="docs-pagenav">
+    <a href="layout.html" class="docs-pagenav-link prev">
+      <span class="docs-pagenav-dir">← Previous</span>
+      <span class="docs-pagenav-title">Layout System</span>
+    </a>
+    <a href="configuration.html" class="docs-pagenav-link next">
+      <span class="docs-pagenav-dir">Next →</span>
+      <span class="docs-pagenav-title">Configuration</span>
+    </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc">
+    <div class="docs-toc-label">On this page</div>
+    <a href="#overview" class="docs-toc-link active">A centralized responsive architecture</a>
+    <a href="#breakpoint-scale" class="docs-toc-link">The canonical breakpoint scale</a>
+    <a href="#why-no-css-vars-in-media" class="docs-toc-link">Why CSS breakpoints aren't driven by variables</a>
+    <a href="#device-detection" class="docs-toc-link">Device detection</a>
+    <a href="#fluid-sizing" class="docs-toc-link">Fluid sizing in JS</a>
+    <a href="#mobile-first-testing" class="docs-toc-link">What's been tested</a>
+  </aside>
+</div>
+
+<script type="module" src="../assets/docs/docs.js"></script>
+</body>
+</html>

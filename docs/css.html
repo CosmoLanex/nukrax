@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS &amp; Design System — NUKRAX Docs</title>
+<meta name="description" content="The CSS design system behind NUKRAX: shared color/type tokens, the fluid type scale, and component patterns.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="../assets/logo.png" type="image/png" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs/docs.css">
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo-container">
+    <img src="../assets/logo.png" alt="NUKRAX Logo">
+    <span class="nav-logo">nukrax</span>
+    <span class="nav-doc-tag">Docs</span>
+  </a>
+  <div class="nav-actions">
+    <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../signup.html" class="nav-get-started">Get Started</a>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <div class="docs-sidebar-overlay" data-sidebar-overlay></div>
+  <aside class="docs-sidebar" data-sidebar>
+    <div class="docs-search">
+    <input type="search" class="docs-search-input" placeholder="Search docs…" aria-label="Search documentation" data-docs-search>
+    <kbd class="docs-search-kbd">/</kbd>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Get Started</div>
+    <a href="introduction.html" class="docs-nav-link">Introduction</a>
+    <a href="getting-started.html" class="docs-nav-link">Getting Started</a>
+    <a href="quick-start.html" class="docs-nav-link">Quick Start</a>
+    <a href="installation.html" class="docs-nav-link">Installation</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Platform</div>
+    <a href="project-structure.html" class="docs-nav-link">Project Structure</a>
+    <a href="features.html" class="docs-nav-link">Features</a>
+    <a href="components.html" class="docs-nav-link">Components</a>
+    <a href="layout.html" class="docs-nav-link">Layout System</a>
+    <a href="responsive.html" class="docs-nav-link">Responsive Design</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Configuration</div>
+    <a href="configuration.html" class="docs-nav-link">Configuration</a>
+    <a href="customization.html" class="docs-nav-link">Customization</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Architecture</div>
+    <a href="api.html" class="docs-nav-link">API &amp; Integrations</a>
+    <a href="javascript.html" class="docs-nav-link">JavaScript Architecture</a>
+    <a href="css.html" class="docs-nav-link active" aria-current="page">CSS &amp; Design System</a>
+    <a href="performance.html" class="docs-nav-link">Performance</a>
+    <a href="animations.html" class="docs-nav-link">Animations</a>
+    <a href="accessibility.html" class="docs-nav-link">Accessibility</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Operations</div>
+    <a href="deployment.html" class="docs-nav-link">Deployment</a>
+    <a href="changelog.html" class="docs-nav-link">Changelog</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Support</div>
+    <a href="faq.html" class="docs-nav-link">FAQ</a>
+    <a href="troubleshooting.html" class="docs-nav-link">Troubleshooting</a>
+    <a href="contributing.html" class="docs-nav-link">Feedback &amp; Contributing</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><a href="introduction.html">Docs</a><span>/</span><span aria-current="page">CSS &amp; Design System</span>
+    </nav>
+    <p class="docs-eyebrow">Architecture</p>
+    <h1 class="docs-h1">CSS &amp; Design System</h1>
+    <p class="docs-lead">The design tokens and component patterns that keep every page visually consistent.</p>
+
+    <section class="docs-section" id="overview">
+  <h2 class="docs-h2">One shared token file</h2>
+  
+      <p class="docs-p">Design tokens — colors, fonts, the fluid type scale, easing curves,
+      and layout primitives — are declared once in <code class="docs-inline-code">assets/css/tokens.css</code>
+      and linked from every page, instead of being redeclared per page. This file also centralizes
+      the shared <code class="docs-inline-code">@font-face</code> and base CSS reset.</p>
+    
+</section>
+
+<section class="docs-section" id="color-tokens">
+  <h2 class="docs-h2">Color tokens</h2>
+  <div class="docs-table-wrap"><table class="docs-table">
+  <thead><tr><th>Token</th><th>Value</th><th>Used for</th></tr></thead>
+  <tbody><tr><td class="docs-td"><code class="docs-inline-code">--black</code></td><td class="docs-td">#07090B</td><td class="docs-td">Page background</td></tr><tr><td class="docs-td"><code class="docs-inline-code">--panel</code></td><td class="docs-td">#0A0F13</td><td class="docs-td">Cards, code blocks, callouts</td></tr><tr><td class="docs-td"><code class="docs-inline-code">--line</code> / <code class="docs-inline-code">--line-lit</code></td><td class="docs-td">#1B2328 / #2A353C</td><td class="docs-td">Borders (resting / hover)</td></tr><tr><td class="docs-td"><code class="docs-inline-code">--muted</code></td><td class="docs-td">#8A9BA3</td><td class="docs-td">Secondary text</td></tr><tr><td class="docs-td"><code class="docs-inline-code">--text</code></td><td class="docs-td">#D3DBDD</td><td class="docs-td">Body text</td></tr><tr><td class="docs-td"><code class="docs-inline-code">--white</code></td><td class="docs-td">#F2F5F5</td><td class="docs-td">Headings, emphasis</td></tr><tr><td class="docs-td"><code class="docs-inline-code">--accent</code> / <code class="docs-inline-code">--accent-dim</code></td><td class="docs-td">#8FB8C4 / #46626B</td><td class="docs-td">Links, active states, highlights</td></tr></tbody>
+</table></div>
+</section>
+
+<section class="docs-section" id="type-tokens">
+  <h2 class="docs-h2">Typography</h2>
+  <ul class="docs-bullets">
+<li><code class="docs-inline-code">--font-logo</code> — 'NKX Display', used for the wordmark.</li>
+<li><code class="docs-inline-code">--font-b</code> — Outfit, the primary body/UI typeface.</li>
+<li><code class="docs-inline-code">--font-m</code> — Space Mono, used for labels, eyebrows, and code.</li>
+<li>A fluid type scale (<code class="docs-inline-code">--fs-*</code>) built with <code class="docs-inline-code">clamp()</code>, so heading sizes respond to viewport width without separate breakpoint overrides for font-size alone.</li>
+</ul>
+</section>
+
+<section class="docs-section" id="why-one-file">
+  <h2 class="docs-h2">Why this is centralized but per-page overrides still work</h2>
+  
+      <p class="docs-p">Because <code class="docs-inline-code">tokens.css</code> is linked
+      <em>before</em> each page's own <code class="docs-inline-code">&lt;style&gt;</code> block,
+      a page can still override any token locally (the cascade favors the later declaration) —
+      a few pages intentionally do this for a slightly different accent color. This means the
+      shared file could be introduced without changing how any existing page renders.</p>
+    <div class="docs-callout info">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16v-4M12 8h.01"/><circle cx="12" cy="12" r="9"/></svg><span>Info</span></div>
+  <div>This is exactly how the token file was introduced to the codebase: only variables with byte-identical values across pages were removed from each page's local CSS, so nothing visually changed — see <a href="changelog.html">Changelog</a>.</div>
+</div>
+</section>
+
+<section class="docs-section" id="components-css">
+  <h2 class="docs-h2">Component styles</h2>
+  
+      <p class="docs-p">Reusable component patterns — cards, callouts, code blocks with
+      copy buttons, badges — are defined in feature-scoped stylesheets rather than the token
+      file itself. This documentation system's own components live in
+      <code class="docs-inline-code">assets/docs/docs.css</code>.</p>
+    
+</section>
+
+    <div class="docs-pagenav">
+    <a href="javascript.html" class="docs-pagenav-link prev">
+      <span class="docs-pagenav-dir">← Previous</span>
+      <span class="docs-pagenav-title">JavaScript Architecture</span>
+    </a>
+    <a href="performance.html" class="docs-pagenav-link next">
+      <span class="docs-pagenav-dir">Next →</span>
+      <span class="docs-pagenav-title">Performance</span>
+    </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc">
+    <div class="docs-toc-label">On this page</div>
+    <a href="#overview" class="docs-toc-link active">One shared token file</a>
+    <a href="#color-tokens" class="docs-toc-link">Color tokens</a>
+    <a href="#type-tokens" class="docs-toc-link">Typography</a>
+    <a href="#why-one-file" class="docs-toc-link">Why this is centralized but per-page overrides still work</a>
+    <a href="#components-css" class="docs-toc-link">Component styles</a>
+  </aside>
+</div>
+
+<script type="module" src="../assets/docs/docs.js"></script>
+</body>
+</html>

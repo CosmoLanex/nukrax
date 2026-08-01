@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <script type="module" src="../assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Architecture — NUKRAX Docs</title>
+<meta name="description" content="The JavaScript architecture behind NUKRAX: the assets/data/ shared modules, feature-scoped scripts, and performance conventions.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="../assets/logo.png" type="image/png" sizes="any">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs/docs.css">
+</head>
+<body>
+
+<div id="page-curtain"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo-container">
+    <img src="../assets/logo.png" alt="NUKRAX Logo">
+    <span class="nav-logo">nukrax</span>
+    <span class="nav-doc-tag">Docs</span>
+  </a>
+  <div class="nav-actions">
+    <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../signup.html" class="nav-get-started">Get Started</a>
+  </div>
+</nav>
+
+<div class="docs-shell">
+  <div class="docs-sidebar-overlay" data-sidebar-overlay></div>
+  <aside class="docs-sidebar" data-sidebar>
+    <div class="docs-search">
+    <input type="search" class="docs-search-input" placeholder="Search docs…" aria-label="Search documentation" data-docs-search>
+    <kbd class="docs-search-kbd">/</kbd>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Get Started</div>
+    <a href="introduction.html" class="docs-nav-link">Introduction</a>
+    <a href="getting-started.html" class="docs-nav-link">Getting Started</a>
+    <a href="quick-start.html" class="docs-nav-link">Quick Start</a>
+    <a href="installation.html" class="docs-nav-link">Installation</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Platform</div>
+    <a href="project-structure.html" class="docs-nav-link">Project Structure</a>
+    <a href="features.html" class="docs-nav-link">Features</a>
+    <a href="components.html" class="docs-nav-link">Components</a>
+    <a href="layout.html" class="docs-nav-link">Layout System</a>
+    <a href="responsive.html" class="docs-nav-link">Responsive Design</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Configuration</div>
+    <a href="configuration.html" class="docs-nav-link">Configuration</a>
+    <a href="customization.html" class="docs-nav-link">Customization</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Architecture</div>
+    <a href="api.html" class="docs-nav-link">API &amp; Integrations</a>
+    <a href="javascript.html" class="docs-nav-link active" aria-current="page">JavaScript Architecture</a>
+    <a href="css.html" class="docs-nav-link">CSS &amp; Design System</a>
+    <a href="performance.html" class="docs-nav-link">Performance</a>
+    <a href="animations.html" class="docs-nav-link">Animations</a>
+    <a href="accessibility.html" class="docs-nav-link">Accessibility</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Operations</div>
+    <a href="deployment.html" class="docs-nav-link">Deployment</a>
+    <a href="changelog.html" class="docs-nav-link">Changelog</a>
+    </div>
+    <div class="docs-nav-group">
+    <div class="docs-nav-label">Support</div>
+    <a href="faq.html" class="docs-nav-link">FAQ</a>
+    <a href="troubleshooting.html" class="docs-nav-link">Troubleshooting</a>
+    <a href="contributing.html" class="docs-nav-link">Feedback &amp; Contributing</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span>/</span><a href="introduction.html">Docs</a><span>/</span><span aria-current="page">JavaScript Architecture</span>
+    </nav>
+    <p class="docs-eyebrow">Architecture</p>
+    <h1 class="docs-h1">JavaScript Architecture</h1>
+    <p class="docs-lead">How JavaScript is organized across the site — shared modules, feature scripts, and the conventions that keep them consistent.</p>
+
+    <section class="docs-section" id="overview">
+  <h2 class="docs-h2">No framework, no bundler</h2>
+  
+      <p class="docs-p">The site is plain JavaScript using native ES modules — no React,
+      no bundler, no transpilation step. Every module is written to run directly in the browser
+      exactly as committed to the repository.</p>
+    
+</section>
+
+<section class="docs-section" id="data-modules">
+  <h2 class="docs-h2">The assets/data/ modules</h2>
+  
+      <p class="docs-p">Shared, non-visual logic is split into focused modules, all re-exported
+      from one entry point:</p>
+    <div class="docs-table-wrap"><table class="docs-table">
+  <thead><tr><th>Module</th><th>Exports</th></tr></thead>
+  <tbody><tr><td class="docs-td"><code class="docs-inline-code">breakpoints.js</code></td><td class="docs-td">Canonical breakpoint scale, <code class="docs-inline-code">mediaQuery()</code>, <code class="docs-inline-code">getCurrentBreakpoint()</code>.</td></tr><tr><td class="docs-td"><code class="docs-inline-code">device.js</code></td><td class="docs-td">Device class, touch/pointer detection, reduced motion, viewport helpers.</td></tr><tr><td class="docs-td"><code class="docs-inline-code">responsive.js</code></td><td class="docs-td"><code class="docs-inline-code">fluidSize()</code>, <code class="docs-inline-code">scaleByViewport()</code>, debounce/throttle, rAF-batched resize.</td></tr><tr><td class="docs-td"><code class="docs-inline-code">layout.js</code></td><td class="docs-td">Container width, gutter, spacing scale, z-index scale.</td></tr><tr><td class="docs-td"><code class="docs-inline-code">constants.js</code></td><td class="docs-td">Site metadata, JS color mirror, product registry.</td></tr><tr><td class="docs-td"><code class="docs-inline-code">utils.js</code></td><td class="docs-td">CSS var read/write, viewport checks, formatting, safe query helpers.</td></tr></tbody>
+</table></div><p class="docs-p">See <a href="responsive.html">Responsive Design</a> for how these are used in practice.</p>
+</section>
+
+<section class="docs-section" id="import-pattern">
+  <h2 class="docs-h2">Import pattern</h2>
+  <div class="docs-code">
+  <div class="docs-code-head">
+    <span>JAVASCRIPT</span>
+    <button class="docs-copy-btn" data-copy-target="code-8" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="docs-copy-label">Copy</span></button>
+  </div>
+  <pre><code id="code-8">// from a root-level page:
+import NUKRAX, { BREAKPOINTS, getDeviceClass } from "/assets/data/data.js";
+
+// from a page in a subfolder, e.g. /ea/apex.html or /docs/introduction.html:
+import NUKRAX from "../assets/data/data.js";</code></pre>
+</div>
+</section>
+
+<section class="docs-section" id="window-bridge">
+  <h2 class="docs-h2">The window.NUKRAX bridge</h2>
+  
+      <p class="docs-p">Because module scripts execute after HTML parsing completes (like
+      <code class="docs-inline-code">defer</code>), a handful of small classic (non-module)
+      inline scripts elsewhere on some pages run before a module would. <code class="docs-inline-code">data.js</code>
+      also assigns itself to <code class="docs-inline-code">window.NUKRAX</code> as a
+      convenience bridge — safe to use from anything that runs on
+      <code class="docs-inline-code">DOMContentLoaded</code> or later, which covers the vast
+      majority of the site's interactive code.</p>
+    
+</section>
+
+<section class="docs-section" id="feature-scripts">
+  <h2 class="docs-h2">Feature-scoped scripts</h2>
+  
+      <p class="docs-p">Interactive features each own their script:
+      <code class="docs-inline-code">assets/cube/cube.js</code> (hero animation),
+      <code class="docs-inline-code">assets/auth/auth-widget.js</code> (account menu),
+      <code class="docs-inline-code">assets/ai/widget.js</code> (chat widget),
+      <code class="docs-inline-code">assets/community/composer.js</code> (post composer), and
+      <code class="docs-inline-code">assets/docs/docs.js</code> (this documentation shell).</p>
+    
+</section>
+
+<section class="docs-section" id="perf-patterns">
+  <h2 class="docs-h2">Performance conventions</h2>
+  
+      <p class="docs-p">Every scroll-linked handler in the codebase follows the same pattern:
+      cache expensive reads (like <code class="docs-inline-code">offsetTop</code>) outside the
+      handler, batch work to at most once per frame with <code class="docs-inline-code">requestAnimationFrame</code>,
+      and skip DOM writes when nothing actually changed. See <a href="performance.html">Performance</a>
+      for the full story.</p>
+    
+</section>
+
+    <div class="docs-pagenav">
+    <a href="api.html" class="docs-pagenav-link prev">
+      <span class="docs-pagenav-dir">← Previous</span>
+      <span class="docs-pagenav-title">API &amp; Integrations</span>
+    </a>
+    <a href="css.html" class="docs-pagenav-link next">
+      <span class="docs-pagenav-dir">Next →</span>
+      <span class="docs-pagenav-title">CSS &amp; Design System</span>
+    </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc">
+    <div class="docs-toc-label">On this page</div>
+    <a href="#overview" class="docs-toc-link active">No framework, no bundler</a>
+    <a href="#data-modules" class="docs-toc-link">The assets/data/ modules</a>
+    <a href="#import-pattern" class="docs-toc-link">Import pattern</a>
+    <a href="#window-bridge" class="docs-toc-link">The window.NUKRAX bridge</a>
+    <a href="#feature-scripts" class="docs-toc-link">Feature-scoped scripts</a>
+    <a href="#perf-patterns" class="docs-toc-link">Performance conventions</a>
+  </aside>
+</div>
+
+<script type="module" src="../assets/docs/docs.js"></script>
+</body>
+</html>
