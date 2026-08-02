@@ -124,6 +124,12 @@ document.addEventListener('scroll', () => {
 }, { passive: true });
 syncActive();
 
+/* ── Footer copyright year — same pattern used site-wide ── */
+(function(){
+  const yearEl = document.getElementById('copyright-year');
+  if(yearEl) yearEl.textContent = new Date().getFullYear();
+})();
+
 /* ── Page transitions — same pattern used across the rest of the site ── */
 const curtain = document.getElementById('page-curtain');
 document.querySelectorAll('a[href]:not([href^="#"]):not([target="_blank"])').forEach(a => {
