@@ -20,16 +20,18 @@
 <div id="page-curtain"></div>
 
 <nav id="navbar">
-  <a href="../index.html" class="nav-logo-container">
-    <img src="../assets/logo.png" alt="NUKRAX Logo">
+  <div class="nav-logo-container">
+    <a href="../index.html" class="nav-logo-img">
+      <img src="../assets/logo.png" alt="NUKRAX Logo" width="30" height="30">
+    </a>
     <span class="nav-logo">nukrax</span>
     <span class="nav-doc-tag">Docs</span>
-  </a>
+  </div>
   <div class="nav-actions">
     <button class="docs-nav-toggle" type="button" aria-label="Toggle documentation menu" aria-expanded="false" data-sidebar-toggle>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
-    <a href="../login.html" class="nav-login">Log In</a>
+    <a href="../login.html" class="nav-login-link">Login</a>
     <a href="../signup.html" class="nav-get-started">Get Started</a>
   </div>
 </nav>
@@ -163,6 +165,18 @@
     <a href="#next-steps" class="docs-toc-link">Where to go next</a>
   </aside>
 </div>
+
+<footer class="docs-footer">
+  <div class="footer-bottom">
+    <div class="footer-logo">NUKRAX</div>
+    <div class="footer-copy">© <span id="copyright-year">2024</span> NUKRAX. All rights reserved. Built by @CosmoLanex</div>
+    <div class="footer-links">
+      <a href="../ea-selection.html">Expert Advisors</a>
+      <a href="introduction.html">Documentation</a>
+      <a href="../p.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
 
 <script type="module" src="../assets/docs/docs.js"></script>
 </body>
