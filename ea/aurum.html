@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<link rel="icon" href="../assets/c-logo.png" type="image/png"/>
 <style>
 
 /* Wordmark display face — matches main NUKRAX site */
@@ -304,7 +304,7 @@
   /* ── CARDS ── */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
@@ -339,7 +339,7 @@
   /* ── CARDS PLAIN ── */
   .cards-plain {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: 16px;
   }
 
@@ -364,7 +364,7 @@
   /* ── TF GRID ── */
   .tf-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
     gap: 0;
     border: 1px solid var(--border);
     border-radius: 4px;
@@ -517,7 +517,7 @@
   /* ── RISK GRID ── */
   .risk-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
     gap: 0;
     border: 1px solid var(--border);
     border-radius: 4px;
@@ -560,7 +560,7 @@
   /* ── PAIRS GRID ── */
   .pairs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
@@ -640,7 +640,7 @@
 
   .model-conditions {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
     gap: 12px;
     margin-top: 16px;
   }
@@ -706,6 +706,11 @@
   }
 
   /* ── PARAMS TABLE ── */
+  .table-scroll-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .params-table {
     width: 100%;
     border-collapse: collapse;
@@ -1587,7 +1592,7 @@
     <div class="section-label">08 — Configuration</div>
     <h2 class="section-title">Input <span>Parameters</span></h2>
 
-    <table class="params-table" style="margin-bottom:40px;">
+    <div class="table-scroll-wrap"><table class="params-table" style="margin-bottom:40px;">
       <thead>
         <tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
       </thead>
@@ -1632,7 +1637,7 @@
         <tr><td>Inp_UseTrail</td><td>true</td><td>Enable structural trailing stop on the runner after TP2. Disable for fixed TP3 level only.</td></tr>
         <tr><td>Inp_NewsBufferMins</td><td>15</td><td>Minutes before and after a configured news event during which no new entries are taken.</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <div class="cards-plain">
       <div class="card-plain">
@@ -1787,5 +1792,12 @@
 <script type="module" src="../assets/ai/widget.js"></script>
 <script type="module" src="../assets/auth/auth-widget.js"></script>
 <script type="module" src="../assets/auth/guard.js"></script>
+<script>
+try {
+  localStorage.setItem('nkx_last_viewed_ea', JSON.stringify({
+    id: 'aurum', title: 'AURUM HFT', href: 'ea/aurum.html', ts: Date.now()
+  }));
+} catch {}
+</script>
 </body>
 </html>

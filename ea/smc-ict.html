@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<link rel="icon" href="../assets/c-logo.png" type="image/png"/>
 <style>
 
 /* Wordmark display face — matches main NUKRAX site */
@@ -228,7 +228,7 @@
   /* ── CARDS ── */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
     gap: 20px;
   }
 
@@ -369,7 +369,7 @@
   /* ── RISK TABLE ── */
   .risk-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
     gap: 16px;
     margin-top: 16px;
   }
@@ -426,6 +426,11 @@
   svg.chart { width: 100%; height: 260px; display: block; }
 
   /* ── PARAMS TABLE ── */
+  .table-scroll-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .params-table {
     width: 100%;
     border-collapse: collapse;
@@ -877,7 +882,7 @@
     <div class="section-label">05 — Configuration</div>
     <h2 class="section-title">Input <span>Parameters</span></h2>
 
-    <table class="params-table">
+    <div class="table-scroll-wrap"><table class="params-table">
       <thead>
         <tr>
           <th>Parameter</th>
@@ -922,7 +927,7 @@
           <td>Maximum spread in points before EA skips entry. Increase for exotic pairs, decrease for majors.</td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
 
     <div style="margin-top:40px;" class="cards">
       <div class="card">
@@ -1027,5 +1032,12 @@
 <script type="module" src="../assets/ai/widget.js"></script>
 <script type="module" src="../assets/auth/auth-widget.js"></script>
 <script type="module" src="../assets/auth/guard.js"></script>
+<script>
+try {
+  localStorage.setItem('nkx_last_viewed_ea', JSON.stringify({
+    id: 'smc-ict', title: 'SMC ICT', href: 'ea/smc-ict.html', ts: Date.now()
+  }));
+} catch {}
+</script>
 </body>
 </html>

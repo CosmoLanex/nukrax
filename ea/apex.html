@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<link rel="icon" href="../assets/c-logo.png" type="image/png"/>
 <style>
 
 /* Wordmark display face — matches main NUKRAX site */
@@ -314,7 +314,7 @@
   /* ── CARDS ── */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
@@ -355,7 +355,7 @@
   /* ── CARDS PLAIN (no grid gap style) ── */
   .cards-plain {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: 16px;
   }
 
@@ -388,7 +388,7 @@
   /* ── TIMEFRAME TABLE ── */
   .tf-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
     gap: 0;
     border: 1px solid var(--border);
     border-radius: 4px;
@@ -563,7 +563,7 @@
   /* ── RISK GRID ── */
   .risk-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
     gap: 0;
     border: 1px solid var(--border);
     border-radius: 4px;
@@ -606,7 +606,7 @@
   /* ── PAIRS TABLE ── */
   .pairs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
@@ -708,7 +708,7 @@
 
   .model-conditions {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
     gap: 16px;
     margin-top: 16px;
   }
@@ -764,6 +764,11 @@
   svg.chart { width: 100%; height: 240px; display: block; }
 
   /* ── PARAMS TABLE ── */
+  .table-scroll-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .params-table {
     width: 100%;
     border-collapse: collapse;
@@ -1158,7 +1163,7 @@
 
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:24px;">
       <div class="section-label" style="margin-bottom:12px;">⚡ Recommended Settings per Pair</div>
-      <table class="params-table">
+      <div class="table-scroll-wrap"><table class="params-table">
         <thead>
           <tr><th>Pair</th><th>MaxSpread</th><th>SL Buffer</th><th>ATR Min</th><th>Session</th></tr>
         </thead>
@@ -1170,7 +1175,7 @@
           <tr><td>NAS100</td><td>50 pts</td><td>15 pts</td><td>12 pips</td><td>NY session only</td></tr>
           <tr><td>USDJPY</td><td>20 pts</td><td>8 pts</td><td>4 pips</td><td>Asia + London open</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
   </div>
 </section>
@@ -1540,7 +1545,7 @@
     <div class="section-label">07 — Configuration</div>
     <h2 class="section-title">Key Input <span>Parameters</span></h2>
 
-    <table class="params-table" style="margin-bottom:40px;">
+    <div class="table-scroll-wrap"><table class="params-table" style="margin-bottom:40px;">
       <thead>
         <tr><th>Parameter</th><th>Default</th><th>Description</th></tr>
       </thead>
@@ -1566,7 +1571,7 @@
         <tr><td>InpUsePA</td><td>true</td><td>Enable/disable Price Action pattern recognition.</td></tr>
         <tr><td>InpTrailPips</td><td>10.0</td><td>Trailing stop distance in pips for the TP3 runner. Smaller = tighter but risks early exit.</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <div class="cards-plain">
       <div class="card-plain">
@@ -1705,5 +1710,12 @@
 <script type="module" src="../assets/ai/widget.js"></script>
 <script type="module" src="../assets/auth/auth-widget.js"></script>
 <script type="module" src="../assets/auth/guard.js"></script>
+<script>
+try {
+  localStorage.setItem('nkx_last_viewed_ea', JSON.stringify({
+    id: 'apex', title: 'APEX HFT', href: 'ea/apex.html', ts: Date.now()
+  }));
+} catch {}
+</script>
 </body>
 </html>

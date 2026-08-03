@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<link rel="icon" href="../assets/c-logo.png" type="image/png"/>
 <style>
 
 /* Wordmark display face — matches main NUKRAX site */
@@ -29,7 +29,7 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
 
   body {
     background: var(--bg);
@@ -284,6 +284,7 @@
   }
 
   /* ── STATE MACHINE ── */
+  .formula-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; }
   .state-flow {
     display: flex;
     gap: 0;
@@ -335,7 +336,7 @@
   /* ── FVG GRID ── */
   .fvg-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
     gap: 2px;
   }
   .fvg-card {
@@ -386,7 +387,7 @@
   /* ── SESSION MODELS ── */
   .session-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
     gap: 2px;
   }
   .session-card {
@@ -523,7 +524,7 @@
   }
   .kz-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
     gap: 2px;
   }
   .kz-card {
@@ -554,7 +555,7 @@
   /* ── CONFIRMATIONS ── */
   .confirm-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
     gap: 2px;
   }
   .confirm-card {
@@ -677,7 +678,7 @@
   /* ── PSYCHOLOGY ── */
   .psych-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
     gap: 2px;
   }
   .psych-card {
@@ -792,7 +793,7 @@
   /* ── PAIRS ── */
   .pairs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
     gap: 2px;
   }
   .pair-card {
@@ -844,6 +845,7 @@
     .param-row { grid-template-columns: 1fr 1fr; }
     .param-note { display: none; }
     .state-flow { gap: 0; }
+    .formula-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 600px) {
     .wrap { padding: 0 16px; }
@@ -1567,7 +1569,7 @@
       </table>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px">
+    <div class="formula-grid">
       <div style="background:var(--bg2);border:1px solid var(--border);padding:24px">
         <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:2px;margin-bottom:12px">SL FORMULA</div>
         <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);line-height:1.8">
