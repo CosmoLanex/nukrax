@@ -29,6 +29,14 @@ const ACCOUNT_URL = `${BASE}account.html`;
 const SETTINGS_URL = `${BASE}settings.html`;
 const HOME_URL = `${BASE}index.html`;
 
+// The floating widget (Login button / account menu) is meant for pages that
+// don't already have their own dedicated auth UI. login.html and signup.html
+// ARE that auth UI, so injecting a redundant floating "Log In" button + menu
+// on top of them doesn't make sense — skip rendering there. The `supabase`
+// client above is still exported normally, since these pages' own forms need it.
+const CURRENT_PAGE = window.location.pathname.replace(/^.*\//, '');
+const SKIP_FLOATING_WIDGET = ['login.html', 'signup.html'].includes(CURRENT_PAGE);
+
 const SITE_LINKS = [
   { label: 'Home', href: `${BASE}index.html` },
   { label: 'Community', href: `${BASE}community.html` },
@@ -461,6 +469,8 @@ function buildMenuWrap(user) {
 }
 
 function renderWidget(user) {
+  if (SKIP_FLOATING_WIDGET) return;
+
   // Remove any previously injected instances before re-rendering.
   document.getElementById('nkx-w-login-wrap')?.remove();
   document.getElementById('nkx-w-menu-wrap')?.remove();
@@ -508,8 +518,9 @@ supabase.auth.onAuthStateChange((event, session) => {
 });
 
 // If redirected here because a gated page needs login, open the modal automatically
+// (not on login.html/signup.html — they already show their own login/signup form).
 const params = new URLSearchParams(window.location.search);
-if (params.get('authRequired') === '1') {
+if (!SKIP_FLOATING_WIDGET && params.get('authRequired') === '1') {
   openModal('login', { note: 'Please log in to continue — an account is required to use Nukrax.' });
   params.delete('authRequired');
   const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
