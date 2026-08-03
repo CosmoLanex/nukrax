@@ -48,7 +48,7 @@ body::before{
 nav#navbar{
   position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-content:space-between;
   padding:26px var(--gutter);background:rgba(3,5,7,0.88);backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--line);
+  border-bottom:1px solid var(--line);gap:12px;
 }
 @media (max-width:768px){ nav#navbar{padding:18px 24px} }
 @media (max-width:480px){ nav#navbar{padding:16px 18px} .nav-logo-img{width:26px;height:26px} }
@@ -67,11 +67,12 @@ nav#navbar{
   color:var(--accent);border:1px solid var(--accent-dim);border-radius:6px;padding:3px 7px;margin-left:2px;
 }
 .nav-actions{display:flex;align-items:center;gap:22px}
-.nav-login-link{font-family:var(--font-b);font-size:var(--fs-13);font-weight:700;color:var(--text);text-decoration:none;padding:9px 4px;transition:color .2s var(--ease)}
+.nav-login-link{font-family:var(--font-b);font-size:var(--fs-13);font-weight:700;color:var(--text);text-decoration:none;padding:9px 4px;white-space:nowrap;flex-shrink:0;transition:color .2s var(--ease)}
 @media (hover:hover) and (pointer:fine){.nav-login-link:hover{color:var(--white)}}
 .nav-get-started{
   font-family:var(--font-b);font-size:13.5px;font-weight:500;color:var(--black);
   background:var(--white);text-decoration:none;padding:9px 18px;border-radius:20px;
+  white-space:nowrap;flex-shrink:0;
   transition:background .25s var(--ease),transform .2s var(--ease);
 }
 @media (hover:hover) and (pointer:fine){.nav-get-started:hover{background:var(--accent);transform:translateY(-1px)}}
@@ -278,6 +279,27 @@ nav#navbar{
 .footer-links a{font-size:var(--fs-11);color:var(--muted);text-decoration:none;transition:color .3s var(--ease)}
 @media (hover:hover) and (pointer:fine){.footer-links a:hover{color:var(--white)}}
 @media(max-width:760px){.footer-bottom{flex-direction:column;align-items:flex-start}}
+
+/* Docs nav has two extra items (DOCS badge + sidebar toggle) beyond what
+   the rest of the site's nav carries, so it needs earlier/more aggressive
+   shrinking than the homepage's own mobile nav to avoid overflowing small
+   phone widths. Placed after every rule it overrides so it reliably wins
+   the cascade (equal-specificity rules are decided by source order, not
+   by which one sits inside a later `@media` block). */
+@media(max-width:600px){
+  .nav-doc-tag{display:none}
+  .nav-actions{gap:14px}
+}
+@media(max-width:420px){
+  .nav-actions{gap:9px}
+  .nav-logo{font-size:var(--fs-14)}
+  .docs-nav-toggle{width:34px;height:34px}
+  .nav-login-link{font-size:var(--fs-12);padding:9px 3px}
+  .nav-get-started{font-size:var(--fs-12);padding:8px 13px}
+}
+@media(max-width:340px){
+  .nav-login-link{display:none}
+}
 
 /* ── Mobile drawer behavior ── */
 .docs-sidebar-overlay{
