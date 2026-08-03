@@ -348,9 +348,13 @@ nav{
 .matrix-foot strong{color:var(--text);font-weight:400}
 
 @media(max-width:700px){
-  .matrix-grid{grid-template-columns:64px repeat(5,minmax(44px,1fr));font-size:10px}
+  .matrix-grid{grid-template-columns:64px repeat(5,minmax(min(44px, 100%), 1fr));font-size:10px}
   .matrix-cell.row-head{padding-left:8px;font-size:11px}
   .matrix-cell .val{font-size:11px}
+}
+@media(max-width:380px){
+  .matrix-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .matrix-grid{min-width:300px}
 }
 
 /* ══════════ NOTE ══════════ */
