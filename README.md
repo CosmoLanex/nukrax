@@ -7,7 +7,7 @@
 <img src="assets/readme/nukrax-wordmark.svg" alt="NUKRAX" width="480" />
 
 <p>
-A private trading ecosystem — institutional-grade Expert Advisors, SMC/ICT strategy<br/>
+A private trading ecosystem<br/>
 systems, and live trading infrastructure for serious market participants.
 </p>
 
@@ -30,7 +30,7 @@ systems, and live trading infrastructure for serious market participants.
 
 <div align="center">
 
-[Live Site](https://nukrax.cosmolanex.workers.dev) · [Expert Advisors](#-expert-advisors) · [Design System](#-design-system) · [Structure](#-project-structure)
+[Live Site](https://nukrax.com) · [Expert Advisors](#-expert-advisors) · [Design System](#-design-system) · [Structure](#-project-structure)
 
 </div>
 
