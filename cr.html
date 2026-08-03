@@ -222,6 +222,7 @@ main {
 /* ── HERO ── */
 .hero {
   position: relative;
+  overflow: hidden;
   text-align: center;
   margin-bottom: clamp(36px,5vw,56px);
 }
@@ -322,7 +323,7 @@ main {
 /* ── CRYPTO GRID ── */
 .crypto-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(130px, 100%), 1fr));
   gap: 10px;
   margin-bottom: 36px;
   animation: riseIn 0.7s ease 0.35s both;
@@ -399,7 +400,7 @@ main {
 
 .net-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
   gap: 8px;
 }
 
@@ -492,7 +493,7 @@ footer {
 }
 .footer-inner {
   max-width: 900px; margin: 0 auto;
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
   gap: 32px 40px;
 }
 .footer-col h3 {
@@ -532,7 +533,7 @@ footer {
 <div id="preloader">
   <div class="pre-ring">
     <div class="pre-ring-inner">
-      <img src="assets/logo.png" id="preLogo" style="width:100%;height:100%;object-fit:cover;display:none;border-radius:50%">
+      <img src="assets/logo.png" id="preLogo" alt="NUKRAX" style="width:100%;height:100%;object-fit:cover;display:none;border-radius:50%">
       <span id="preFb">N</span>
     </div>
   </div>

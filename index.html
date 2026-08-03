@@ -533,6 +533,45 @@ body.nkx-logged-out .nav-get-started-link{display:inline-flex}
 body.nkx-logged-out .hero-ctas-loggedin{display:none}
 body.nkx-logged-out .hero-ctas-loggedout{display:contents}
 
+/* ── Welcome Panel (logged-in homepage) — reuses .x-section/.section-label/
+   .x-title/.dash-grid/.dash-card wholesale; only genuinely new rules below. ── */
+.welcome-panel{padding-top:40px}
+body.nkx-logged-out .welcome-panel{display:none}
+.welcome-greeting{
+  font-family:var(--font-b);font-weight:200;
+  font-size:var(--fs-heading-md);color:var(--white);
+  letter-spacing:-.01em;margin-bottom:8px;
+}
+.welcome-sub{font-size:var(--fs-13-5);color:var(--muted);line-height:1.7;margin-bottom:28px}
+.welcome-continue{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:20px 24px;margin-bottom:28px;
+  border:1px solid var(--line-lit);border-radius:2px;
+  background:linear-gradient(160deg, rgba(143,184,196,0.06), rgba(143,184,196,0.01));
+  text-decoration:none;
+  transition:border-color .3s var(--ease),background .3s var(--ease),transform .3s var(--ease-out);
+}
+@media (hover:hover) and (pointer:fine){.welcome-continue:hover{border-color:var(--accent-dim);transform:translateY(-2px)}}
+.welcome-continue-label{font-family:var(--font-m);font-size:var(--fs-10);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.welcome-continue-title{font-family:var(--font-b);font-size:var(--fs-15-5);color:var(--white);font-weight:500}
+.welcome-continue .btn-arrow{color:var(--accent);font-size:var(--fs-19)}
+.quick-action-card{text-decoration:none;display:block;cursor:pointer}
+.quick-action-title{font-family:var(--font-b);font-size:var(--fs-15-5);color:var(--white);font-weight:500;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.quick-action-desc{font-size:var(--fs-12-5);color:var(--muted);line-height:1.6}
+.quick-action-card .btn-arrow{color:var(--muted);transition:transform .35s var(--ease-out),color .3s var(--ease)}
+@media (hover:hover) and (pointer:fine){.quick-action-card:hover .btn-arrow{transform:translateX(4px);color:var(--accent)}}
+
+/* Magnetic pull on primary CTAs — JS sets --mx/--my per pointer position;
+   translate is capped small so it reads as premium weight, not a gimmick. */
+.btn-magnetic{transition:transform .25s var(--ease-out)}
+.btn-magnetic.magnetic-active{transition:transform .1s linear}
+@media (hover:hover) and (pointer:fine){
+  .btn-magnetic{transform:translate(var(--mx,0),var(--my,0))}
+}
+@media (prefers-reduced-motion: reduce){
+  .btn-magnetic{transform:none !important}
+}
+
 /* ── Global Market Network — rotating wireframe globe, replaces the old
    scroll hint. Fills the freed hero space with a live, on-theme visual
    instead of empty space / the mountain silhouette showing through. ── */
@@ -1724,7 +1763,7 @@ a.testimonial-card:hover{transform:translateY(-3px)}
     <div class="hero-divider"></div>
     <div class="hero-ctas">
       <div class="hero-ctas-loggedin" id="heroCtasLoggedIn">
-      <a href="ea-selection.html" class="btn btn-primary" id="btn-ea">
+      <a href="ea-selection.html" class="btn btn-primary btn-magnetic" id="btn-ea">
         Explore Expert Advisors
         <span class="btn-arrow">→</span>
       </a>
@@ -1739,7 +1778,7 @@ a.testimonial-card:hover{transform:translateY(-3px)}
       </a>
       </div>
       <div class="hero-ctas-loggedout" id="heroCtasLoggedOut">
-      <a href="signup.html" class="btn btn-premium" id="btn-get-started">
+      <a href="signup.html" class="btn btn-premium btn-magnetic" id="btn-get-started">
         Get Started
         <span class="btn-arrow">→</span>
       </a>
@@ -1753,6 +1792,48 @@ a.testimonial-card:hover{transform:translateY(-3px)}
     <div class="cube-scene" id="cubeScene">
       <canvas id="heroCubeCanvas"></canvas>
     </div>
+  </div>
+</section>
+
+<!-- WELCOME PANEL (logged-in homepage — hidden for signed-out visitors) -->
+<section class="x-section welcome-panel" id="welcomePanel" aria-labelledby="welcome-heading">
+  <div class="section-label reveal">Home</div>
+  <h2 class="welcome-greeting reveal-heading" id="welcome-heading">Welcome back</h2>
+  <p class="welcome-sub reveal-para" id="welcomeSub">Here's what's waiting for you.</p>
+
+  <a href="ea-selection.html" class="welcome-continue reveal-card" id="welcomeContinue" hidden>
+    <div>
+      <div class="welcome-continue-label">Continue where you left off</div>
+      <div class="welcome-continue-title" id="welcomeContinueTitle">—</div>
+    </div>
+    <span class="btn-arrow">→</span>
+  </a>
+
+  <div class="dash-grid">
+    <a href="community.html" class="dash-card quick-action-card reveal-card">
+      <div class="quick-action-title">Community<span class="btn-arrow">→</span></div>
+      <div class="quick-action-desc">See what other traders are posting right now.</div>
+    </a>
+    <a href="ea-selection.html" class="dash-card quick-action-card reveal-card reveal-delay-1">
+      <div class="quick-action-title">Execution Systems<span class="btn-arrow">→</span></div>
+      <div class="quick-action-desc">Compare APEX HFT, AURUM HFT, and SMC ICT.</div>
+    </a>
+    <a href="tr.html" class="dash-card quick-action-card reveal-card reveal-delay-2">
+      <div class="quick-action-title">Terminal<span class="btn-arrow">→</span></div>
+      <div class="quick-action-desc">Live equity, sessions, and trade history.</div>
+    </a>
+    <a href="account.html" class="dash-card quick-action-card reveal-card">
+      <div class="quick-action-title">Account<span class="btn-arrow">→</span></div>
+      <div class="quick-action-desc">Profile, security, and preferences.</div>
+    </a>
+    <a href="settings.html" class="dash-card quick-action-card reveal-card reveal-delay-1">
+      <div class="quick-action-title">Settings<span class="btn-arrow">→</span></div>
+      <div class="quick-action-desc">Notifications and display preferences.</div>
+    </a>
+    <a href="docs/introduction.html" class="dash-card quick-action-card reveal-card reveal-delay-2">
+      <div class="quick-action-title">Documentation<span class="btn-arrow">→</span></div>
+      <div class="quick-action-desc">Platform docs, guides, and reference.</div>
+    </a>
   </div>
 </section>
 
@@ -3395,6 +3476,7 @@ function applyAuthState(session) {
 supabase.auth.getSession().then(({ data }) => applyAuthState(data.session));
 supabase.auth.onAuthStateChange((_event, session) => applyAuthState(session));
 </script>
+<script type="module" src="assets/home/home.js"></script>
 <script type="module">
   import { initCube } from './assets/cube/cube.js?v=4';
   initCube({ canvasId: 'heroCubeCanvas', hostId: 'cubeScene', wrapId: 'heroGlobeWrap' });
