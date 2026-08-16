@@ -149,12 +149,16 @@ nav{
 }
 .pp-title{
   font-family:var(--font-d);
-  font-size:clamp(52px,8vw,96px);
-  letter-spacing:0.1em;
-  line-height:1;
+  font-size:clamp(30px,5vw,56px);
+  letter-spacing:0.02em;
+  line-height:1.05;
   color:var(--white);
   opacity:0;
   animation:fadeUp .9s var(--ease) .35s forwards;
+  white-space:nowrap;
+}
+@media(max-width:640px){
+  .pp-title{white-space:normal;font-size:clamp(28px,8vw,40px);}
 }
 .pp-meta{
   display:flex;align-items:center;gap:24px;
@@ -247,8 +251,8 @@ nav{
 }
 .pp-section-title{
   font-family:var(--font-d);
-  font-size:clamp(22px,3vw,32px);
-  letter-spacing:0.08em;
+  font-size:clamp(18px,2.2vw,24px);
+  letter-spacing:0.03em;
   color:var(--white);
   margin-bottom:24px;
   padding-bottom:16px;
@@ -414,7 +418,7 @@ footer{
 <!-- HERO -->
 <div class="pp-hero">
   <p class="pp-label">Legal &nbsp;/&nbsp; Documentation</p>
-  <h1 class="pp-title">Privacy<br/>Policy</h1>
+  <h1 class="pp-title">Privacy Policy</h1>
   <div class="pp-meta">
     <span class="pp-meta-item">Effective: January 1, 2025</span>
     <div class="pp-meta-divider"></div>
