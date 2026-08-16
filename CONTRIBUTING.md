@@ -12,7 +12,7 @@ If you've spotted something broken on [nukrax.com](https://nukrax.com) or an iss
 
 ## Security issue?
 
-Do not open a public issue for security vulnerabilities. See [`SECURITY.md`](https://github.com/CosmoLanex/nukrax?tab=security-ov-file) instead.
+Do not open a public issue for security vulnerabilities. See [`SECURITY.md`](SECURITY.md) instead.
 
 ## Want to work together?
 
