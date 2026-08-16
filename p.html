@@ -131,17 +131,6 @@ nav{
 }
 @media (hover:hover) and (pointer:fine){.nav-links a:hover{color:var(--offwhite)}}
 @media(max-width:900px){.nav-links{display:none;}}
-.nav-right{display:flex;align-items:center;gap:16px}
-.nav-back{
-  display:flex;align-items:center;gap:8px;
-  font-family:var(--font-b);
-  font-size:12px;font-weight:600;
-  letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--smoke);text-decoration:none;
-  transition:color .25s;
-}
-@media (hover:hover) and (pointer:fine){.nav-back:hover{color:var(--offwhite)}}
-.nav-back svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
 /* ── HERO ── */
 .pp-hero{
@@ -396,14 +385,6 @@ footer{
   font-family:var(--font-m);
   font-size:9px;letter-spacing:0.12em;color:var(--muted);
 }
-.footer-back{
-  font-family:var(--font-m);
-  font-size:9px;font-weight:700;
-  letter-spacing:0.16em;text-transform:uppercase;
-  color:var(--muted);text-decoration:none;
-  transition:color .25s;
-}
-@media (hover:hover) and (pointer:fine){.footer-back:hover{color:var(--smoke)}}
 
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){
@@ -442,10 +423,6 @@ footer{
     <a href="#s9">Licensing</a>
     <a href="#s12">Contact</a>
   </div>
-  <div class="nav-right"><a href="index.html" class="nav-back">
-    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    Back to Home
-  </a></div>
 </nav>
 
 <!-- HERO -->
@@ -683,7 +660,6 @@ footer{
   <div class="footer-inner">
     <div class="footer-logo">NUKRAX</div>
     <div class="footer-copy">© 2024 NUKRAX. All rights reserved. Built by @CosmoLanex</div>
-    <a href="index.html" class="footer-back">← Return to Site</a>
   </div>
 </footer>
 
