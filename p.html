@@ -118,6 +118,19 @@ nav{
   font-size:22px;letter-spacing:0.22em;
   color:var(--white);text-decoration:none;
 }
+.nav-links{
+  display:flex;align-items:center;gap:40px;
+}
+.nav-links a{
+  font-family:var(--font-m);
+  font-size:10px;font-weight:700;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  transition:color .25s;
+  white-space:nowrap;
+}
+@media (hover:hover) and (pointer:fine){.nav-links a:hover{color:var(--offwhite)}}
+@media(max-width:900px){.nav-links{display:none;}}
 .nav-right{display:flex;align-items:center;gap:16px}
 .nav-back{
   display:flex;align-items:center;gap:8px;
@@ -133,8 +146,8 @@ nav{
 /* ── HERO ── */
 .pp-hero{
   position:relative;z-index:1;
-  padding:160px 52px 80px;
-  max-width:900px;
+  padding:160px 64px 80px;
+  max-width:1200px;
   margin:0 auto;
   border-bottom:1px solid var(--steel);
 }
@@ -149,16 +162,16 @@ nav{
 }
 .pp-title{
   font-family:var(--font-d);
-  font-size:clamp(30px,5vw,56px);
-  letter-spacing:0.02em;
+  font-size:clamp(24px,3.4vw,44px);
+  letter-spacing:0.01em;
   line-height:1.05;
   color:var(--white);
   opacity:0;
   animation:fadeUp .9s var(--ease) .35s forwards;
   white-space:nowrap;
 }
-@media(max-width:640px){
-  .pp-title{white-space:normal;font-size:clamp(28px,8vw,40px);}
+@media(max-width:768px){
+  .pp-title{white-space:normal;font-size:clamp(24px,6vw,34px);}
 }
 .pp-meta{
   display:flex;align-items:center;gap:24px;
@@ -184,9 +197,9 @@ nav{
 /* ── CONTENT ── */
 .pp-content{
   position:relative;z-index:1;
-  max-width:900px;
+  max-width:1200px;
   margin:0 auto;
-  padding:72px 52px 120px;
+  padding:72px 64px 120px;
 }
 
 /* Table of contents */
@@ -206,7 +219,7 @@ nav{
 }
 .pp-toc-list{
   list-style:none;
-  display:grid;grid-template-columns:repeat(2,1fr);
+  display:grid;grid-template-columns:repeat(3,1fr);
   gap:10px 32px;
 }
 .pp-toc-list a{
@@ -361,7 +374,7 @@ footer{
   padding:40px 52px;
 }
 .footer-inner{
-  max-width:900px;margin:0 auto;
+  max-width:1200px;margin:0 auto;
   display:flex;justify-content:space-between;align-items:center;
   flex-wrap:wrap;gap:20px;
 }
@@ -383,6 +396,9 @@ footer{
 @media (hover:hover) and (pointer:fine){.footer-back:hover{color:var(--smoke)}}
 
 /* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .pp-toc-list{grid-template-columns:repeat(2,1fr);}
+}
 @media(max-width:768px){
   nav{padding:16px 20px;}
   .pp-hero{padding:120px 24px 60px;}
@@ -409,6 +425,12 @@ footer{
     </a>
     <a href="index.html" class="nav-logo">nukrax</a>
   </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="ea-selection.html">EA Selection</a>
+    <a href="map.html">Market Map</a>
+    <a href="p.html#s12">Contact</a>
+  </div>
   <div class="nav-right"><a href="index.html" class="nav-back">
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     Back to Home
@@ -418,7 +440,7 @@ footer{
 <!-- HERO -->
 <div class="pp-hero">
   <p class="pp-label">Legal &nbsp;/&nbsp; Documentation</p>
-  <h1 class="pp-title">Privacy Policy</h1>
+  <h1 class="pp-title">Privacy &amp; Security - Policy</h1>
   <div class="pp-meta">
     <span class="pp-meta-item">Effective: January 1, 2025</span>
     <div class="pp-meta-divider"></div>
