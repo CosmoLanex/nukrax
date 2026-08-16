@@ -10,20 +10,30 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+<link rel="icon" href="assets/c-logo.png" type="image/png"/>
 <style>
+@font-face{
+  font-family:'NKX Display';
+  src:url('assets/fonts/nukrax-display.woff2') format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
 :root {
   --black:    #060606;
   --deep:     #0c0c0c;
   --charcoal: #141414;
   --mid:      #1e1e1e;
   --steel:    #2e2e2e;
-  --muted:    #5a5a5a;
-  --smoke:    #9a9a9a;
-  --offwhite: #e6e6e4;
-  --white:    #f4f4f2;
+  --muted:    #8a8a8a;
+  --smoke:    #c9c9c6;
+  --offwhite: #eeeeec;
+  --white:    #f8f8f6;
   --accent:   #c0c0bc;
   --glow:     rgba(196,196,192,0.06);
-  --font-d:   'Bebas Neue', sans-serif;
+  --font-d:   'NKX Display', 'Bebas Neue', sans-serif;
+  --font-b:   'Outfit', sans-serif;
+  --font-m:   'Space Mono', monospace;
   --ease:     cubic-bezier(0.16,1,0.3,1);
 }
 
@@ -108,6 +118,19 @@ nav{
   font-size:22px;letter-spacing:0.22em;
   color:var(--white);text-decoration:none;
 }
+.nav-links{
+  display:flex;align-items:center;gap:40px;
+}
+.nav-links a{
+  font-family:var(--font-m);
+  font-size:10px;font-weight:700;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;
+  transition:color .25s;
+  white-space:nowrap;
+}
+@media (hover:hover) and (pointer:fine){.nav-links a:hover{color:var(--offwhite)}}
+@media(max-width:900px){.nav-links{display:none;}}
 .nav-right{display:flex;align-items:center;gap:16px}
 .nav-back{
   display:flex;align-items:center;gap:8px;
@@ -123,8 +146,8 @@ nav{
 /* ── HERO ── */
 .pp-hero{
   position:relative;z-index:1;
-  padding:160px 52px 80px;
-  max-width:900px;
+  padding:160px 64px 80px;
+  max-width:1200px;
   margin:0 auto;
   border-bottom:1px solid var(--steel);
 }
@@ -139,12 +162,16 @@ nav{
 }
 .pp-title{
   font-family:var(--font-d);
-  font-size:clamp(52px,8vw,96px);
-  letter-spacing:0.1em;
-  line-height:1;
+  font-size:clamp(24px,3.4vw,44px);
+  letter-spacing:0.01em;
+  line-height:1.05;
   color:var(--white);
   opacity:0;
   animation:fadeUp .9s var(--ease) .35s forwards;
+  white-space:nowrap;
+}
+@media(max-width:768px){
+  .pp-title{white-space:normal;font-size:clamp(24px,6vw,34px);}
 }
 .pp-meta{
   display:flex;align-items:center;gap:24px;
@@ -170,9 +197,9 @@ nav{
 /* ── CONTENT ── */
 .pp-content{
   position:relative;z-index:1;
-  max-width:900px;
+  max-width:1200px;
   margin:0 auto;
-  padding:72px 52px 120px;
+  padding:72px 64px 120px;
 }
 
 /* Table of contents */
@@ -192,7 +219,7 @@ nav{
 }
 .pp-toc-list{
   list-style:none;
-  display:grid;grid-template-columns:repeat(2,1fr);
+  display:grid;grid-template-columns:repeat(3,1fr);
   gap:10px 32px;
 }
 .pp-toc-list a{
@@ -237,8 +264,8 @@ nav{
 }
 .pp-section-title{
   font-family:var(--font-d);
-  font-size:clamp(22px,3vw,32px);
-  letter-spacing:0.08em;
+  font-size:clamp(18px,2.2vw,24px);
+  letter-spacing:0.03em;
   color:var(--white);
   margin-bottom:24px;
   padding-bottom:16px;
@@ -296,6 +323,49 @@ nav{
 @media (hover:hover) and (pointer:fine){.pp-contact-box:hover{border-color:var(--muted)}}
 .pp-contact-box p{margin:0}
 
+/* Highlight box — used for brand/security emphasis */
+.pp-highlight{
+  background:rgba(24,24,24,0.65);
+  border:1px solid var(--steel);
+  border-left:3px solid var(--offwhite);
+  padding:26px 30px;
+  margin:24px 0;
+}
+.pp-highlight-title{
+  font-family:var(--font-m);
+  font-size:9px;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--white);
+  margin-bottom:14px;
+}
+.pp-highlight p{
+  font-size:14px;line-height:1.85;
+  color:var(--smoke);margin-bottom:14px;
+}
+.pp-highlight p:last-child{margin-bottom:0}
+.pp-highlight p strong{font-weight:600;color:var(--offwhite);}
+.pp-highlight ul{list-style:none;margin:14px 0;display:flex;flex-direction:column;gap:10px;}
+.pp-highlight ul li{font-size:14px;line-height:1.7;color:var(--smoke);padding-left:20px;position:relative;}
+.pp-highlight ul li::before{content:'—';position:absolute;left:0;color:var(--muted);font-family:var(--font-m);}
+
+/* Contact grid */
+.pp-contact-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:14px 32px;margin-top:8px;
+}
+.pp-contact-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:12px;padding-bottom:10px;
+  border-bottom:1px solid rgba(46,46,46,0.6);
+}
+.pp-contact-row-label{
+  font-family:var(--font-m);
+  font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--muted);white-space:nowrap;
+}
+.pp-contact-row a{font-size:13px;}
+@media(max-width:768px){.pp-contact-grid{grid-template-columns:1fr;}}
+
 /* ── FOOTER ── */
 footer{
   position:relative;z-index:1;
@@ -304,7 +374,7 @@ footer{
   padding:40px 52px;
 }
 .footer-inner{
-  max-width:900px;margin:0 auto;
+  max-width:1200px;margin:0 auto;
   display:flex;justify-content:space-between;align-items:center;
   flex-wrap:wrap;gap:20px;
 }
@@ -326,6 +396,9 @@ footer{
 @media (hover:hover) and (pointer:fine){.footer-back:hover{color:var(--smoke)}}
 
 /* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .pp-toc-list{grid-template-columns:repeat(2,1fr);}
+}
 @media(max-width:768px){
   nav{padding:16px 20px;}
   .pp-hero{padding:120px 24px 60px;}
@@ -352,6 +425,12 @@ footer{
     </a>
     <a href="index.html" class="nav-logo">nukrax</a>
   </div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="ea-selection.html">EA Selection</a>
+    <a href="map.html">Market Map</a>
+    <a href="p.html#s12">Contact</a>
+  </div>
   <div class="nav-right"><a href="index.html" class="nav-back">
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     Back to Home
@@ -361,11 +440,11 @@ footer{
 <!-- HERO -->
 <div class="pp-hero">
   <p class="pp-label">Legal &nbsp;/&nbsp; Documentation</p>
-  <h1 class="pp-title">Privacy<br/>Policy</h1>
+  <h1 class="pp-title">Privacy &amp; Security - Policy</h1>
   <div class="pp-meta">
     <span class="pp-meta-item">Effective: January 1, 2025</span>
     <div class="pp-meta-divider"></div>
-    <span class="pp-meta-item">Last Updated: January 1, 2025</span>
+    <span class="pp-meta-item">Last Updated: August 16, 2026</span>
     <div class="pp-meta-divider"></div>
     <span class="pp-meta-item">NUKRAX</span>
   </div>
@@ -385,9 +464,11 @@ footer{
       <li><a href="#s5">Data Retention</a></li>
       <li><a href="#s6">Your Rights</a></li>
       <li><a href="#s7">Security</a></li>
-      <li><a href="#s8">Third-Party Links</a></li>
-      <li><a href="#s9">Changes to This Policy</a></li>
-      <li><a href="#s10">Contact Us</a></li>
+      <li><a href="#s8">Brand, Trademark &amp; Logo</a></li>
+      <li><a href="#s9">Intellectual Property &amp; Licensing</a></li>
+      <li><a href="#s10">Third-Party Links</a></li>
+      <li><a href="#s11">Changes to This Policy</a></li>
+      <li><a href="#s12">Contact &amp; Support</a></li>
     </ol>
   </div>
 
@@ -496,37 +577,108 @@ footer{
       <li>Regular review of our data handling practices and third-party service providers.</li>
     </ul>
     <p>No method of transmission over the internet is 100% secure. While we strive to use commercially acceptable means to protect your data, we cannot guarantee absolute security.</p>
+
+    <div class="pp-highlight">
+      <div class="pp-highlight-title">Reporting a Vulnerability</div>
+      <p>If you discover a security issue affecting our website, platforms, or services, please report it privately rather than disclosing it publicly. Include a clear description of the issue, steps to reproduce it, and any relevant evidence.</p>
+      <p>Contact: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=security@nukrax.com" target="_blank" rel="noopener noreferrer">security@nukrax.com</a></p>
+      <p>Reports are reviewed as they come in. There is no formal bug bounty program at this time, but responsible disclosure is appreciated and will be acknowledged.</p>
+    </div>
   </div>
 
   <!-- 08 -->
   <div class="pp-section" id="s8">
     <div class="pp-section-num">08</div>
-    <h2 class="pp-section-title">Third-Party Links</h2>
-    <p>Our site contains links to external platforms including YouTube, Telegram, GitHub, X (Twitter), Linktree, and Phantom Wallet. These services are operated by independent third parties and are governed by their own privacy policies.</p>
-    <p>We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party services. We encourage you to review the privacy policy of every site you visit.</p>
+    <h2 class="pp-section-title">Brand, Trademark &amp; Logo</h2>
+    <p>The name <strong>NUKRAX</strong>, the NUKRAX logo, wordmark, and all associated visual identity are the exclusive property of Cosmo Lanex, the creator and operator of NUKRAX.</p>
+
+    <div class="pp-highlight">
+      <div class="pp-highlight-title">Reserved — No Unauthorized Use</div>
+      <p>Without prior written authorization, no individual, business, or entity may:</p>
+      <ul>
+        <li>Use the NUKRAX name, logo, or wordmark — in whole or in part — on any product, service, account, domain, or platform.</li>
+        <li>Create a name, logo, or brand identity that is identical or confusingly similar to NUKRAX.</li>
+        <li>Represent, imply, or suggest affiliation, endorsement, or partnership with NUKRAX where none exists.</li>
+        <li>Use the NUKRAX name or assets in any way that could mislead others about the origin of a product or service.</li>
+      </ul>
+      <p>This applies regardless of intent, medium, or platform — including social media, marketplaces, applications, domains, and other websites.</p>
+      <p>Unauthorized use of the NUKRAX name or logo may constitute trademark infringement, copyright infringement, unfair competition, and/or brand impersonation under applicable law. We actively monitor for unauthorized or infringing use and reserve the right to pursue all available remedies — including cease-and-desist notices, platform and DMCA takedown requests, and further legal action — against any party found to be in violation.</p>
+    </div>
+
+    <p>Official NUKRAX products, services, and communications are issued exclusively through <a href="https://nukrax.com" target="_blank" rel="noopener noreferrer">nukrax.com</a> and <a href="https://github.com/CosmoLanex" target="_blank" rel="noopener noreferrer">github.com/CosmoLanex</a>. Anything presented as NUKRAX outside these channels is not official and is not endorsed by us.</p>
+    <p>To report unauthorized use of the NUKRAX name or logo, contact <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@nukrax.com" target="_blank" rel="noopener noreferrer">contact@nukrax.com</a>.</p>
   </div>
 
   <!-- 09 -->
   <div class="pp-section" id="s9">
     <div class="pp-section-num">09</div>
-    <h2 class="pp-section-title">Changes to This Policy</h2>
-    <p>We reserve the right to update this Privacy Policy at any time. When we do, we will revise the "Last Updated" date at the top of this page. Material changes will be communicated through a notice on our website.</p>
-    <p>Your continued use of the site after any changes constitutes acceptance of the revised policy. We encourage you to review this page periodically to stay informed.</p>
+    <h2 class="pp-section-title">Intellectual Property &amp; Licensing</h2>
+    <p>All source code, design elements, documentation, and digital assets published by NUKRAX — including the Expert Advisor suite, trading platforms, and website — are original work and protected under applicable copyright law.</p>
+    <p>Unless explicitly stated otherwise, no part of our software, code, or content may be copied, modified, redistributed, reverse-engineered, or used to create derivative works without prior written permission.</p>
+    <p>Products or services obtained through NUKRAX are provided for the licensee's use under the terms agreed at the point of access or purchase, and remain the property of NUKRAX. Redistribution or resale without authorization is not permitted.</p>
+    <p>For licensing questions or permissions requests, contact <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@nukrax.com" target="_blank" rel="noopener noreferrer">contact@nukrax.com</a>. For purchase-related licensing matters, contact <a href="https://mail.google.com/mail/?view=cm&fs=1&to=billing@nukrax.com" target="_blank" rel="noopener noreferrer">billing@nukrax.com</a>.</p>
   </div>
 
   <!-- 10 -->
   <div class="pp-section" id="s10">
     <div class="pp-section-num">10</div>
-    <h2 class="pp-section-title">Contact Us</h2>
-    <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please reach out through any of the following channels:</p>
+    <h2 class="pp-section-title">Third-Party Links</h2>
+    <p>Our site contains links to external platforms including YouTube, Telegram, GitHub, X (Twitter), Linktree, and Phantom Wallet. These services are operated by independent third parties and are governed by their own privacy policies.</p>
+    <p>We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party services. We encourage you to review the privacy policy of every site you visit.</p>
+  </div>
+
+  <!-- 11 -->
+  <div class="pp-section" id="s11">
+    <div class="pp-section-num">11</div>
+    <h2 class="pp-section-title">Changes to This Policy</h2>
+    <p>We reserve the right to update this Privacy Policy at any time. When we do, we will revise the "Last Updated" date at the top of this page. Material changes will be communicated through a notice on our website.</p>
+    <p>Your continued use of the site after any changes constitutes acceptance of the revised policy. We encourage you to review this page periodically to stay informed.</p>
+  </div>
+
+  <!-- 12 -->
+  <div class="pp-section" id="s12">
+    <div class="pp-section-num">12</div>
+    <h2 class="pp-section-title">Contact &amp; Support</h2>
+    <p>If you have any questions, concerns, or requests regarding this policy, our data practices, or NUKRAX in general, reach out through the channel that best matches your enquiry:</p>
     <div class="pp-contact-box">
-      <p>
-        <strong>NUKRAX</strong> — operated by <strong>@CosmoLanex</strong><br/><br/>
-        Telegram: <a href="https://t.me/CosmoLanex" target="_blank" rel="noopener noreferrer">t.me/CosmoLanex</a><br/>
-        X (Twitter): <a href="https://x.com/CosmoLanex" target="_blank" rel="noopener noreferrer">x.com/CosmoLanex</a><br/>
-        YouTube: <a href="https://www.youtube.com/@CosmoLanex" target="_blank" rel="noopener noreferrer">youtube.com/@CosmoLanex</a>
-      </p>
+      <div class="pp-contact-grid">
+        <div class="pp-contact-row">
+          <span class="pp-contact-row-label">General</span>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@nukrax.com" target="_blank" rel="noopener noreferrer">contact@nukrax.com</a>
+        </div>
+        <div class="pp-contact-row">
+          <span class="pp-contact-row-label">Support</span>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=support@nukrax.com" target="_blank" rel="noopener noreferrer">support@nukrax.com</a>
+        </div>
+        <div class="pp-contact-row">
+          <span class="pp-contact-row-label">Billing</span>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=billing@nukrax.com" target="_blank" rel="noopener noreferrer">billing@nukrax.com</a>
+        </div>
+        <div class="pp-contact-row">
+          <span class="pp-contact-row-label">Partnerships</span>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=partners@nukrax.com" target="_blank" rel="noopener noreferrer">partners@nukrax.com</a>
+        </div>
+        <div class="pp-contact-row">
+          <span class="pp-contact-row-label">Security</span>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=security@nukrax.com" target="_blank" rel="noopener noreferrer">security@nukrax.com</a>
+        </div>
+        <div class="pp-contact-row">
+          <span class="pp-contact-row-label">Feedback</span>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=feedback@nukrax.com" target="_blank" rel="noopener noreferrer">feedback@nukrax.com</a>
+        </div>
+        <div class="pp-contact-row">
+          <span class="pp-contact-row-label">Enquiry</span>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=enquiry@nukrax.com" target="_blank" rel="noopener noreferrer">enquiry@nukrax.com</a>
+        </div>
+      </div>
     </div>
+    <p style="margin-top:24px;">
+      <strong>NUKRAX</strong> — operated by <strong>@CosmoLanex</strong><br/><br/>
+      Telegram: <a href="https://t.me/CosmoLanex" target="_blank" rel="noopener noreferrer">t.me/CosmoLanex</a><br/>
+      X (Twitter): <a href="https://x.com/CosmoLanex" target="_blank" rel="noopener noreferrer">x.com/CosmoLanex</a><br/>
+      YouTube: <a href="https://www.youtube.com/@CosmoLanex" target="_blank" rel="noopener noreferrer">youtube.com/@CosmoLanex</a><br/>
+      GitHub: <a href="https://github.com/CosmoLanex" target="_blank" rel="noopener noreferrer">github.com/CosmoLanex</a>
+    </p>
     <p style="margin-top:20px;">We aim to respond to all enquiries within <strong>5 business days</strong>.</p>
   </div>
 
