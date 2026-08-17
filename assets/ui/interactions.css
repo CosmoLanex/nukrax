@@ -1,0 +1,61 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   NUKRAX — assets/ui/interactions.css
+   Phase 3 — shared, reusable interaction primitives. Pair with
+   assets/ui/reveal.js and assets/ui/tilt.js. Link after tokens.css on any
+   page that uses .nkx-reveal / .nkx-reveal-toggle / .nkx-skeleton /
+   [data-tilt]. This is the single place these patterns are defined —
+   nothing should redeclare its own version of them per page.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── scroll reveal (see assets/ui/reveal.js) ── */
+.nkx-reveal{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
+.nkx-reveal.visible{opacity:1;transform:translateY(0)}
+.nkx-reveal-toggle{opacity:0;transform:translateY(16px) scale(.98);transition:opacity .55s var(--ease-out),transform .55s var(--ease-out)}
+.nkx-reveal-toggle.visible{opacity:1;transform:translateY(0) scale(1)}
+.nkx-reveal-delay-1.visible{transition-delay:.05s}
+.nkx-reveal-delay-2.visible{transition-delay:.1s}
+.nkx-reveal-delay-3.visible{transition-delay:.15s}
+
+/* No-JS / pre-hydration safety net — mirrors index.html's fallback so
+   content is never permanently invisible if reveal.js fails to load. */
+html.no-js .nkx-reveal, html.no-js .nkx-reveal-toggle{opacity:1!important;transform:none!important}
+
+/* ── focus visibility (keyboard navigation) — one consistent ring
+   site-wide, only shown for keyboard focus, never for mouse clicks. ── */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible{
+  outline:2px solid var(--accent);outline-offset:3px;border-radius:4px;
+}
+
+/* ── skeleton loading (dashboard panels, marketplace grid) ── */
+.nkx-skeleton{
+  position:relative;overflow:hidden;background:var(--panel);border-radius:8px;
+}
+.nkx-skeleton::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg, transparent, rgba(143,184,196,.08), transparent);
+  transform:translateX(-100%);animation:nkx-shimmer 1.6s infinite;
+}
+@keyframes nkx-shimmer{100%{transform:translateX(100%)}}
+.nkx-skeleton-line{height:14px;margin-bottom:8px;border-radius:4px}
+.nkx-skeleton-line.w-60{width:60%}
+.nkx-skeleton-line.w-40{width:40%}
+.nkx-skeleton-card{height:150px;border-radius:12px}
+html.nkx-reduce-motion .nkx-skeleton::after{animation:none;opacity:.4;transform:none}
+
+/* ── nav active-page indicator (assets/auth/auth-widget.js) ── */
+.nkx-w-dropdown a.nkx-nav-active{
+  color:var(--white);position:relative;
+}
+.nkx-w-dropdown a.nkx-nav-active::before{
+  content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);
+  width:4px;height:4px;border-radius:50%;background:var(--accent);
+}
+
+/* ── button micro-interaction (press feedback) — additive, doesn't
+   replace a page's own .btn styling, just adds consistent tactile feel ── */
+.nkx-tap{transition:transform .15s var(--ease-out)}
+.nkx-tap:active{transform:scale(.97)}
+
+@media (hover:hover) and (pointer:fine){
+  [data-tilt]{transition:transform .5s cubic-bezier(.22,1,.36,1);will-change:transform}
+}
