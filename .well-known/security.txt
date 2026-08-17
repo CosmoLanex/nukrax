@@ -1,0 +1,3 @@
+Contact: mailto:security@nukrax.com
+Preferred-Languages: en
+Canonical: https://nukrax.com/.well-known/security.txt
