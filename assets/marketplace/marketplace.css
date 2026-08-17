@@ -1,0 +1,29 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   NUKRAX — assets/marketplace/marketplace.css
+   Shared styling for assets/marketplace/product-card.js. Linked by any
+   page that renders product cards (marketplace.html, product.html's
+   Related/Similar sections, dashboard's Recommended panel) so the card
+   markup/CSS pair lives in exactly one place. tokens.css must load first.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.nkx-mp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.nkx-mp-card{display:block;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:22px;
+  text-decoration:none;color:inherit;transition:background .25s var(--ease),transform .3s var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.nkx-mp-card:hover{background:rgba(143,184,196,.05);transform:translateY(-2px)}}
+.nkx-mp-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.nkx-mp-card-category{font-family:var(--font-m);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.nkx-mp-fav-btn{
+  background:none;border:none;color:var(--line-lit);font-size:16px;cursor:pointer;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  margin:-8px -6px -8px 0;border-radius:8px;flex-shrink:0;
+}
+@media (hover:hover) and (pointer:fine){.nkx-mp-fav-btn:hover{background:rgba(143,184,196,.08)}}
+.nkx-mp-fav-btn.active{color:#F2C185}
+.nkx-mp-card-title{color:var(--white);font-size:16.5px;font-weight:500;margin-bottom:8px}
+.nkx-mp-card-tagline{color:var(--muted);font-size:12.5px;line-height:1.6;margin-bottom:18px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nkx-mp-card-foot{display:flex;align-items:center;justify-content:space-between}
+.nkx-mp-card-price{color:var(--white);font-family:var(--font-m);font-size:13px}
+.nkx-mp-card-arrow{color:var(--accent)}
+.nkx-mp-empty{grid-column:1/-1;padding:50px 20px;text-align:center;color:var(--muted);font-size:13.5px;
+  border:1px dashed var(--line);border-radius:12px}
