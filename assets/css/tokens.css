@@ -125,3 +125,17 @@
    modulo whitespace) and duplicated in every page's own <style> block. */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* In-app "Reduce motion" preference (Settings → Appearance), applied by
+   assets/membership/motion.js on top of the OS-level prefers-reduced-motion
+   media query every page already respects individually. Kept in tokens.css
+   — the one file every page already links — so it works everywhere without
+   each page needing to opt in separately. */
+html.nkx-reduce-motion *,
+html.nkx-reduce-motion *::before,
+html.nkx-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
