@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>body{visibility:hidden}</style>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/membership/membership.css">
+<link rel="stylesheet" href="assets/ui/interactions.css">
+<script type="module" src="assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — NUKRAX</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<style>
+body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
+.ad-nav{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,4vw,40px);border-bottom:1px solid var(--line)}
+.ad-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.ad-logo img{width:28px;height:28px;border-radius:6px}
+.ad-logo span{font-family:var(--font-logo);font-size:18px;color:var(--white)}
+.ad-badge{font-family:var(--font-m);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#D9667A;
+  border:1px solid #D9667A;padding:4px 10px;border-radius:20px;margin-left:10px}
+
+.ad-main{max-width:1100px;margin:0 auto;padding:36px clamp(20px,4vw,44px) 100px}
+.ad-denied{text-align:center;padding:100px 20px;color:var(--muted)}
+.ad-denied h1{color:var(--white);margin-bottom:12px;font-family:var(--font-logo)}
+
+.ad-tabs{display:flex;gap:4px;margin-bottom:28px;border-bottom:1px solid var(--line);overflow-x:auto}
+.ad-tab{background:none;border:none;color:var(--muted);font-family:var(--font-m);font-size:12px;padding:12px 16px;
+  cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.ad-tab.active{color:var(--white);border-bottom-color:var(--accent)}
+
+.ad-panel{display:none}
+.ad-panel.active{display:block}
+
+.ad-list{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ad-row{display:grid;grid-template-columns:1fr 1fr 100px 120px 140px;gap:12px;align-items:center;padding:14px 18px;
+  border-bottom:1px solid var(--line);font-size:12.5px}
+.ad-row:last-child{border-bottom:none}
+.ad-row .muted{color:var(--muted);font-size:11px}
+@media(max-width:800px){.ad-row{grid-template-columns:1fr;gap:6px}}
+
+.ad-status-pill{font-family:var(--font-m);font-size:10px;text-transform:uppercase;letter-spacing:.05em;padding:4px 10px;
+  border-radius:20px;border:1px solid var(--line);color:var(--muted);width:fit-content}
+.ad-status-pill.pending{border-color:#D9A15C;color:#D9A15C}
+.ad-status-pill.under_review{border-color:#8FB8C4;color:#8FB8C4}
+.ad-status-pill.paid, .ad-status-pill.fulfilled{border-color:#7FBF8F;color:#7FBF8F}
+
+.ad-btn{background:transparent;border:1px solid var(--line);color:var(--text);padding:7px 12px;border-radius:6px;
+  font-family:var(--font-m);font-size:10.5px;cursor:pointer;text-transform:uppercase}
+.ad-btn.primary{background:var(--accent);color:var(--black);border-color:var(--accent);font-weight:600}
+.ad-btn:disabled{opacity:.5;cursor:default}
+
+.ad-form{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:22px;margin-bottom:24px}
+.ad-form label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:6px;font-family:var(--font-m)}
+.ad-form input, .ad-form select{width:100%;background:var(--layer2,#0e141a);border:1px solid var(--line);color:var(--white);
+  padding:10px 12px;border-radius:7px;font-size:13px;margin-bottom:16px}
+.ad-issued-key{font-family:var(--font-m);font-size:16px;color:var(--accent);letter-spacing:.05em;padding:14px;
+  background:rgba(143,184,196,.08);border-radius:8px;text-align:center;margin-top:10px}
+</style>
+</head>
+<body>
+
+<nav class="ad-nav">
+  <a href="index.html" class="ad-logo"><img src="assets/logo.png" alt="NUKRAX"/><span>nukrax</span><span class="ad-badge">Admin</span></a>
+  <div class="nav-right"></div>
+</nav>
+
+<main class="ad-main" id="adMain">
+  <div style="text-align:center;padding:100px 20px;color:var(--muted)">Checking access\u2026</div>
+</main>
+
+<script type="module">
+import { supabase } from './assets/auth/auth-widget.js';
+import { PRODUCTS } from './assets/data/products/products.js';
+import { issueLicense, revokeLicense, findUserByUsername } from './assets/data/licenses/key-manager.js';
+import { ORDER_STATUS_LABEL } from './assets/data/licenses/types.js';
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
+
+const ADMIN_SHELL = `
+  <div class="ad-tabs">
+    <button class="ad-tab active" data-tab="orders">Orders</button>
+    <button class="ad-tab" data-tab="issue">Issue a Key</button>
+    <button class="ad-tab" data-tab="licenses">Licenses</button>
+  </div>
+  <section class="ad-panel active" id="adOrders"></section>
+  <section class="ad-panel" id="adIssue"></section>
+  <section class="ad-panel" id="adLicenses"></section>
+`;
+
+function renderOrderRow(o) {
+  const product = o.product_id ? PRODUCTS.find(p => p.id === o.product_id) : null;
+  return `
+    <div class="ad-row">
+      <div>${product ? esc(product.name) : (o.membership_tier ? esc(o.membership_tier) + ' membership' : '—')}
+        <div class="muted">${o.id.slice(0, 8)}</div></div>
+      <div>${esc(o.user_id.slice(0, 8))}<div class="muted">${o.crypto_asset ? esc(o.crypto_asset) + (o.crypto_network ? ' \u00b7 ' + esc(o.crypto_network) : '') : ''}</div></div>
+      <div>${o.amount != null ? '$' + o.amount : '—'}</div>
+      <div><span class="ad-status-pill ${o.status}">${esc((ORDER_STATUS_LABEL || {})[o.status] || o.status)}</span></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${o.status !== 'fulfilled' && o.status !== 'cancelled' ? `<button class="ad-btn" data-order-action="paid" data-order-id="${o.id}">Mark Paid</button>` : ''}
+        ${o.status !== 'cancelled' && o.status !== 'fulfilled' ? `<button class="ad-btn" data-order-action="cancelled" data-order-id="${o.id}">Cancel</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+async function loadOrders(container) {
+  const { data: orders } = await supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(100);
+  container.innerHTML = `<div class="ad-list">${(orders || []).map(renderOrderRow).join('') || '<div class="ad-row">No orders yet.</div>'}</div>`;
+  container.querySelectorAll('[data-order-action]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      await supabase.from('orders').update({ status: btn.dataset.orderAction, updated_at: new Date().toISOString() }).eq('id', btn.dataset.orderId);
+      loadOrders(container);
+    });
+  });
+}
+
+function renderIssuePanel(container) {
+  container.innerHTML = `
+    <div class="ad-form">
+      <label for="issueUsernameQuery">Customer username</label>
+      <input id="issueUsernameQuery" placeholder="Search by username\u2026"/>
+      <div id="issueUserResults" style="margin-bottom:16px"></div>
+      <label for="issueProduct">Product</label>
+      <select id="issueProduct">${PRODUCTS.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select>
+      <label for="issueNote">Note (optional)</label>
+      <input id="issueNote" placeholder="e.g. order reference"/>
+      <button class="ad-btn primary" id="issueSubmit" disabled>Issue Key</button>
+      <div id="issueResult"></div>
+    </div>
+  `;
+  let selectedUserId = null;
+  const results = container.querySelector('#issueUserResults');
+  const submit = container.querySelector('#issueSubmit');
+
+  container.querySelector('#issueUsernameQuery').addEventListener('input', async e => {
+    const q = e.target.value.trim();
+    selectedUserId = null;
+    submit.disabled = true;
+    if (q.length < 2) { results.innerHTML = ''; return; }
+    const users = await findUserByUsername(q);
+    results.innerHTML = users.map(u => `<button type="button" class="ad-btn" data-user-id="${u.id}" style="margin:0 6px 6px 0">${esc(u.username || u.display_name || u.id.slice(0,8))}</button>`).join('') || '<div class="muted">No matches.</div>';
+    results.querySelectorAll('[data-user-id]').forEach(b => b.addEventListener('click', () => {
+      selectedUserId = b.dataset.userId;
+      submit.disabled = false;
+      results.querySelectorAll('.ad-btn').forEach(x => x.style.borderColor = 'var(--line)');
+      b.style.borderColor = 'var(--accent)';
+    }));
+  });
+
+  submit.addEventListener('click', async () => {
+    if (!selectedUserId) return;
+    submit.disabled = true;
+    submit.textContent = 'Issuing\u2026';
+    const productId = container.querySelector('#issueProduct').value;
+    const note = container.querySelector('#issueNote').value;
+    const { license, error } = await issueLicense({ userId: selectedUserId, productId, note });
+    submit.textContent = 'Issue Key';
+    submit.disabled = false;
+    const resultEl = container.querySelector('#issueResult');
+    if (error) {
+      resultEl.innerHTML = `<p style="color:#D9667A;font-size:12.5px;margin-top:10px">${esc(error)}</p>`;
+    } else {
+      resultEl.innerHTML = `<div class="ad-issued-key">${esc(license.key_value)}</div><p class="muted" style="margin-top:8px">Share this Key with the customer directly (email/Telegram) — it's also visible to them in their own Dashboard \u2192 Profile.</p>`;
+    }
+  });
+}
+
+async function loadLicenses(container) {
+  const { data: licenses } = await supabase.from('licenses').select('*').order('issued_at', { ascending: false }).limit(100);
+  container.innerHTML = `<div class="ad-list">${(licenses || []).map(l => `
+    <div class="ad-row">
+      <div>${esc(PRODUCTS.find(p => p.id === l.product_id)?.name || l.product_id)}</div>
+      <div class="muted">${esc(l.user_id.slice(0, 8))}</div>
+      <div style="font-family:var(--font-m);font-size:11px">${esc(l.key_value)}</div>
+      <div><span class="ad-status-pill ${l.status === 'active' ? 'paid' : ''}">${esc(l.status)}</span></div>
+      <div>${l.status === 'active' ? `<button class="ad-btn" data-revoke="${l.id}">Revoke</button>` : ''}</div>
+    </div>
+  `).join('') || '<div class="ad-row">No licenses issued yet.</div>'}</div>`;
+  container.querySelectorAll('[data-revoke]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      await revokeLicense(btn.dataset.revoke);
+      loadLicenses(container);
+    });
+  });
+}
+
+async function init() {
+  const main = document.getElementById('adMain');
+  const { data } = await supabase.auth.getSession();
+  const user = data.session?.user || null;
+
+  if (!user) {
+    main.innerHTML = `<div class="ad-denied"><h1>Sign in required</h1><p><a href="index.html?authRequired=1" style="color:var(--accent)">Sign in</a> to continue.</p></div>`;
+    document.body.style.visibility = 'visible';
+    return;
+  }
+
+  // Client-side check is UX only — real enforcement is Supabase RLS
+  // (is_admin() gating every write on orders/licenses). A non-admin
+  // reaching this page with dev tools still can't issue or modify
+  // anything; every call below fails server-side for them.
+  const { data: adminRow } = await supabase.from('admins').select('user_id').eq('user_id', user.id).maybeSingle();
+  if (!adminRow) {
+    main.innerHTML = `<div class="ad-denied"><h1>Not authorized</h1><p>This account doesn't have admin access.</p></div>`;
+    document.body.style.visibility = 'visible';
+    return;
+  }
+
+  main.innerHTML = ADMIN_SHELL;
+  const ordersPanel = document.getElementById('adOrders');
+  const issuePanel = document.getElementById('adIssue');
+  const licensesPanel = document.getElementById('adLicenses');
+
+  loadOrders(ordersPanel);
+  renderIssuePanel(issuePanel);
+  loadLicenses(licensesPanel);
+
+  document.querySelectorAll('.ad-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.ad-tab').forEach(t => t.classList.toggle('active', t === tab));
+      document.querySelectorAll('.ad-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('ad' + tab.dataset.tab.charAt(0).toUpperCase() + tab.dataset.tab.slice(1)).classList.add('active');
+    });
+  });
+
+  document.body.style.visibility = 'visible';
+}
+
+init();
+</script>
+
+</body>
+</html>

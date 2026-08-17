@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
   <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/ui/interactions.css">
   <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
@@ -185,6 +186,8 @@ body.exit::after {
 const params  = new URLSearchParams(location.search);
 const cKey    = params.get('c');
 const nIdx    = parseInt(params.get('n') || '0');
+const orderId = params.get('order');
+const productId = params.get('product');
 
 const crypto  = CRYPTO_DATA[cKey];
 const network = crypto ? crypto.networks[nIdx] : null;
@@ -224,7 +227,9 @@ function nextStep() {
         // a real history entry — otherwise pressing the browser/mobile back
         // button from crypto.html lands here and immediately auto-forwards
         // right back to crypto.html, making back navigation feel broken.
-        location.replace(`crypto.html?c=${cKey}&n=${nIdx}`);
+        let dest = `crypto.html?c=${cKey}&n=${nIdx}`;
+        if (orderId) dest += `&order=${encodeURIComponent(orderId)}${productId ? `&product=${encodeURIComponent(productId)}` : ''}`;
+        location.replace(dest);
       }, 250);
     }, 150);
   }

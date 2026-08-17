@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
   <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/ui/interactions.css">
+  <link rel="stylesheet" href="assets/data/licenses/styles.css">
   <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
@@ -344,6 +346,7 @@ main {
   position: fixed; bottom: 28px; left: 50%;
   transform: translateX(-50%) translateY(12px);
   background: var(--layer3); border: 1px solid var(--border2);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border-radius: 40px; padding: 9px 22px;
   font-family: 'Space Mono', monospace;
@@ -477,6 +480,8 @@ footer {
         Sending the wrong asset or using the wrong network may result in <strong>permanent loss of funds.</strong>
       </div>
     </div>
+
+    <div id="checkoutContext" hidden style="margin-top:20px"></div>
 
     <!-- Actions -->
     <div class="switch-row">
@@ -656,6 +661,14 @@ if (performance.navigation.type === 2 || sessionStorage.getItem('nukrax_from_cry
   }
   draw(0);
 })();
+
+// Order-aware checkout context (only shows when arriving with ?order=,
+// carried through from cr.html → cr-redirect.html) — see
+// assets/marketplace/checkout-context.js. Direct visitors to crypto.html
+// (no ?order=) see no change.
+import('./assets/marketplace/checkout-context.js').then(({ renderCheckoutContext }) => {
+  renderCheckoutContext(document.getElementById('checkoutContext'), { showConfirmButton: true });
+});
 </script>
 </body>
 </html>

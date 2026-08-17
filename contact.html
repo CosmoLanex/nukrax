@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>body{visibility:hidden}</style>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/ui/interactions.css">
+<script type="module" src="assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
+<title>Contact — NUKRAX</title>
+<meta name="description" content="Get in touch with the right NUKRAX team — support, billing, partnerships, security, or general inquiries."/>
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#07090B">
+<link rel="canonical" href="https://nukrax.com/contact.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="nukrax">
+<meta property="og:title" content="Contact — NUKRAX">
+<meta property="og:description" content="Get in touch with the right NUKRAX team — support, billing, partnerships, security, or general inquiries.">
+<meta property="og:image" content="https://nukrax.com/assets/c-logo.png">
+<meta property="og:url" content="https://nukrax.com/contact.html">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Contact — NUKRAX">
+<meta name="twitter:description" content="Get in touch with the right NUKRAX team — support, billing, partnerships, security, or general inquiries.">
+<meta name="twitter:image" content="https://nukrax.com/assets/c-logo.png">
+<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
+
+.ct-nav{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,4vw,40px);border-bottom:1px solid var(--line)}
+.ct-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.ct-logo img{width:28px;height:28px;border-radius:6px}
+.ct-logo span{font-family:var(--font-logo);font-size:18px;color:var(--white)}
+
+.ct-hero{max-width:760px;margin:0 auto;padding:60px clamp(20px,4vw,44px) 10px;text-align:center}
+.ct-hero h1{font-family:var(--font-logo);font-size:clamp(30px,4.4vw,44px);color:var(--white);margin-bottom:14px}
+.ct-hero p{color:var(--muted);font-size:14.5px;line-height:1.7;max-width:520px;margin:0 auto}
+
+.ct-wrap{max-width:1040px;margin:0 auto;padding:48px clamp(20px,4vw,44px) 100px}
+.ct-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:8px}
+
+.ct-card{
+  border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:24px;text-align:left;
+  cursor:pointer;transition:border-color .25s var(--ease),background .25s var(--ease);
+}
+.ct-card.selected{border-color:var(--accent);background:rgba(143,184,196,.06)}
+@media (hover:hover) and (pointer:fine){.ct-card:not(.selected):hover{border-color:var(--line-lit,var(--line));background:rgba(143,184,196,.03)}}
+.ct-card-icon{width:38px;height:38px;border-radius:10px;background:rgba(143,184,196,.1);display:flex;align-items:center;
+  justify-content:center;font-size:17px;color:var(--accent);margin-bottom:14px}
+.ct-card h3{color:var(--white);font-size:15.5px;font-weight:500;margin-bottom:8px}
+.ct-card p{color:var(--muted);font-size:12.5px;line-height:1.6;margin-bottom:14px}
+.ct-card .ct-email{font-family:var(--font-m);font-size:11.5px;color:var(--accent)}
+
+.ct-form-section{margin-top:44px;border-top:1px solid var(--line);padding-top:40px}
+.ct-form-section h2{font-family:var(--font-b);font-size:19px;color:var(--white);margin-bottom:6px;font-weight:500}
+.ct-form-section > p{color:var(--muted);font-size:13px;margin-bottom:26px}
+.ct-selected-banner{
+  display:none;align-items:center;gap:10px;border:1px solid var(--accent);background:rgba(143,184,196,.06);
+  border-radius:9px;padding:12px 16px;margin-bottom:22px;font-size:12.5px;color:var(--text);
+}
+.ct-selected-banner.visible{display:flex}
+.ct-selected-banner strong{color:var(--white)}
+
+.ct-field{margin-bottom:18px}
+.ct-field label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:7px;font-family:var(--font-m);
+  letter-spacing:.04em;text-transform:uppercase}
+.ct-field input, .ct-field textarea{
+  width:100%;background:var(--layer2,#0e141a);border:1px solid var(--line);color:var(--white);
+  padding:12px 14px;border-radius:8px;font-size:13.5px;font-family:var(--font-b);resize:vertical;
+}
+.ct-field textarea{min-height:140px}
+.ct-field input:focus, .ct-field textarea:focus{outline:none;border-color:var(--accent)}
+
+.ct-submit-btn{
+  display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--black);border:none;
+  padding:14px 28px;border-radius:9px;font-family:var(--font-m);font-size:12px;letter-spacing:.06em;
+  text-transform:uppercase;font-weight:600;cursor:pointer;text-decoration:none;
+}
+@media (hover:hover) and (pointer:fine){.ct-submit-btn:hover{background:var(--white)}}
+.ct-submit-note{font-size:11.5px;color:var(--muted);margin-top:12px}
+
+.ct-alt{margin-top:36px;padding-top:28px;border-top:1px solid var(--line);display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px}
+.ct-alt a{color:var(--accent);text-decoration:none}
+@media (hover:hover) and (pointer:fine){.ct-alt a:hover{color:var(--white)}}
+</style>
+</head>
+<body>
+
+<nav class="ct-nav">
+  <a href="index.html" class="ct-logo"><img src="assets/logo.png" alt="NUKRAX"/><span>nukrax</span></a>
+  <div class="nav-right"></div>
+</nav>
+
+<div class="ct-hero">
+  <h1>Contact NUKRAX</h1>
+  <p>Pick what this is about and we'll route it to the right inbox — or just email us directly using the addresses below.</p>
+</div>
+
+<div class="ct-wrap">
+  <div class="ct-grid" id="ctGrid" role="radiogroup" aria-label="What is this about?"></div>
+
+  <div class="ct-form-section">
+    <h2>Send a message</h2>
+    <p>This opens your email app with everything pre-filled — nothing is stored on our servers.</p>
+    <div class="ct-selected-banner nkx-reveal" id="ctSelectedBanner"></div>
+
+    <form id="ctForm">
+      <div class="ct-field">
+        <label for="ctName">Your name</label>
+        <input id="ctName" type="text" required autocomplete="name"/>
+      </div>
+      <div class="ct-field">
+        <label for="ctEmail">Your email</label>
+        <input id="ctEmail" type="email" required autocomplete="email"/>
+      </div>
+      <div class="ct-field">
+        <label for="ctMessage">Message</label>
+        <textarea id="ctMessage" required placeholder="Tell us what's going on..."></textarea>
+      </div>
+      <button type="submit" class="ct-submit-btn nkx-tap">Open Email <span aria-hidden="true">&rarr;</span></button>
+      <p class="ct-submit-note">Opens in your default mail app, addressed to the team selected above.</p>
+    </form>
+
+    <div class="ct-alt">
+      <a href="docs/faq.html">Browse the FAQ</a>
+      <a href="docs/troubleshooting.html">Troubleshooting guide</a>
+      <a href="security.txt" target="_blank" rel="noopener">security.txt</a>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { CONTACTS } from './assets/data/contacts.js';
+import { initScrollReveal } from './assets/ui/reveal.js';
+
+const ICONS = {
+  support: '\u26a1', contact: '\u2709', billing: '\u25c6',
+  partners: '\u25c7', security: '\u26e8', feedback: '\u2726',
+};
+
+let selectedKey = 'contact';
+const params = new URLSearchParams(window.location.search);
+if (CONTACTS[params.get('topic')]) selectedKey = params.get('topic');
+
+const grid = document.getElementById('ctGrid');
+grid.innerHTML = Object.entries(CONTACTS).map(([key, c]) => `
+  <button type="button" class="ct-card nkx-reveal-toggle ${key === selectedKey ? 'selected' : ''}" data-key="${key}" role="radio" aria-checked="${key === selectedKey}">
+    <div class="ct-card-icon" aria-hidden="true">${ICONS[key] || '\u2709'}</div>
+    <h3>${c.label}</h3>
+    <p>${c.use}</p>
+    <div class="ct-email">${c.email}</div>
+  </button>
+`).join('');
+
+function updateBanner() {
+  const c = CONTACTS[selectedKey];
+  const banner = document.getElementById('ctSelectedBanner');
+  banner.classList.add('visible');
+  banner.innerHTML = `Sending to <strong>${c.label}</strong> (<span>${c.email}</span>) — pick a different card above if that's not right.`;
+  grid.querySelectorAll('.ct-card').forEach(card => {
+    const isSelected = card.dataset.key === selectedKey;
+    card.classList.toggle('selected', isSelected);
+    card.setAttribute('aria-checked', String(isSelected));
+  });
+}
+
+grid.querySelectorAll('.ct-card').forEach(card => {
+  card.addEventListener('click', () => { selectedKey = card.dataset.key; updateBanner(); });
+});
+
+document.getElementById('ctForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('ctName').value.trim();
+  const fromEmail = document.getElementById('ctEmail').value.trim();
+  const message = document.getElementById('ctMessage').value.trim();
+  const c = CONTACTS[selectedKey];
+  const subject = encodeURIComponent(`[${c.label}] Message from ${name || 'a NUKRAX user'}`);
+  const body = encodeURIComponent(`${message}\n\n—\nFrom: ${name}\nReply-to: ${fromEmail}`);
+  window.location.href = `mailto:${c.email}?subject=${subject}&body=${body}`;
+});
+
+updateBanner();
+initScrollReveal();
+document.body.style.visibility = 'visible';
+</script>
+
+</body>
+</html>

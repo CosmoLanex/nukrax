@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
   <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/ui/interactions.css">
+  <link rel="stylesheet" href="assets/data/licenses/styles.css">
   <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
@@ -474,6 +476,7 @@ main {
   position: fixed; bottom: 24px; left: 50%;
   transform: translateX(-50%) translateY(16px);
   background: var(--layer3); border: 1px solid var(--border2);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border-radius: 40px; padding: 9px 20px;
   font-family: 'Space Mono', monospace;
@@ -567,6 +570,8 @@ footer {
       <p>Select an asset and network to instantly receive your verified deposit address.</p>
     </div>
 
+    <div id="checkoutContext" hidden style="max-width:600px;margin:0 auto 30px"></div>
+
     <div class="sec-label">Select Asset</div>
     <div class="crypto-grid" id="cryptoGrid"></div>
 
@@ -589,6 +594,10 @@ footer {
       <div class="footer-col">
         <h3>Assets</h3>
         <p>XRP · SOL · USDT · USDC · BTC · ETH · MATIC · BNB · TRX · TWT · ADA</p>
+      </div>
+      <div class="footer-col">
+        <h3>Contact</h3>
+        <p>Email: billing@nukrax.com<br/>Telegram: @cosmolanex</p>
       </div>
     </div>
     <div class="footer-bottom">
@@ -705,7 +714,12 @@ function goToDeposit(cryptoKey, netIdx) {
   document.querySelectorAll('.nc').forEach((el,i) => el.classList.toggle('active', i === netIdx));
   setTimeout(() => {
     sessionStorage.setItem('nukrax_from_cr', 'true');
-    window.location.href = `cr-redirect.html?c=${cryptoKey}&n=${netIdx}`;
+    const orderParams = new URLSearchParams(location.search);
+    const order = orderParams.get('order');
+    const product = orderParams.get('product');
+    let url = `cr-redirect.html?c=${cryptoKey}&n=${netIdx}`;
+    if (order) url += `&order=${encodeURIComponent(order)}${product ? `&product=${encodeURIComponent(product)}` : ''}`;
+    window.location.href = url;
   }, 160);
 }
 
@@ -766,6 +780,14 @@ if (sessionStorage.getItem('nukrax_from_cr')) {
 }
 
 renderCryptoGrid();
+
+// Order-aware checkout context (only shows when arriving with ?order=,
+// e.g. from a product page's "Pay with Crypto" button) — see
+// assets/marketplace/checkout-context.js. Standalone visitors to
+// cr.html see no change at all.
+import('./assets/marketplace/checkout-context.js').then(({ renderCheckoutContext }) => {
+  renderCheckoutContext(document.getElementById('checkoutContext'));
+});
 
 // auto-select if returning from crypto.html with ?preselect=KEY
 const preselect = new URLSearchParams(location.search).get('preselect');

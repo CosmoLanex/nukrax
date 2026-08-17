@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
   <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/ui/interactions.css">
   <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
@@ -170,6 +171,7 @@ nav{
 nav.scrolled{
   padding:17px var(--gutter);
   background:rgba(3,5,7,0.88);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter:blur(16px);
   border-bottom-color:var(--line);
 }
@@ -340,6 +342,7 @@ nav.scrolled .nav-logo-container{transform:scale(.92)}
 .modal-overlay{
   position:fixed;inset:0;z-index:5000;
   background:rgba(3,5,7,0.82);
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter:blur(6px);
   display:flex;align-items:center;justify-content:center;
   padding:24px;
@@ -457,6 +460,7 @@ footer{
   display:flex;align-items:center;gap:12px;
   padding:12px 14px;border-radius:5px;
   background:rgba(10,15,19,0.94);border:1px solid var(--line);
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter:blur(14px);z-index:9000;
   transform:translateY(140%);opacity:0;
   transition:transform .5s var(--ease-out),opacity .5s var(--ease-out);

@@ -4,6 +4,7 @@
 <style>body{visibility:hidden}</style>
 <meta charset="UTF-8"/>
   <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/ui/interactions.css">
   <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
@@ -96,6 +97,7 @@ nav{
   display:flex;align-items:center;justify-content:space-between;
   padding:26px var(--gutter);
   background:rgba(3,5,7,0.88);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter:blur(16px);
   border-bottom:1px solid var(--line);
 }
@@ -477,6 +479,7 @@ footer{
   <div class="section-label reveal">02 — Expert Advisor Suite</div>
   <h1 class="page-title reveal"><span class="ea-letter">E</span>xpert <span class="ea-letter">A</span>dvisors</h1>
   <p class="page-subtitle reveal">Institutional-grade automated trading systems with proven performance.</p>
+  <a href="marketplace.html" style="display:inline-block;margin-top:16px;font-family:var(--font-m);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);text-decoration:none">Browse the full NUKRAX Marketplace →</a>
 </div>
 
 <div class="ea-grid">
@@ -782,5 +785,9 @@ reveals.forEach(el=>io.observe(el));
 <script type="module" src="assets/ai/widget.js"></script>
 <script type="module" src="assets/auth/auth-widget.js"></script>
 <script type="module" src="assets/auth/guard.js"></script>
+<script type="module">
+import { initTilt } from './assets/ui/tilt.js';
+initTilt('.ea-card', { strength: 2, lift: 3 });
+</script>
 </body>
 </html>

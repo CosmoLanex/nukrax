@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>body{visibility:hidden}</style>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/membership/membership.css">
+<link rel="stylesheet" href="assets/data/licenses/styles.css">
+<link rel="stylesheet" href="assets/marketplace/marketplace.css">
+<link rel="stylesheet" href="assets/ui/interactions.css">
+<script type="module" src="assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
+<title>Marketplace — NUKRAX</title>
+<meta name="description" content="Browse Expert Advisors, automation tools, AI models, and more on the NUKRAX marketplace."/>
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#07090B">
+<link rel="canonical" href="https://nukrax.com/marketplace.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="nukrax">
+<meta property="og:title" content="Marketplace — NUKRAX">
+<meta property="og:description" content="Browse Expert Advisors, automation tools, AI models, and more on the NUKRAX marketplace.">
+<meta property="og:image" content="https://nukrax.com/assets/c-logo.png">
+<meta property="og:url" content="https://nukrax.com/marketplace.html">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Marketplace — NUKRAX">
+<meta name="twitter:description" content="Browse Expert Advisors, automation tools, AI models, and more on the NUKRAX marketplace.">
+<meta name="twitter:image" content="https://nukrax.com/assets/c-logo.png">
+<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
+
+.mp-nav{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,4vw,40px);border-bottom:1px solid var(--line)}
+.mp-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.mp-logo img{width:28px;height:28px;border-radius:6px}
+.mp-logo span{font-family:var(--font-logo);font-size:18px;color:var(--white)}
+
+.mp-hero{padding:52px clamp(20px,4vw,44px) 30px;max-width:1440px;margin:0 auto}
+.mp-hero h1{font-family:var(--font-logo);font-size:clamp(28px,4vw,42px);color:var(--white);margin-bottom:10px}
+.mp-hero p{color:var(--muted);font-size:14px;max-width:560px;line-height:1.7}
+
+.mp-toolbar{max-width:1440px;margin:0 auto;padding:0 clamp(20px,4vw,44px) 20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.mp-search{flex:1;min-width:220px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px 16px;color:var(--white);font-size:13.5px}
+.mp-search::placeholder{color:var(--muted)}
+.mp-sort, .mp-toggle{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px 14px;color:var(--text);font-size:12.5px;font-family:var(--font-m)}
+.mp-toggle{cursor:pointer;user-select:none;display:flex;align-items:center;gap:6px}
+.mp-toggle.active{border-color:var(--accent);color:var(--accent)}
+
+.mp-cats{max-width:1440px;margin:0 auto;padding:0 clamp(20px,4vw,44px) 26px;display:flex;gap:8px;flex-wrap:wrap}
+.mp-cat-chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:12px;
+  color:var(--muted);cursor:pointer;white-space:nowrap;font-family:var(--font-m)}
+.mp-cat-chip.active{border-color:var(--accent);color:var(--accent);background:rgba(143,184,196,.08)}
+
+.mp-section{max-width:1440px;margin:0 auto;padding:0 clamp(20px,4vw,44px) 40px}
+.mp-section-title{font-family:var(--font-m);font-size:var(--fs-11);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+
+.mp-recent-strip{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px}
+.mp-recent-strip .nkx-mp-card{min-width:220px;flex-shrink:0}
+
+@media(max-width:600px){.mp-toolbar{flex-direction:column;align-items:stretch}.mp-search{width:100%}}
+</style>
+</head>
+<body>
+
+<nav class="mp-nav">
+  <a href="index.html" class="mp-logo"><img src="assets/logo.png" alt="NUKRAX"/><span>nukrax</span></a>
+  <div class="nav-right"></div>
+</nav>
+
+<div class="mp-hero">
+  <h1>Marketplace</h1>
+  <p>Expert Advisors, automation tools, AI models, and more — built for traders and developers who want execution-grade systems, not templates.</p>
+</div>
+
+<div class="mp-toolbar">
+  <input class="mp-search" id="mpSearch" type="text" placeholder="Search products, tags..." aria-label="Search products"/>
+  <select class="mp-sort" id="mpSort" aria-label="Sort products">
+    <option value="newest">Newest</option>
+    <option value="recently-updated">Recently Updated</option>
+    <option value="recommended">Recommended</option>
+    <option value="popular">Popular</option>
+  </select>
+  <button class="mp-toggle" id="mpMembershipToggle" type="button" aria-pressed="false">Membership-only</button>
+  <button class="mp-toggle" id="mpFavToggle" type="button" aria-pressed="false">My Favorites</button>
+</div>
+
+<div class="mp-cats" id="mpCats"></div>
+
+<section class="mp-section" id="mpRecentSection" hidden>
+  <div class="mp-section-title">Recently Viewed</div>
+  <div class="mp-recent-strip nkx-mp-grid" id="mpRecentGrid" style="display:flex"></div>
+</section>
+
+<section class="mp-section">
+  <div class="mp-section-title" id="mpResultsTitle">All Products</div>
+  <div class="nkx-mp-grid" id="mpGrid"></div>
+</section>
+
+<script type="module">
+import { supabase } from './assets/auth/auth-widget.js';
+import { CATEGORIES } from './assets/data/products/categories.js';
+import { filterProducts, recordRecentlyViewed, getRecentlyViewed, wireFavoriteButtons, getFavoriteIds } from './assets/marketplace/catalog.js';
+import { productCardGrid } from './assets/marketplace/product-card.js';
+import { initTilt } from './assets/ui/tilt.js';
+import { track } from './assets/analytics/track.js';
+
+let currentUser = null;
+let favoriteIds = [];
+let state = { query: '', categoryId: '', sort: 'newest', membershipOnly: false, favoritesOnly: false };
+
+function skeletonGrid(count = 6) {
+  return Array.from({ length: count }).map(() => `<div class="nkx-mp-card nkx-skeleton nkx-skeleton-card" aria-hidden="true"></div>`).join('');
+}
+
+function renderCats() {
+  const chips = [{ id: '', label: 'All', icon: '' }, ...CATEGORIES].map(c => `
+    <button class="mp-cat-chip ${state.categoryId === c.id ? 'active' : ''}" data-cat="${c.id}" type="button">${c.icon ? c.icon + ' ' : ''}${c.label}</button>
+  `).join('');
+  document.getElementById('mpCats').innerHTML = chips;
+  document.querySelectorAll('.mp-cat-chip').forEach(btn => {
+    btn.addEventListener('click', () => { state.categoryId = btn.dataset.cat; render(); });
+  });
+}
+
+function render() {
+  const filters = { ...state, favoriteIds: state.favoritesOnly ? favoriteIds : null };
+  const results = filterProducts(filters);
+  document.getElementById('mpResultsTitle').textContent = state.favoritesOnly ? 'My Favorites' : (state.categoryId ? CATEGORIES.find(c => c.id === state.categoryId)?.label || 'Products' : 'All Products');
+  document.getElementById('mpGrid').innerHTML = productCardGrid(results, {});
+  document.querySelectorAll('#mpGrid .nkx-mp-fav-btn').forEach(btn => {
+    if (favoriteIds.includes(btn.dataset.favToggle)) btn.classList.add('active');
+  });
+  initTilt('#mpGrid .nkx-mp-card', { strength: 2.5, lift: 3 });
+  renderCats();
+}
+
+async function init() {
+  document.getElementById('mpGrid').innerHTML = skeletonGrid();
+
+  const { data } = await supabase.auth.getSession();
+  currentUser = data.session?.user || null;
+  favoriteIds = currentUser ? await getFavoriteIds(currentUser.id) : [];
+
+  const recent = getRecentlyViewed();
+  if (recent.length) {
+    document.getElementById('mpRecentSection').hidden = false;
+    document.getElementById('mpRecentGrid').innerHTML = productCardGrid(recent, {});
+  }
+
+  render();
+
+  let searchDebounce;
+  document.getElementById('mpSearch').addEventListener('input', e => {
+    state.query = e.target.value;
+    render();
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => { if (state.query.trim()) track('search', { query: state.query.trim(), scope: 'marketplace' }); }, 600);
+  });
+  document.getElementById('mpSort').addEventListener('change', e => { state.sort = e.target.value; render(); });
+  document.getElementById('mpMembershipToggle').addEventListener('click', () => {
+    state.membershipOnly = !state.membershipOnly;
+    const btn = document.getElementById('mpMembershipToggle');
+    btn.classList.toggle('active', state.membershipOnly);
+    btn.setAttribute('aria-pressed', String(state.membershipOnly));
+    render();
+  });
+  document.getElementById('mpFavToggle').addEventListener('click', () => {
+    if (!currentUser) { window.location.href = 'index.html?authRequired=1'; return; }
+    state.favoritesOnly = !state.favoritesOnly;
+    const btn = document.getElementById('mpFavToggle');
+    btn.classList.toggle('active', state.favoritesOnly);
+    btn.setAttribute('aria-pressed', String(state.favoritesOnly));
+    render();
+  });
+
+  wireFavoriteButtons(document.getElementById('mpGrid'), currentUser?.id, () => {
+    getFavoriteIds(currentUser.id).then(ids => { favoriteIds = ids; if (state.favoritesOnly) render(); });
+  });
+  wireFavoriteButtons(document.getElementById('mpRecentGrid'), currentUser?.id, () => {
+    if (currentUser) getFavoriteIds(currentUser.id).then(ids => favoriteIds = ids);
+  });
+
+  // Record a view whenever a product card is actually followed (not just hovered)
+  document.body.addEventListener('click', e => {
+    const card = e.target.closest('.nkx-mp-card');
+    if (card?.dataset.productId) recordRecentlyViewed(card.dataset.productId);
+  });
+
+  document.body.style.visibility = 'visible';
+}
+
+init();
+</script>
+
+</body>
+</html>

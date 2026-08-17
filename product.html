@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>body{visibility:hidden}</style>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/membership/membership.css">
+<link rel="stylesheet" href="assets/data/licenses/styles.css">
+<link rel="stylesheet" href="assets/marketplace/marketplace.css">
+<link rel="stylesheet" href="assets/ui/interactions.css">
+<script type="module" src="assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
+<title id="pageTitle">Product — NUKRAX</title>
+<meta name="description" id="pageDescription" content="Browse NUKRAX marketplace products — Expert Advisors, automations, and more.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#07090B">
+<link rel="canonical" id="pageCanonical" href="https://nukrax.com/product.html">
+<meta property="og:type" content="product">
+<meta property="og:site_name" content="nukrax">
+<meta property="og:title" id="pageOgTitle" content="NUKRAX Marketplace">
+<meta property="og:description" id="pageOgDescription" content="Browse NUKRAX marketplace products — Expert Advisors, automations, and more.">
+<meta property="og:image" content="https://nukrax.com/assets/c-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
+.pd-nav{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,4vw,40px);border-bottom:1px solid var(--line)}
+.pd-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.pd-logo img{width:28px;height:28px;border-radius:6px}
+.pd-logo span{font-family:var(--font-logo);font-size:18px;color:var(--white)}
+
+.pd-hero{max-width:1200px;margin:0 auto;padding:54px clamp(20px,4vw,44px) 20px}
+.pd-hero-cat{font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.pd-hero h1{font-family:var(--font-logo);font-size:clamp(30px,4.4vw,46px);color:var(--white);margin-bottom:14px}
+.pd-hero-tagline{font-size:15px;color:var(--muted);max-width:640px;line-height:1.7;margin-bottom:8px}
+.pd-hero-meta{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px;font-size:12px;color:var(--muted);font-family:var(--font-m)}
+
+.pd-layout{max-width:1200px;margin:0 auto;padding:20px clamp(20px,4vw,44px) 100px;display:grid;grid-template-columns:1fr 340px;gap:44px}
+@media(max-width:920px){.pd-layout{grid-template-columns:1fr}}
+
+.pd-main section{margin-bottom:44px}
+.pd-main h2{font-family:var(--font-b);font-size:20px;color:var(--white);margin-bottom:16px;font-weight:500}
+.pd-main p{font-size:13.5px;color:var(--text);line-height:1.8}
+.pd-feature-list{list-style:none;display:grid;gap:10px}
+.pd-feature-list li{font-size:13px;color:var(--text);padding-left:20px;position:relative;line-height:1.6}
+.pd-feature-list li::before{content:'\2713';position:absolute;left:0;color:var(--accent)}
+
+.pd-shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.pd-shot-placeholder{aspect-ratio:16/10;border:1px dashed var(--line);border-radius:10px;display:flex;align-items:center;
+  justify-content:center;color:var(--muted);font-size:11.5px;font-family:var(--font-m)}
+
+.pd-spec-table{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pd-spec-row{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px}
+.pd-spec-row:last-child{border-bottom:none}
+.pd-spec-row .k{color:var(--muted)}
+.pd-spec-row .v{color:var(--text);font-family:var(--font-m);font-size:12px;text-align:right}
+
+.pd-list{list-style:none;display:grid;gap:8px}
+.pd-list li{font-size:13px;color:var(--text);padding-left:18px;position:relative}
+.pd-list li::before{content:'\2022';position:absolute;left:0;color:var(--muted)}
+.pd-steps{list-style:decimal;padding-left:20px;display:grid;gap:8px}
+.pd-steps li{font-size:13px;color:var(--text);line-height:1.6}
+
+.pd-changelog-item{border-left:2px solid var(--line);padding-left:16px;margin-bottom:16px}
+.pd-changelog-item .ver{font-family:var(--font-m);font-size:12.5px;color:var(--accent)}
+.pd-changelog-item .date{font-size:11px;color:var(--muted);margin-left:8px}
+.pd-changelog-item p{margin-top:4px}
+
+.pd-faq-item{border-bottom:1px solid var(--line);padding:16px 0}
+.pd-faq-item .q{color:var(--white);font-size:13.5px;font-weight:500;margin-bottom:6px}
+.pd-faq-item .a{font-size:13px;color:var(--muted);line-height:1.6}
+
+.pd-reviews-placeholder{border:1px dashed var(--line);border-radius:10px;padding:36px 20px;text-align:center;color:var(--muted);font-size:13px}
+
+.pd-sidebar{position:sticky;top:20px;align-self:start;display:flex;flex-direction:column;gap:20px}
+.pd-doc-link{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px;text-decoration:none;color:var(--text);font-size:13px}
+
+.pd-related-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:640px){.pd-related-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<nav class="pd-nav">
+  <a href="index.html" class="pd-logo"><img src="assets/logo.png" alt="NUKRAX"/><span>nukrax</span></a>
+  <div class="nav-right"></div>
+</nav>
+
+<div class="pd-hero">
+  <div class="pd-hero-cat" id="pdCategory">—</div>
+  <h1 id="pdName">—</h1>
+  <p class="pd-hero-tagline" id="pdTagline"></p>
+  <div class="pd-hero-meta">
+    <span>Version <span id="pdVersion"></span></span>
+    <span id="pdReleaseDate"></span>
+  </div>
+</div>
+
+<div class="pd-layout">
+  <main class="pd-main">
+    <section id="pdOverviewSection">
+      <h2>Overview</h2>
+      <p id="pdDescription"></p>
+    </section>
+
+    <section id="pdFeaturesSection">
+      <h2>Features</h2>
+      <ul class="pd-feature-list" id="pdFeatures"></ul>
+    </section>
+
+    <section id="pdShotsSection">
+      <h2>Screenshots / Preview</h2>
+      <div class="pd-shots" id="pdShots"></div>
+    </section>
+
+    <section id="pdSpecsSection">
+      <h2>Technical Specifications</h2>
+      <div class="pd-spec-table" id="pdSpecs"></div>
+    </section>
+
+    <section id="pdCompatSection">
+      <h2>Compatibility</h2>
+      <ul class="pd-list" id="pdCompat"></ul>
+    </section>
+
+    <section id="pdReqSection">
+      <h2>Requirements</h2>
+      <ul class="pd-list" id="pdReq"></ul>
+    </section>
+
+    <section id="pdInstallSection">
+      <h2>Installation Guide</h2>
+      <ol class="pd-steps" id="pdInstall"></ol>
+    </section>
+
+    <section id="pdChangelogSection">
+      <h2>Release Notes &amp; Changelog</h2>
+      <div id="pdChangelog"></div>
+    </section>
+
+    <section id="pdFaqSection">
+      <h2>Frequently Asked Questions</h2>
+      <div id="pdFaq"></div>
+    </section>
+
+    <section>
+      <h2>Reviews</h2>
+      <div class="pd-reviews-placeholder">Reviews are coming in a later phase — every purchase here is currently verified manually by NUKRAX.</div>
+    </section>
+
+    <section id="pdRelatedSection">
+      <h2>Related Products</h2>
+      <div class="pd-related-grid" id="pdRelated"></div>
+    </section>
+
+    <section id="pdSimilarSection">
+      <h2>Similar Products</h2>
+      <div class="pd-related-grid" id="pdSimilar"></div>
+    </section>
+  </main>
+
+  <aside class="pd-sidebar">
+    <div id="pdPurchasePanel"></div>
+    <a class="pd-doc-link" id="pdDocsLink" href="#" target="_blank" rel="noopener">Full Documentation <span>&rarr;</span></a>
+  </aside>
+</div>
+
+<script type="module">
+import './assets/auth/auth-widget.js'; // side effect: renders the nav auth widget into .nav-right
+import { getProduct, getRelatedProducts, getSimilarProducts } from './assets/data/products/products.js';
+import { getCategory } from './assets/data/products/categories.js';
+import { renderPurchasePanel } from './assets/marketplace/purchase-panel.js';
+import { productCardGrid } from './assets/marketplace/product-card.js';
+import { recordRecentlyViewed } from './assets/marketplace/catalog.js';
+import { initScrollReveal } from './assets/ui/reveal.js';
+import { initTilt } from './assets/ui/tilt.js';
+import { track } from './assets/analytics/track.js';
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
+function hideIfEmpty(sectionId, hasContent) { const el = document.getElementById(sectionId); if (el && !hasContent) el.hidden = true; }
+
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const product = getProduct(id);
+
+  if (!product) {
+    document.body.innerHTML = `<div style="padding:80px 20px;text-align:center;color:var(--muted);font-family:var(--font-b)">
+      <h1 style="color:var(--white);margin-bottom:12px">Product not found</h1>
+      <p>That product doesn't exist or hasn't been listed yet. <a href="marketplace.html" style="color:var(--accent)">Back to Marketplace</a></p>
+    </div>`;
+    document.body.style.visibility = 'visible';
+    return;
+  }
+
+  recordRecentlyViewed(product.id);
+  track('product_view', { product_id: product.id, category: product.categoryId });
+  document.getElementById('pageTitle').textContent = `${product.name} — NUKRAX`;
+  document.getElementById('pageDescription').setAttribute('content', product.tagline);
+  document.getElementById('pageOgTitle').setAttribute('content', `${product.name} — NUKRAX`);
+  document.getElementById('pageOgDescription').setAttribute('content', product.tagline);
+  document.getElementById('pageCanonical').setAttribute('href', `https://nukrax.com/product.html?id=${encodeURIComponent(product.id)}`);
+
+  const category = getCategory(product.categoryId);
+  document.getElementById('pdCategory').textContent = category ? `${category.icon} ${category.label}` : '';
+  document.getElementById('pdName').textContent = product.name;
+  document.getElementById('pdTagline').textContent = product.tagline;
+  document.getElementById('pdVersion').textContent = product.version || '—';
+  document.getElementById('pdReleaseDate').textContent = product.releaseDate ? `Released ${new Date(product.releaseDate).toLocaleDateString()}` : '';
+  document.getElementById('pdDescription').textContent = product.description || product.tagline;
+
+  document.getElementById('pdFeatures').innerHTML = (product.features || []).map(f => `<li>${esc(f)}</li>`).join('');
+  hideIfEmpty('pdFeaturesSection', (product.features || []).length);
+
+  document.getElementById('pdShots').innerHTML = Array.from({ length: 3 }).map(() => `<div class="pd-shot-placeholder">Preview coming soon</div>`).join('');
+
+  const specs = product.techSpecs || {};
+  document.getElementById('pdSpecs').innerHTML = Object.entries(specs).map(([k, v]) => `
+    <div class="pd-spec-row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>
+  `).join('') || `<div class="pd-spec-row"><span class="k">Details</span><span class="v">Coming soon</span></div>`;
+
+  document.getElementById('pdCompat').innerHTML = (product.compatibility || []).map(c => `<li>${esc(c)}</li>`).join('');
+  hideIfEmpty('pdCompatSection', (product.compatibility || []).length);
+
+  document.getElementById('pdReq').innerHTML = (product.requirements || []).map(r => `<li>${esc(r)}</li>`).join('');
+  hideIfEmpty('pdReqSection', (product.requirements || []).length);
+
+  document.getElementById('pdInstall').innerHTML = (product.installSteps || []).map(s => `<li>${esc(s)}</li>`).join('');
+  hideIfEmpty('pdInstallSection', (product.installSteps || []).length);
+
+  document.getElementById('pdChangelog').innerHTML = (product.changelog || []).map(c => `
+    <div class="pd-changelog-item"><span class="ver">v${esc(c.version)}</span><span class="date">${esc(c.date)}</span><p>${esc(c.notes)}</p></div>
+  `).join('');
+  hideIfEmpty('pdChangelogSection', (product.changelog || []).length);
+
+  document.getElementById('pdFaq').innerHTML = (product.faq || []).map(f => `
+    <div class="pd-faq-item"><div class="q">${esc(f.q)}</div><div class="a">${esc(f.a)}</div></div>
+  `).join('');
+  hideIfEmpty('pdFaqSection', (product.faq || []).length);
+
+  const related = getRelatedProducts(product);
+  document.getElementById('pdRelated').innerHTML = productCardGrid(related, {});
+  hideIfEmpty('pdRelatedSection', related.length);
+
+  const similar = getSimilarProducts(product);
+  document.getElementById('pdSimilar').innerHTML = productCardGrid(similar, {});
+  hideIfEmpty('pdSimilarSection', similar.length);
+
+  if (product.docsUrl) {
+    document.getElementById('pdDocsLink').href = product.docsUrl;
+  } else {
+    document.getElementById('pdDocsLink').hidden = true;
+  }
+
+  await renderPurchasePanel(document.getElementById('pdPurchasePanel'), product);
+
+  document.querySelectorAll('.pd-main > section:not([hidden])').forEach(s => s.classList.add('nkx-reveal-toggle'));
+  initScrollReveal();
+  initTilt('.pd-related-grid .nkx-mp-card, .pd-shot-placeholder', { strength: 2, lift: 2 });
+
+  document.body.style.visibility = 'visible';
+}
+
+init();
+</script>
+
+</body>
+</html>

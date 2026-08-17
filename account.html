@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
   <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/ui/interactions.css">
   <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
 <title>Account</title>
+<meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/c-logo.png" type="image/png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -388,14 +390,23 @@ function escapeHtml(s) {
 }
 
 /* ── tabs ── */
+function activateTab(tabName) {
+  const tab = document.querySelector(`.ac-tab[data-tab="${tabName}"]`);
+  const panel = document.getElementById('panel-' + tabName);
+  if (!tab || !panel) return;
+  document.querySelectorAll('.ac-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.ac-panel').forEach(p => p.classList.remove('active'));
+  tab.classList.add('active');
+  panel.classList.add('active');
+}
 document.querySelectorAll('.ac-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.ac-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.ac-panel').forEach(p => p.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
-  });
+  tab.addEventListener('click', () => activateTab(tab.dataset.tab));
 });
+// Deep-link support (e.g. dashboard.html links to account.html#security)
+// so other pages can jump straight to a tab without duplicating this
+// component's internal tab-switching logic.
+const hashTab = window.location.hash.replace('#', '');
+if (hashTab) activateTab(hashTab);
 
 /* ── populate selects ── */
 function populateSelects() {
