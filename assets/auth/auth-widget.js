@@ -16,15 +16,27 @@
 // client directly (profile.html, guard.js).
 // ═══════════════════════════════════════════════
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+import { applyMotionPreference } from '../membership/motion.js';
+import { supabase } from './client.js';
+import { tryAward } from '../community/achievements.js';
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+export { supabase };
+
+let firstLoginChecked = false;
+function awardFirstLogin() {
+  // Once per page load is plenty — the RPC itself is idempotent, this
+  // just avoids firing it repeatedly on every auth-state event in the
+  // same session (token refreshes, tab focus, etc.).
+  if (firstLoginChecked) return;
+  firstLoginChecked = true;
+  tryAward('first-login').catch(() => {});
+}
 
 // Are we inside /ea/*.html? Affects relative link paths.
 const IN_EA_FOLDER = window.location.pathname.includes('/ea/');
 const BASE = IN_EA_FOLDER ? '../' : '';
 const PROFILE_URL = `${BASE}profile.html`;
+const DASHBOARD_URL = `${BASE}dashboard.html`;
 const ACCOUNT_URL = `${BASE}account.html`;
 const SETTINGS_URL = `${BASE}settings.html`;
 const HOME_URL = `${BASE}index.html`;
@@ -37,15 +49,37 @@ const HOME_URL = `${BASE}index.html`;
 const CURRENT_PAGE = window.location.pathname.replace(/^.*\//, '');
 const SKIP_FLOATING_WIDGET = ['login.html', 'signup.html'].includes(CURRENT_PAGE);
 
-const SITE_LINKS = [
+// Nav differs by auth state (Phase 1 — Platform Foundation). Guests get the
+// marketing/discovery set; signed-in users additionally get the Dashboard
+// front and center. "Products" points at the Phase 2 marketplace hub —
+// ea-selection.html still exists as the older EA-only browse page, linked
+// from within the marketplace/category filters rather than the main nav.
+const GUEST_LINKS = [
   { label: 'Home', href: `${BASE}index.html` },
-  { label: 'Community', href: `${BASE}community.html` },
-  { label: 'Expert Advisors', href: `${BASE}ea-selection.html` },
+  { label: 'Products', href: `${BASE}marketplace.html` },
   { label: 'Documentation', href: `${BASE}docs/introduction.html` },
+  { label: 'Community', href: `${BASE}community.html` },
   { label: 'AI Assistant', href: `${BASE}chat.html` },
   { label: 'Market Map', href: `${BASE}map.html` },
+  { label: 'Support', href: `${BASE}support.html` },
   { label: 'Feedback', href: `${BASE}feedback.html` },
 ];
+
+const MEMBER_LINKS = [
+  { label: 'Home', href: `${BASE}index.html` },
+  { label: 'Dashboard', href: `${BASE}dashboard.html` },
+  { label: 'Products', href: `${BASE}marketplace.html` },
+  { label: 'Documentation', href: `${BASE}docs/introduction.html` },
+  { label: 'Community', href: `${BASE}community.html` },
+  { label: 'AI Assistant', href: `${BASE}chat.html` },
+  { label: 'Market Map', href: `${BASE}map.html` },
+  { label: 'Support', href: `${BASE}support.html` },
+  { label: 'Feedback', href: `${BASE}feedback.html` },
+];
+
+function siteLinksFor(user) {
+  return user ? MEMBER_LINKS : GUEST_LINKS;
+}
 
 // ── styles ───────────────────────────────────────────────
 function injectStyles() {
@@ -397,6 +431,7 @@ function buildLoginWrap(user) {
       : `
       <div class="nkx-w-avatar" id="nkx-w-avatar-btn">${avatarInner}</div>
       <div class="nkx-w-dropdown" id="nkx-w-avatar-dd">
+        <a href="${DASHBOARD_URL}">Dashboard</a>
         <a href="${PROFILE_URL}">Profile</a>
         <div class="nkx-w-divider"></div>
         <button class="nkx-w-logout" id="nkx-w-logout">Log Out</button>
@@ -435,7 +470,11 @@ function buildMenuWrap(user) {
   const wrap = document.createElement('div');
   wrap.id = 'nkx-w-menu-wrap';
   wrap.style.position = 'relative';
-  const menuLinksHtml = SITE_LINKS.map(l => `<a href="${l.href}">${l.label}</a>`).join('');
+  const menuLinksHtml = siteLinksFor(user).map(l => {
+    const linkPage = l.href.replace(/^.*\//, '');
+    const isActive = linkPage === (CURRENT_PAGE || 'index.html');
+    return `<a href="${l.href}"${isActive ? ' class="nkx-nav-active" aria-current="page"' : ''}>${l.label}</a>`;
+  }).join('');
 
   const accountLinksHtml = user ? `
     <div class="nkx-w-divider"></div>
@@ -508,10 +547,14 @@ injectStyles();
 
 supabase.auth.getSession().then(({ data }) => {
   renderWidget(data.session?.user || null);
+  applyMotionPreference(supabase, data.session?.user || null);
+  if (data.session?.user) awardFirstLogin();
 });
 
 supabase.auth.onAuthStateChange((event, session) => {
   renderWidget(session?.user || null);
+  applyMotionPreference(supabase, session?.user || null);
+  if (event === 'SIGNED_IN') awardFirstLogin();
   if (event === 'PASSWORD_RECOVERY') {
     openModal('reset');
   }
