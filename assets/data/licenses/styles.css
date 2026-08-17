@@ -1,0 +1,82 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   NUKRAX — assets/data/licenses/styles.css
+   Shared styling for the Key-entry modal (assets/marketplace/key-modal.js)
+   and the purchase panel (assets/marketplace/purchase-panel.js). Link
+   once per page that uses either — tokens.css must load first.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.nkx-key-overlay{
+  position:fixed;inset:0;background:rgba(4,6,8,0.75);-webkit-backdrop-filter: blur(6px);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .25s var(--ease);
+}
+.nkx-key-overlay.open{opacity:1;pointer-events:auto}
+.nkx-key-modal{
+  width:100%;max-width:420px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:32px;transform:translateY(10px);transition:transform .3s var(--ease-out);
+}
+.nkx-key-overlay.open .nkx-key-modal{transform:translateY(0)}
+.nkx-key-modal h3{color:var(--white);font-size:19px;margin-bottom:8px}
+.nkx-key-modal p{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px}
+.nkx-key-input{
+  width:100%;background:var(--layer2,#0e141a);border:1px solid var(--line);color:var(--white);
+  font-family:var(--font-m);letter-spacing:.06em;text-transform:uppercase;font-size:14px;
+  padding:13px 14px;border-radius:8px;margin-bottom:6px;text-align:center;
+}
+.nkx-key-input:focus{outline:none;border-color:var(--accent)}
+.nkx-key-error{color:#D9667A;font-size:12px;min-height:16px;margin-bottom:14px}
+.nkx-key-actions{display:flex;flex-direction:column;gap:10px}
+.nkx-key-btn{
+  width:100%;padding:12px;border-radius:8px;font-family:var(--font-m);font-size:11.5px;
+  letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:1px solid var(--line);
+  background:transparent;color:var(--text);transition:background .2s var(--ease);
+}
+.nkx-key-btn.primary{background:var(--accent);color:var(--black);border-color:var(--accent);font-weight:600}
+.nkx-key-btn:disabled{opacity:.5;cursor:default}
+@media (hover:hover) and (pointer:fine){.nkx-key-btn:not(:disabled):hover{background:rgba(143,184,196,.1)}
+  .nkx-key-btn.primary:hover{background:var(--white)}}
+.nkx-key-close{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--muted);
+  font-size:20px;cursor:pointer;line-height:1;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+@media (hover:hover) and (pointer:fine){.nkx-key-close:hover{background:rgba(143,184,196,.08);color:var(--white)}}
+.nkx-key-modal{position:relative}
+
+/* ── purchase panel ── */
+.nkx-purchase-panel{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:26px}
+.nkx-pp-price{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.nkx-pp-price .amount{font-family:var(--font-b);font-size:32px;color:var(--white);font-weight:600}
+.nkx-pp-price .original{font-size:15px;color:var(--muted);text-decoration:line-through}
+.nkx-pp-membership-note{font-size:12px;color:var(--muted);margin-bottom:18px}
+.nkx-pp-btn-row{display:flex;flex-direction:column;gap:10px}
+.nkx-pp-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:9px;
+  font-family:var(--font-m);font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
+  border:none;text-decoration:none;
+}
+.nkx-pp-btn.primary{background:var(--accent);color:var(--black);font-weight:600}
+.nkx-pp-btn.secondary{background:transparent;border:1px solid var(--line);color:var(--text)}
+@media (hover:hover) and (pointer:fine){.nkx-pp-btn.primary:hover{background:var(--white)}
+  .nkx-pp-btn.secondary:hover{background:rgba(143,184,196,.08)}}
+.nkx-pp-upgrade-banner{
+  border:1px solid var(--chip-color, var(--accent));background:rgba(143,184,196,0.08);background:color-mix(in srgb, var(--accent) 8%, transparent);
+  border-radius:9px;padding:14px 16px;font-size:12.5px;color:var(--text);margin-bottom:16px;line-height:1.6;
+}
+
+/* ── checkout order banner / contact block (cr.html, crypto.html) ── */
+.nkx-checkout-banner{border:1px solid var(--accent);background:rgba(143,184,196,.06);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+.nkx-cb-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13px}
+.nkx-cb-label{color:var(--muted)}
+.nkx-cb-value{color:var(--white);font-family:var(--font-m);font-size:12px}
+.nkx-cb-status{text-transform:capitalize}
+.nkx-cb-confirm-btn{width:100%;margin-top:14px;padding:13px;border-radius:8px;border:none;background:var(--accent);
+  color:var(--black);font-family:var(--font-m);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+  font-weight:600;cursor:pointer}
+.nkx-cb-confirm-btn:disabled{opacity:.6;cursor:default}
+@media (hover:hover) and (pointer:fine){.nkx-cb-confirm-btn:not(:disabled):hover{background:var(--white)}}
+.nkx-cb-confirm-note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5}
+.nkx-checkout-contact{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:24px}
+.nkx-cc-title{color:var(--text);font-size:12.5px;margin-bottom:12px}
+.nkx-cc-row{display:flex;flex-wrap:wrap;gap:10px}
+.nkx-cc-row a{font-family:var(--font-m);font-size:11.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);
+  border-radius:20px;padding:7px 14px}
+@media (hover:hover) and (pointer:fine){.nkx-cc-row a:hover{background:rgba(143,184,196,.1)}}
