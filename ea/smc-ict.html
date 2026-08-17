@@ -4,6 +4,8 @@
 <style>body{visibility:hidden}</style>
 <meta charset="UTF-8"/>
   <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/membership/membership.css">
+  <link rel="stylesheet" href="../assets/data/licenses/styles.css">
   <script type="module" src="../assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
@@ -60,7 +62,8 @@
     justify-content: space-between;
     padding: 18px 48px;
     background: rgba(8,12,16,0.85);
-    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
   }
 
@@ -586,6 +589,7 @@
       <div class="stat-label">Trailing Stop</div>
     </div>
   </div>
+  <div id="eaPurchasePanel" style="max-width:420px;margin-top:32px"></div>
 </div>
 
 <hr class="divider"/>
@@ -1032,6 +1036,12 @@
 <script type="module" src="../assets/ai/widget.js"></script>
 <script type="module" src="../assets/auth/auth-widget.js"></script>
 <script type="module" src="../assets/auth/guard.js"></script>
+<script type="module">
+import { getProduct } from '../assets/data/products/products.js';
+import { renderPurchasePanel } from '../assets/marketplace/purchase-panel.js';
+const product = getProduct('smc-ict');
+if (product) renderPurchasePanel(document.getElementById('eaPurchasePanel'), product);
+</script>
 <script>
 try {
   localStorage.setItem('nkx_last_viewed_ea', JSON.stringify({
