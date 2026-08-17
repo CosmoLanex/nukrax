@@ -141,3 +141,11 @@ const DEPOSIT_ADDRESSES = {
     "BSC — BNB Smart Chain (BEP20)": { address: "0x3391cc7250b2b035f38259cb2b49d2ad014d718b" }
   }
 };
+
+// Expose on window so ES-module code (Phase 2 marketplace/checkout — see
+// assets/data/payments/wallets.js) can read the SAME addresses without
+// this file being duplicated or re-typed anywhere. This is a pure
+// read-only export shim; the data above remains the one and only place
+// addresses are edited. Classic <script> `const` bindings don't attach to
+// `window` automatically, hence this one line.
+if (typeof window !== 'undefined') window.DEPOSIT_ADDRESSES = DEPOSIT_ADDRESSES;
