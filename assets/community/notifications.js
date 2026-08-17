@@ -33,11 +33,36 @@ export async function renderNotifications(container, currentUser) {
     return;
   }
 
-  const actorIds = [...new Set(notifs.map(n => n.actor_id))];
-  const { data: profiles } = await supabase.from('profiles').select('*').in('id', actorIds);
+  // actor_id is null for system-generated notifications (purchase updates,
+  // account/membership changes, security alerts, announcements — see
+  // supabase/migrations/0001_membership_platform.sql), so only look up
+  // profiles for the ones that actually have a human actor.
+  const actorIds = [...new Set(notifs.map(n => n.actor_id).filter(Boolean))];
+  const { data: profiles } = actorIds.length
+    ? await supabase.from('profiles').select('*').in('id', actorIds)
+    : { data: [] };
   const profileMap = Object.fromEntries((profiles || []).map(p => [p.id, p]));
 
+  const SYSTEM_ICONS = {
+    purchase: '▤', account: '◇', membership: '★', security: '⛨', announcement: '⚑',
+    achievement: '\u2726', reward: '\u25c6', marketplace: '\u25a6', automation: '\u2699',
+    ai: '\u25c8', download: '\u2193',
+  };
+
   container.innerHTML = notifs.map(n => {
+    if (!n.actor_id) {
+      // System notification: title/body set directly on the row, no actor.
+      const icon = SYSTEM_ICONS[n.type] || '•';
+      return `
+        <div class="cm-notif-row ${n.read ? '' : 'unread'}">
+          <div class="cm-post-avatar">${icon}</div>
+          <div class="cm-notif-text">
+            <strong>${escapeHtml(n.title || 'Update')}</strong>${n.body ? ` — ${escapeHtml(n.body)}` : ''}
+            <div class="cm-post-time">${timeAgo(n.created_at)}</div>
+          </div>
+        </div>
+      `;
+    }
     const actor = profileMap[n.actor_id];
     const actorName = actor?.display_name || actor?.username || 'Someone';
     const initial = (actorName || '?').charAt(0).toUpperCase();
