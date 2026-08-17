@@ -1,0 +1,44 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   NUKRAX — assets/membership/membership.css
+   Shared styling for the render.js component builders (tier chip, level
+   ring, points pill, rank chip, badge row). Linked once per page that
+   uses assets/membership/render.js — tokens.css must be linked first.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.nkx-tier-chip{
+  display:inline-flex;align-items:center;font-family:var(--font-m);font-size:var(--fs-10-5);
+  letter-spacing:.08em;text-transform:uppercase;color:var(--chip-color,var(--accent));
+  border:1px solid var(--chip-color,var(--accent));background:rgba(143,184,196,0.12);background:color-mix(in srgb, var(--chip-color,var(--accent)) 12%, transparent);
+  padding:4px 10px;border-radius:20px;
+}
+
+.nkx-points-pill{
+  display:inline-flex;align-items:center;gap:3px;font-family:var(--font-m);font-size:var(--fs-11-5);
+  color:var(--white);background:var(--panel);border:1px solid var(--line);padding:5px 11px;border-radius:20px;
+}
+.nkx-points-pill small{color:var(--muted);font-size:var(--fs-9-5)}
+
+.nkx-rank-chip{
+  display:inline-flex;align-items:center;gap:5px;font-family:var(--font-m);font-size:var(--fs-11-5);
+  color:var(--text);background:var(--panel);border:1px solid var(--line);padding:5px 11px;border-radius:20px;
+}
+.nkx-rank-chip small{color:var(--muted)}
+
+.nkx-badge-row{display:flex;flex-wrap:wrap;gap:6px}
+.nkx-badge{
+  display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-11-5);color:var(--text);
+  background:var(--panel);border:1px solid var(--line);padding:5px 10px;border-radius:14px;
+}
+
+.nkx-level-ring{position:relative;flex-shrink:0}
+.nkx-level-ring svg{width:100%;height:100%;transform-origin:center}
+.nkx-lr-track{fill:none;stroke:var(--line);stroke-width:4}
+.nkx-lr-fill{fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset .5s var(--ease)}
+.nkx-lr-label{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-m);font-weight:700;color:var(--white);font-size:var(--fs-13);
+}
+
+@media (prefers-reduced-motion: reduce){
+  .nkx-lr-fill{transition:none}
+}
