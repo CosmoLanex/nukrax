@@ -8,6 +8,8 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { supabase } from '../auth/auth-widget.js';
+import { getMembershipProfile } from '../membership/store.js';
+import { tierChip, levelRing, pointsPill, rankChip } from '../membership/render.js';
 
 const LAST_VIEWED_KEY = 'nkx_last_viewed_ea';
 const LAST_VIEWED_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -61,6 +63,26 @@ async function renderWelcomePanel(session) {
     } catch {
       /* malformed localStorage value — ignore, keep the card hidden */
     }
+  }
+
+  renderMembershipStrip(user);
+}
+
+/* ── Membership strip (tier / level / points / rank + Dashboard link) ── */
+async function renderMembershipStrip(user) {
+  const strip = document.getElementById('welcomeMembershipStrip');
+  const ring = document.getElementById('wmsRing');
+  const chips = document.getElementById('wmsChips');
+  if (!strip || !ring || !chips) return;
+  try {
+    const membership = await getMembershipProfile(user);
+    if (!membership) return;
+    ring.innerHTML = levelRing(membership, 48);
+    chips.innerHTML = tierChip(membership) + rankChip(membership) + pointsPill(membership);
+    strip.hidden = false;
+  } catch {
+    /* membership schema not migrated yet, or a transient fetch error — the
+       rest of the Welcome Panel still works fine without this strip */
   }
 }
 
