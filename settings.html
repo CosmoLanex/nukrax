@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
   <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/membership/membership.css">
+  <link rel="stylesheet" href="assets/ui/interactions.css">
   <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
 <title>Settings</title>
+<meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/c-logo.png" type="image/png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -89,10 +92,46 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
     </div>
   </div>
 
+  <div class="st-section">
+    <h2>Appearance</h2>
+    <div class="st-row">
+      <div class="st-row-text">
+        <div class="st-row-title">Reduce motion</div>
+        <div class="st-row-sub">Minimize animations across the platform</div>
+      </div>
+      <button class="st-switch" id="set-reduce-motion"></button>
+    </div>
+  </div>
+
+  <div class="st-section">
+    <h2>Membership</h2>
+    <div class="st-row">
+      <div class="st-row-text">
+        <div class="st-row-title">Current tier</div>
+        <div class="st-row-sub" id="set-tier-sub">Loading…</div>
+      </div>
+      <span class="nkx-tier-chip" id="set-tier-chip"></span>
+    </div>
+    <a href="dashboard.html" class="st-link-row">View membership details</a>
+  </div>
+
+  <div class="st-section">
+    <h2>Future Integrations</h2>
+    <div id="setIntegrationsList"></div>
+  </div>
+
+  <div class="st-section">
+    <h2>Help &amp; Feedback</h2>
+    <a href="mailto:support@nukrax.com" class="st-link-row">Get Help — support@nukrax.com</a>
+    <a href="mailto:feedback@nukrax.com?subject=Feature%20suggestion" class="st-link-row">Suggest a Feature — feedback@nukrax.com</a>
+    <a href="docs/changelog.html" class="st-link-row">Changelog</a>
+  </div>
+
   <div class="st-section" style="border-bottom:none">
     <h2>More</h2>
     <a href="profile.html" class="st-link-row">Edit Profile</a>
     <a href="account.html" class="st-link-row">Account &amp; Data</a>
+    <a href="dashboard.html" class="st-link-row">Go to Dashboard</a>
   </div>
 
   <div class="st-msg" id="st-msg"></div>
@@ -100,6 +139,21 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 
 <script type="module">
 import { supabase } from './assets/auth/auth-widget.js';
+import { getMembershipProfile } from './assets/membership/store.js';
+import { tierChip } from './assets/membership/render.js';
+import { TIERS } from './assets/membership/tiers.js';
+import { INTEGRATIONS } from './assets/integrations/registry.js';
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
+
+function renderIntegrations() {
+  document.getElementById('setIntegrationsList').innerHTML = INTEGRATIONS.map(i => `
+    <div class="st-row">
+      <div class="st-row-text"><div class="st-row-title">${i.icon} ${esc(i.label)}</div><div class="st-row-sub">${esc(i.description)}</div></div>
+      <span class="nkx-tier-chip">${i.status === 'connected' ? 'Connected' : 'Planned'}</span>
+    </div>
+  `).join('');
+}
 
 let currentUser = null;
 let settings = {};
@@ -127,14 +181,30 @@ async function init() {
   const notifyFollow = document.getElementById('set-notify-follow');
   const notifyLike = document.getElementById('set-notify-like');
   const priv = document.getElementById('set-private');
+  const reduceMotion = document.getElementById('set-reduce-motion');
 
   setSwitch(notifyFollow, settings.notify_follow !== false);
   setSwitch(notifyLike, settings.notify_like !== false);
   setSwitch(priv, !!settings.private_profile);
+  setSwitch(reduceMotion, !!settings.reduce_motion);
 
   notifyFollow.addEventListener('click', () => { settings.notify_follow = !notifyFollow.classList.contains('on'); setSwitch(notifyFollow, settings.notify_follow); saveSettings(); });
   notifyLike.addEventListener('click', () => { settings.notify_like = !notifyLike.classList.contains('on'); setSwitch(notifyLike, settings.notify_like); saveSettings(); });
   priv.addEventListener('click', () => { settings.private_profile = !priv.classList.contains('on'); setSwitch(priv, settings.private_profile); saveSettings(); });
+  reduceMotion.addEventListener('click', () => { settings.reduce_motion = !reduceMotion.classList.contains('on'); setSwitch(reduceMotion, settings.reduce_motion); saveSettings(); });
+
+  // Membership row — reuses the same store/render architecture as the
+  // dashboard and homepage, no duplicated tier logic.
+  try {
+    const membership = await getMembershipProfile(currentUser);
+    if (membership) {
+      const tier = TIERS[membership.membership_tier] || TIERS.free;
+      document.getElementById('set-tier-chip').outerHTML = tierChip(membership);
+      document.getElementById('set-tier-sub').textContent = tier.tagline;
+    }
+  } catch { /* membership schema not migrated yet — row just stays blank */ }
+
+  renderIntegrations();
 
   document.body.style.visibility = 'visible';
 }

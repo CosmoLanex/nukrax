@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
   <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/membership/membership.css">
+  <link rel="stylesheet" href="assets/ui/interactions.css">
   <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
@@ -64,7 +66,8 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
   display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical}
 .pf-empty{padding:40px 10px;text-align:center;color:var(--muted);font-size:13px;grid-column:1/-1}
 
-.pf-modal-overlay{position:fixed;inset:0;background:rgba(3,5,7,.8);backdrop-filter:blur(6px);
+.pf-modal-overlay{position:fixed;inset:0;background:rgba(3,5,7,.8);-webkit-backdrop-filter: blur(6px);
+  backdrop-filter:blur(6px);
   display:flex;align-items:center;justify-content:center;z-index:900;padding:20px}
 .pf-modal{background:var(--panel);border:1px solid var(--line);border-radius:10px;width:min(380px,100%);
   max-height:70vh;display:flex;flex-direction:column}
@@ -134,7 +137,24 @@ async function init() {
 
   render();
   loadPosts();
+  renderProfileBadges();
   document.body.style.visibility = 'visible';
+}
+
+async function renderProfileBadges() {
+  try {
+    const { getMembershipProfile } = await import('./assets/membership/store.js');
+    const { tierChip, rankChip, badgeRow } = await import('./assets/membership/render.js');
+    // getMembershipProfile expects a user-shaped object with .id — the
+    // viewed profile's own row already has everything else it needs.
+    const membership = await getMembershipProfile({ id: viewedProfile.id });
+    const el = document.getElementById('pfBadgeRow');
+    if (el && membership) {
+      el.innerHTML = `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${tierChip(membership)}${rankChip(membership)}</div>${badgeRow(membership)}`;
+    }
+  } catch {
+    /* membership schema not migrated yet on this environment — profile still renders fine without it */
+  }
 }
 
 function render() {
@@ -159,6 +179,7 @@ function render() {
       <div class="pf-handle">@${escapeHtml(viewedProfile.username)}</div>
       ${category ? `<div class="pf-category">${escapeHtml(category)}</div>` : ''}
       ${bio ? `<div class="pf-bio">${escapeHtml(bio)}</div>` : ''}
+      <div id="pfBadgeRow" style="margin-top:12px"></div>
     </div>
     ${currentUser ? `
     <div class="pf-actions">

@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /dashboard.html
+Disallow: /account.html
+Disallow: /settings.html
+Disallow: /redirect.html
+Disallow: /setup.html
+Disallow: /cr-redirect.html
+
+Sitemap: https://nukrax.com/sitemap.xml

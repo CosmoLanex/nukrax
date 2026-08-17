@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>body{visibility:hidden}</style>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/ui/interactions.css">
+<script type="module" src="assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
+<title>Support Center — NUKRAX</title>
+<meta name="description" content="NUKRAX Support Center — help center, FAQ, troubleshooting, changelog, contact, and system status."/>
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#07090B">
+<link rel="canonical" href="https://nukrax.com/support.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="nukrax">
+<meta property="og:title" content="Support Center — NUKRAX">
+<meta property="og:description" content="NUKRAX Support Center — help center, FAQ, troubleshooting, changelog, contact, and system status.">
+<meta property="og:image" content="https://nukrax.com/assets/c-logo.png">
+<meta property="og:url" content="https://nukrax.com/support.html">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Support Center — NUKRAX">
+<meta name="twitter:description" content="NUKRAX Support Center — help center, FAQ, troubleshooting, changelog, contact, and system status.">
+<meta name="twitter:image" content="https://nukrax.com/assets/c-logo.png">
+<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
+.sc-nav{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,4vw,40px);border-bottom:1px solid var(--line)}
+.sc-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.sc-logo img{width:28px;height:28px;border-radius:6px}
+.sc-logo span{font-family:var(--font-logo);font-size:18px;color:var(--white)}
+
+.sc-hero{max-width:720px;margin:0 auto;padding:60px clamp(20px,4vw,44px) 12px;text-align:center}
+.sc-hero h1{font-family:var(--font-logo);font-size:clamp(30px,4.4vw,44px);color:var(--white);margin-bottom:14px}
+.sc-hero p{color:var(--muted);font-size:14.5px;max-width:480px;margin:0 auto;line-height:1.7}
+.sc-status-pill{
+  display:inline-flex;align-items:center;gap:7px;margin-top:20px;border:1px solid var(--line);border-radius:20px;
+  padding:8px 16px;font-family:var(--font-m);font-size:11.5px;color:var(--text);text-decoration:none;
+}
+.sc-status-dot{width:7px;height:7px;border-radius:50%;background:#7FBF8F}
+@media (hover:hover) and (pointer:fine){.sc-status-pill:hover{border-color:var(--accent)}}
+
+.sc-search{max-width:520px;margin:26px auto 0}
+.sc-search input{
+  width:100%;background:var(--panel);border:1px solid var(--line);color:var(--white);padding:13px 16px;
+  border-radius:10px;font-size:13.5px;
+}
+.sc-search input:focus{outline:none;border-color:var(--accent)}
+
+.sc-wrap{max-width:1040px;margin:0 auto;padding:48px clamp(20px,4vw,44px) 100px}
+.sc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.sc-card{
+  display:block;border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:24px;
+  text-decoration:none;color:inherit;transition:border-color .25s var(--ease),transform .3s var(--ease-out);
+}
+@media (hover:hover) and (pointer:fine){.sc-card:hover{border-color:var(--accent);transform:translateY(-2px)}}
+.sc-card-icon{width:38px;height:38px;border-radius:10px;background:rgba(143,184,196,.1);display:flex;align-items:center;
+  justify-content:center;font-size:17px;color:var(--accent);margin-bottom:14px}
+.sc-card h2{color:var(--white);font-size:15.5px;font-weight:500;margin-bottom:8px}
+.sc-card p{color:var(--muted);font-size:12.5px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<nav class="sc-nav">
+  <a href="index.html" class="sc-logo"><img src="assets/logo.png" alt="NUKRAX"/><span>nukrax</span></a>
+  <div class="nav-right"></div>
+</nav>
+
+<div class="sc-hero">
+  <h1>Support Center</h1>
+  <p>Everything you need to get unstuck — documentation, answers, troubleshooting, and a direct line to the right team.</p>
+  <a href="status.html" class="sc-status-pill"><span class="sc-status-dot" aria-hidden="true"></span> All Systems Operational</a>
+  <div class="sc-search">
+    <input type="text" id="scSearch" placeholder="Search docs and FAQ..." aria-label="Search documentation"/>
+  </div>
+</div>
+
+<div class="sc-wrap">
+  <div class="sc-grid">
+    <a href="docs/introduction.html" class="sc-card nkx-reveal-toggle">
+      <div class="sc-card-icon" aria-hidden="true">\u25a4</div>
+      <h2>Documentation</h2>
+      <p>Full platform docs — getting started, dashboard, marketplace, membership, and more.</p>
+    </a>
+    <a href="docs/faq.html" class="sc-card nkx-reveal-toggle">
+      <div class="sc-card-icon" aria-hidden="true">?</div>
+      <h2>FAQ</h2>
+      <p>Quick answers to the most common questions about accounts, billing, and products.</p>
+    </a>
+    <a href="docs/troubleshooting.html" class="sc-card nkx-reveal-toggle">
+      <div class="sc-card-icon" aria-hidden="true">\u26a0</div>
+      <h2>Troubleshooting</h2>
+      <p>Fixes for common EA, dashboard, and account issues.</p>
+    </a>
+    <a href="docs/changelog.html" class="sc-card nkx-reveal-toggle">
+      <div class="sc-card-icon" aria-hidden="true">\u25c6</div>
+      <h2>Changelog</h2>
+      <p>Platform release notes — what's new, fixed, and changed.</p>
+    </a>
+    <a href="contact.html" class="sc-card nkx-reveal-toggle">
+      <div class="sc-card-icon" aria-hidden="true">\u2709</div>
+      <h2>Contact Support</h2>
+      <p>Reach the right team — support, billing, security, or general inquiries.</p>
+    </a>
+    <a href="status.html" class="sc-card nkx-reveal-toggle">
+      <div class="sc-card-icon" aria-hidden="true">\u26a1</div>
+      <h2>System Status</h2>
+      <p>Live status of NUKRAX platform services.</p>
+    </a>
+  </div>
+</div>
+
+<script type="module">
+import { initScrollReveal } from './assets/ui/reveal.js';
+
+document.getElementById('scSearch').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.value.trim()) {
+    window.location.href = `search.html?q=${encodeURIComponent(e.target.value.trim())}`;
+  }
+});
+
+initScrollReveal();
+document.body.style.visibility = 'visible';
+</script>
+
+</body>
+</html>

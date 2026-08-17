@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>body{visibility:hidden}</style>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/marketplace/marketplace.css">
+<link rel="stylesheet" href="assets/ui/interactions.css">
+<script type="module" src="assets/data/data.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
+<title>Search — NUKRAX</title>
+<meta name="description" content="Search NUKRAX products and documentation.">
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#07090B">
+<link rel="canonical" href="https://nukrax.com/search.html">
+<link rel="icon" href="assets/c-logo.png" type="image/png"/>
+<style>
+body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
+.se-nav{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,4vw,40px);border-bottom:1px solid var(--line)}
+.se-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.se-logo img{width:28px;height:28px;border-radius:6px}
+.se-logo span{font-family:var(--font-logo);font-size:18px;color:var(--white)}
+
+.se-hero{max-width:640px;margin:0 auto;padding:46px clamp(20px,4vw,44px) 0}
+.se-search-box{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:14px 18px}
+.se-search-box input{flex:1;background:none;border:none;color:var(--white);font-size:15px}
+.se-search-box input:focus{outline:none}
+
+.se-wrap{max-width:900px;margin:0 auto;padding:36px clamp(20px,4vw,44px) 100px}
+.se-count{color:var(--muted);font-size:12.5px;margin-bottom:24px}
+.se-section-title{font-family:var(--font-m);font-size:var(--fs-11);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+.se-doc-list{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:36px}
+.se-doc-row{display:block;padding:16px 18px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
+.se-doc-row:last-child{border-bottom:none}
+@media (hover:hover) and (pointer:fine){.se-doc-row:hover{background:rgba(143,184,196,.04)}}
+.se-doc-row h3{color:var(--white);font-size:14px;font-weight:500;margin-bottom:4px}
+.se-doc-row p{color:var(--muted);font-size:12.5px;line-height:1.5}
+.se-empty{padding:60px 20px;text-align:center;color:var(--muted);font-size:13.5px}
+</style>
+</head>
+<body>
+
+<nav class="se-nav">
+  <a href="index.html" class="se-logo"><img src="assets/logo.png" alt="NUKRAX"/><span>nukrax</span></a>
+  <div class="nav-right"></div>
+</nav>
+
+<div class="se-hero">
+  <div class="se-search-box">
+    <span aria-hidden="true">\u2315</span>
+    <input type="text" id="seInput" placeholder="Search products, docs, anything..." aria-label="Search NUKRAX"/>
+  </div>
+</div>
+
+<div class="se-wrap">
+  <div class="se-count" id="seCount"></div>
+  <div id="seProductsSection" hidden>
+    <h3 class="se-section-title">Products</h3>
+    <div class="nkx-mp-grid" id="seProducts" style="margin-bottom:36px"></div>
+  </div>
+  <div id="seDocsSection" hidden>
+    <h3 class="se-section-title">Documentation</h3>
+    <div class="se-doc-list" id="seDocs"></div>
+  </div>
+  <div id="seEmpty" class="se-empty" hidden>No results. Try a different term, or <a href="contact.html" style="color:var(--accent)">contact support</a>.</div>
+</div>
+
+<script type="module">
+import { globalSearch } from './assets/search/index.js';
+import { productCardGrid } from './assets/marketplace/product-card.js';
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
+
+function runSearch(query) {
+  const { products, docs } = globalSearch(query);
+  document.getElementById('seCount').textContent = query
+    ? `${products.length + docs.length} result${products.length + docs.length === 1 ? '' : 's'} for "${query}"`
+    : 'Start typing to search products and documentation.';
+
+  document.getElementById('seProductsSection').hidden = !products.length;
+  document.getElementById('seProducts').innerHTML = productCardGrid(products, {});
+
+  document.getElementById('seDocsSection').hidden = !docs.length;
+  document.getElementById('seDocs').innerHTML = docs.map(d => `
+    <a href="${d.url}" class="se-doc-row"><h3>${esc(d.title)}</h3><p>${esc(d.description)}</p></a>
+  `).join('');
+
+  document.getElementById('seEmpty').hidden = !(query && !products.length && !docs.length);
+}
+
+const input = document.getElementById('seInput');
+const params = new URLSearchParams(window.location.search);
+const initialQuery = params.get('q') || '';
+input.value = initialQuery;
+runSearch(initialQuery);
+
+input.addEventListener('input', () => {
+  const q = input.value.trim();
+  const url = new URL(window.location.href);
+  if (q) url.searchParams.set('q', q); else url.searchParams.delete('q');
+  window.history.replaceState({}, '', url);
+  runSearch(q);
+});
+
+document.body.style.visibility = 'visible';
+setTimeout(() => input.focus(), 50);
+</script>
+
+</body>
+</html>
