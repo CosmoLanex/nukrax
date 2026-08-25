@@ -66,6 +66,42 @@ if (typeof window !== "undefined") {
   // Bridge for classic/non-module scripts and quick console debugging.
   // Does not overwrite anything if some other script already claimed it.
   window.NUKRAX = window.NUKRAX || NUKRAX;
+
+  // ── Safe-reveal watchdog ──────────────────────────────────────────
+  // A number of pages use a `<style>body{visibility:hidden}</style>` +
+  // "reveal once auth/init finishes" pattern (guard.js, dashboard.html's
+  // init(), etc.) to avoid flashing content before an auth check or
+  // first data load completes. That pattern had no fallback: if any
+  // step in the init chain threw (a Supabase call failing on a flaky
+  // mobile connection, a missing element, any uncaught error) or just
+  // never resolved, `body.style.visibility` was never set back to
+  // 'visible' and the page stayed permanently blank — this is the
+  // direct cause of the blank/white Dashboard reported on mobile.
+  //
+  // This does not change the normal/fast path for ANY page at all —
+  // it only ever acts as a last-resort fallback:
+  //   1. A hard timeout: nothing on this site legitimately needs the
+  //      body hidden this long, so if it's still hidden after 6s,
+  //      something failed silently — reveal it rather than leave the
+  //      person on a blank screen.
+  //   2. Immediately on any uncaught error or rejected promise, if the
+  //      body is still hidden at that moment — this is what actually
+  //      fixes the dashboard case, since a thrown error mid-init
+  //      previously meant the `visibility = 'visible'` line further
+  //      down that same script simply never ran.
+  const REVEAL_TIMEOUT_MS = 6000;
+  let nkxRevealed = false;
+  function nkxIsHidden() {
+    return document.body && getComputedStyle(document.body).visibility === "hidden";
+  }
+  function nkxReveal() {
+    if (nkxRevealed || !document.body) return;
+    nkxRevealed = true;
+    document.body.style.visibility = "visible";
+  }
+  setTimeout(() => { if (nkxIsHidden()) nkxReveal(); }, REVEAL_TIMEOUT_MS);
+  window.addEventListener("error", () => { if (nkxIsHidden()) nkxReveal(); });
+  window.addEventListener("unhandledrejection", () => { if (nkxIsHidden()) nkxReveal(); });
 }
 
 export default NUKRAX;
