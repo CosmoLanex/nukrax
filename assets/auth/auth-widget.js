@@ -35,10 +35,13 @@ function awardFirstLogin() {
 // Are we inside /ea/*.html? Affects relative link paths.
 const IN_EA_FOLDER = window.location.pathname.includes('/ea/');
 const BASE = IN_EA_FOLDER ? '../' : '';
-const PROFILE_URL = `${BASE}profile.html`;
-const DASHBOARD_URL = `${BASE}dashboard.html`;
-const ACCOUNT_URL = `${BASE}account.html`;
-const SETTINGS_URL = `${BASE}settings.html`;
+// These four now have clean, canonical `/name/` URLs (see
+// assets/data/routes.js + worker.js) — absolute site-root paths work
+// identically from any folder depth, so BASE no longer applies to them.
+const PROFILE_URL = '/profile/';
+const DASHBOARD_URL = '/dashboard/';
+const ACCOUNT_URL = '/account/';
+const SETTINGS_URL = '/settings/';
 const HOME_URL = `${BASE}index.html`;
 
 // The floating widget (Login button / account menu) is meant for pages that
@@ -49,6 +52,19 @@ const HOME_URL = `${BASE}index.html`;
 const CURRENT_PAGE = window.location.pathname.replace(/^.*\//, '');
 const SKIP_FLOATING_WIDGET = ['login.html', 'signup.html'].includes(CURRENT_PAGE);
 
+// Normalizes a path for active-link comparison so clean `/name/` URLs and
+// legacy `name.html` paths compare equal regardless of trailing slash or
+// extension — e.g. "/dashboard/", "dashboard.html", and "/dashboard.html"
+// all normalize to "/dashboard".
+function normalizePath(p) {
+  let path = p.split('?')[0].split('#')[0].replace(/index\.html$/, '');
+  path = path.replace(/\.html$/, '');
+  if (path.length > 1) path = path.replace(/\/$/, '');
+  if (!path.startsWith('/')) path = '/' + path.replace(/^(\.\.\/)+/, '');
+  return path || '/';
+}
+const CURRENT_NORM = normalizePath(window.location.pathname);
+
 // Nav differs by auth state (Phase 1 — Platform Foundation). Guests get the
 // marketing/discovery set; signed-in users additionally get the Dashboard
 // front and center. "Products" points at the Phase 2 marketplace hub —
@@ -56,25 +72,25 @@ const SKIP_FLOATING_WIDGET = ['login.html', 'signup.html'].includes(CURRENT_PAGE
 // from within the marketplace/category filters rather than the main nav.
 const GUEST_LINKS = [
   { label: 'Home', href: `${BASE}index.html` },
-  { label: 'Products', href: `${BASE}marketplace.html` },
+  { label: 'Products', href: '/marketplace/' },
   { label: 'Documentation', href: `${BASE}docs/introduction.html` },
-  { label: 'Community', href: `${BASE}community.html` },
-  { label: 'AI Assistant', href: `${BASE}chat.html` },
-  { label: 'Market Map', href: `${BASE}map.html` },
+  { label: 'Community', href: '/community/' },
+  { label: 'AI Assistant', href: '/chat/' },
+  { label: 'Market Map', href: '/map/' },
   { label: 'Support', href: `${BASE}support.html` },
-  { label: 'Feedback', href: `${BASE}feedback.html` },
+  { label: 'Feedback', href: '/feedback/' },
 ];
 
 const MEMBER_LINKS = [
   { label: 'Home', href: `${BASE}index.html` },
-  { label: 'Dashboard', href: `${BASE}dashboard.html` },
-  { label: 'Products', href: `${BASE}marketplace.html` },
+  { label: 'Dashboard', href: '/dashboard/' },
+  { label: 'Products', href: '/marketplace/' },
   { label: 'Documentation', href: `${BASE}docs/introduction.html` },
-  { label: 'Community', href: `${BASE}community.html` },
-  { label: 'AI Assistant', href: `${BASE}chat.html` },
-  { label: 'Market Map', href: `${BASE}map.html` },
+  { label: 'Community', href: '/community/' },
+  { label: 'AI Assistant', href: '/chat/' },
+  { label: 'Market Map', href: '/map/' },
   { label: 'Support', href: `${BASE}support.html` },
-  { label: 'Feedback', href: `${BASE}feedback.html` },
+  { label: 'Feedback', href: '/feedback/' },
 ];
 
 function siteLinksFor(user) {
@@ -471,8 +487,7 @@ function buildMenuWrap(user) {
   wrap.id = 'nkx-w-menu-wrap';
   wrap.style.position = 'relative';
   const menuLinksHtml = siteLinksFor(user).map(l => {
-    const linkPage = l.href.replace(/^.*\//, '');
-    const isActive = linkPage === (CURRENT_PAGE || 'index.html');
+    const isActive = normalizePath(l.href) === CURRENT_NORM;
     return `<a href="${l.href}"${isActive ? ' class="nkx-nav-active" aria-current="page"' : ''}>${l.label}</a>`;
   }).join('');
 
