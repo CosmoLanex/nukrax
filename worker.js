@@ -1,19 +1,9 @@
 // ═══════════════════════════════════════════════
 // NUKRAX — worker.js
-// Static site assets are served automatically by the `assets` binding
-// for any request that matches a file. This handler runs for:
-//   1. POST /api/chat  — the AI chat proxy (unchanged, see below).
-//   2. Clean `/page/` URLs that don't match a static file directly —
-//      these get invisibly served from the real `page.html` file.
-//   3. Legacy `/page.html` URLs for pages that now have a clean `/page/`
-//      URL — these are the ONE case that needs `run_worker_first` in
-//      wrangler.jsonc, because they DO match a static file, so the
-//      Worker has to be given first refusal in order to redirect them
-//      before the static-asset match would otherwise win.
-//
-// Everything about which URL maps to which file lives in ONE place —
-// assets/data/routes.js — so adding a new clean URL later never
-// requires touching this file.
+// Main Worker entry. Static site assets are served automatically by
+// the `assets` binding for any request that matches a file. This
+// handler only runs for requests with no matching static asset —
+// in practice, just POST /api/chat.
 //
 // The AI reply comes from Anthropic's API (Claude Sonnet 5) when a
 // key is configured. If ANTHROPIC_API_KEY isn't set yet, or the API
@@ -30,7 +20,6 @@
 
 import { buildSystemPrompt } from './assets/ai/ai-data.js';
 import { getNukraxResponse } from './assets/ai/responder.js';
-import { CLEAN_ROUTES, LEGACY_REDIRECTS } from './assets/data/routes.js';
 
 const MODEL = 'claude-sonnet-5';
 const MAX_TOKENS = 700;
@@ -39,35 +28,9 @@ const SUPABASE_URL = 'https://gxmpaurwuiaxurqnxeck.supabase.co';
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const path = url.pathname;
 
-    if (path === '/api/chat' && request.method === 'POST') {
+    if (url.pathname === '/api/chat' && request.method === 'POST') {
       return handleChat(request, env);
-    }
-
-    // ── Clean URL routing ──────────────────────────────────────────
-    // 1) Old `.html` URL for a page that now has a clean `/name/` URL:
-    //    permanent redirect so old bookmarks/links/search results still
-    //    resolve, instead of breaking.
-    const cleanEquivalent = LEGACY_REDIRECTS[path];
-    if (cleanEquivalent) {
-      return Response.redirect(cleanEquivalent + url.search, 301);
-    }
-
-    // 2) Clean URL missing its trailing slash (`/dashboard` instead of
-    //    `/dashboard/`): redirect to the canonical slashed form.
-    if (CLEAN_ROUTES[path + '/']) {
-      return Response.redirect(path + '/' + url.search, 301);
-    }
-
-    // 3) Clean URL itself: invisibly serve the real file's content
-    //    without changing what the browser shows in the address bar —
-    //    no client-side redirect, works on direct load/refresh/deep-link.
-    const realFile = CLEAN_ROUTES[path];
-    if (realFile && env.ASSETS) {
-      const assetUrl = new URL(realFile + url.search, url.origin);
-      const assetRequest = new Request(assetUrl.toString(), request);
-      return env.ASSETS.fetch(assetRequest);
     }
 
     // Anything else with no matching static asset: 404.
@@ -171,3 +134,4 @@ function json(obj, status = 200) {
 // AI mode automatically answers using the same local engine as
 // Nukrax Assistant, so it never shows a broken/error state.
 // ═══════════════════════════════════════════════
+

@@ -8,33 +8,7 @@
   },
   "assets": {
     "directory": ".",
-    "binding": "ASSETS",
-    // These specific legacy `.html` paths DO match a real static file,
-    // which would normally win instantly at the edge before the Worker
-    // ever runs. Listing them here gives worker.js first refusal on
-    // exactly these paths (and only these — every other request is still
-    // served directly from the edge with no Worker invocation) so it can
-    // 301-redirect them to their new clean `/page/` URL. This list is
-    // generated from assets/data/routes.js — if you add a new clean URL
-    // there, add its legacy `.html` path here too.
-    "run_worker_first": [
-      "/dashboard.html",
-      "/marketplace.html",
-      "/community.html",
-      "/leaderboard.html",
-      "/account.html",
-      "/settings.html",
-      "/contact.html",
-      "/profile.html",
-      "/feedback.html",
-      "/chat.html",
-      "/map.html",
-      "/tr.html",
-      "/cr.html",
-      "/ea-selection.html",
-      "/develop/ea.html",
-      "/develop/automation.html"
-    ]
+    "binding": "ASSETS"
   },
   "compatibility_flags": [
     "nodejs_compat"
