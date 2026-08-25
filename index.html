@@ -1793,17 +1793,17 @@ a.testimonial-card:hover{transform:translateY(-3px)}
     <div class="hero-divider"></div>
     <div class="hero-ctas">
       <div class="hero-ctas-loggedin" id="heroCtasLoggedIn">
-      <a href="ea-selection.html" class="btn btn-primary btn-magnetic" id="btn-ea">
+      <a href="/ea-section/" class="btn btn-primary btn-magnetic" id="btn-ea">
         Explore Expert Advisors
         <span class="btn-arrow">→</span>
       </a>
-      <a href="community.html" class="link-inline link-inline-glow" id="btn-community">
+      <a href="/community/" class="link-inline link-inline-glow" id="btn-community">
         COMMUNITY <span class="btn-arrow">→</span>
       </a>
-      <a href="cr.html" class="link-inline" id="btn-cr">
+      <a href="/cr/" class="link-inline" id="btn-cr">
         nukrax.cr <span class="btn-arrow">↗</span>
       </a>
-      <a href="tr.html" class="link-inline" id="btn-tr">
+      <a href="/tr/" class="link-inline" id="btn-tr">
         nukrax.tr <span class="btn-arrow">↗</span>
       </a>
       </div>
@@ -1834,7 +1834,7 @@ a.testimonial-card:hover{transform:translateY(-3px)}
   <div class="welcome-membership-strip reveal-card" id="welcomeMembershipStrip" hidden>
     <div class="wms-ring" id="wmsRing"></div>
     <div class="wms-chips" id="wmsChips"></div>
-    <a href="dashboard.html" class="wms-dash-link">Open Dashboard <span class="btn-arrow">→</span></a>
+    <a href="/dashboard/" class="wms-dash-link">Open Dashboard <span class="btn-arrow">→</span></a>
   </div>
 
   <a href="ea-selection.html" class="welcome-continue reveal-card" id="welcomeContinue" hidden>
@@ -3520,8 +3520,8 @@ supabase.auth.onAuthStateChange((_event, session) => applyAuthState(session));
 </script>
 <script type="module" src="assets/home/home.js"></script>
 <script type="module">
-  import { initCube } from './assets/cube/cube.js?v=4';
-  initCube({ canvasId: 'heroCubeCanvas', hostId: 'cubeScene', wrapId: 'heroGlobeWrap' });
+  import { initInfinity } from './assets/infinity/infinity.js?v=1';
+  initInfinity({ canvasId: 'heroCubeCanvas', hostId: 'cubeScene', wrapId: 'heroGlobeWrap' });
 </script>
 </body>
 </html>

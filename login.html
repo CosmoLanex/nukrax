@@ -182,7 +182,7 @@ document.getElementById('eye-btn').addEventListener('click', (e) => {
 });
 
 document.getElementById('github-btn').addEventListener('click', () => {
-  supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: window.location.origin + '/index.html' } });
+  supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: window.location.origin + '/dashboard/' } });
 });
 
 function showSentState(text){
@@ -240,7 +240,7 @@ form.addEventListener('submit', async (e) => {
   await supabase.auth.signOut();
   const { error: otpError } = await supabase.auth.signInWithOtp({
     email,
-    options: { shouldCreateUser: false, emailRedirectTo: window.location.origin + '/index.html' }
+    options: { shouldCreateUser: false, emailRedirectTo: window.location.origin + '/dashboard/' }
   });
   submitBtn.disabled = false;
   if (otpError) return setMsg(otpError.message, true);
@@ -249,7 +249,7 @@ form.addEventListener('submit', async (e) => {
 
 // If already logged in, no reason to sit on the login page.
 supabase.auth.getSession().then(({ data }) => {
-  if (data.session) window.location.href = 'index.html';
+  if (data.session) window.location.href = '/dashboard/';
 });
 </script>
 
