@@ -51,6 +51,10 @@
   --white:      #F2F5F5;
   --accent:     #8FB8C4;
   --accent-dim: #46626B;
+  /* Neutral mid-gray from the platform's core palette — used for
+     disabled UI and other states that should read as "inactive," not
+     part of the primary black/panel/line scale above. */
+  --gray-mid:   #4a4a4a;
 
   --font-logo: 'NKX Display', 'Outfit', sans-serif;
   --font-m:    'Space Mono', monospace;
@@ -139,3 +143,40 @@ html.nkx-reduce-motion *::after {
   transition-duration: 0.001ms !important;
   scroll-behavior: auto !important;
 }
+
+/* Shared disabled/loading button states — every page defines its own
+   .btn base rule (see the file header), but none defined a disabled or
+   loading state, so this is added ONCE here rather than copy-pasted
+   into 50 pages. `.btn:disabled`/`.btn[disabled]` are more specific
+   than any page's own plain `.btn{...}` rule, so this wins the cascade
+   correctly regardless of link order. */
+.btn:disabled, .btn[disabled], .btn.nkx-disabled {
+  background: var(--gray-mid) !important;
+  border-color: var(--gray-mid) !important;
+  color: var(--muted) !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none !important;
+  box-shadow: none !important;
+}
+.btn.nkx-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+.btn.nkx-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 15px; height: 15px;
+  margin: -7.5px 0 0 -7.5px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  color: var(--black);
+  animation: nkx-btn-spin 0.7s linear infinite;
+}
+@keyframes nkx-btn-spin { to { transform: rotate(360deg); } }
+/* No extra reduced-motion override needed here — the existing blanket
+   html.nkx-reduce-motion rule above (animation-duration: 0.001ms
+   !important on *::after) already freezes this spinner correctly. */
