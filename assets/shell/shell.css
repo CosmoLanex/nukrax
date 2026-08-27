@@ -1,0 +1,351 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   NUKRAX — assets/shell/shell.css
+   The logged-in app UI shell: top nav (wordmark + main nav pill + quick
+   icons), the right-side fixed icon panel, the Dashboard menu rail, and
+   their mobile equivalents (bottom nav bar + floating panel above it).
+
+   This is ONE file, reused unchanged across every app page (Dashboard,
+   Marketplace, Community, Leaderboard, Terminal, E.A, Payment, Account,
+   Settings, Contact, AI, Market Map, Feedback, Profile) — see shell.js,
+   which injects the markup this file styles. Built from ui(1).zip: the
+   main nav container and its segments use ~36% corner rounding relative
+   to their height (the "30–40% rounded edges" from the brief), the right
+   panel and its buttons are true pill/rounded-square shapes, matching the
+   reference exactly.
+
+   Uses ONLY existing design tokens (var(--panel), var(--line), var(--text)
+   etc. from tokens.css, plus var(--nkx-shadow-soft)/var(--nkx-shadow-lift)
+   from theme.css) — nothing here is a hardcoded color, so the whole shell
+   re-themes for free with the light/dark toggle.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --nkx-shell-h: 64px;
+  --nkx-shell-gap: 16px;
+  --nkx-shell-z: 500;
+}
+
+/* ── Top bar ─────────────────────────────────────────────────────────── */
+.nkx-shell-top {
+  position: sticky;
+  top: 0;
+  z-index: var(--nkx-shell-z);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: var(--nkx-shell-h);
+  padding: 0 clamp(16px, 3vw, 32px);
+  background: var(--black);
+  border-bottom: 1px solid var(--line);
+}
+
+.nkx-shell-logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.nkx-shell-logo img { width: 28px; height: 28px; border-radius: 6px; }
+.nkx-shell-logo span { font-family: var(--font-logo); font-size: 18px; color: var(--white); }
+
+/* Main nav pill — desktop */
+.nkx-shell-mainnav {
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  max-width: 760px;
+  height: 40px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px; /* full pill — ~40% of the 40px height rounds every corner completely */
+  overflow: hidden;
+}
+.nkx-shell-mainnav a {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: var(--fs-13, 13px);
+  font-weight: 500;
+  white-space: nowrap;
+  border-right: 1px solid var(--line);
+  transition: background-color .15s var(--ease,ease), color .15s var(--ease,ease);
+}
+.nkx-shell-mainnav a:last-child { border-right: none; }
+.nkx-shell-mainnav a svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nkx-shell-mainnav a:hover { color: var(--text); background: var(--line); }
+.nkx-shell-mainnav a.nkx-active {
+  background: var(--accent);
+  color: var(--black);
+  border-radius: 999px;
+  margin: 3px;
+  border-right: none;
+}
+.nkx-shell-mainnav a.nkx-active svg { color: var(--black); }
+
+/* Icon-only variant, used at the narrower desktop breakpoint before the
+   nav collapses fully into the mobile bottom bar. */
+@media (max-width: 1100px) {
+  .nkx-shell-mainnav a span { display: none; }
+}
+
+.nkx-shell-quick { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.nkx-shell-iconbtn {
+  width: 35px; height: 35px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--white);
+  color: var(--black);
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.nkx-shell-iconbtn svg { width: 17px; height: 17px; }
+.nkx-shell-iconbtn.nkx-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+.nkx-shell-iconbtn.nkx-ghost:hover { background: var(--panel); }
+
+/* ── Right-side fixed icon panel (desktop) ──────────────────────────── */
+.nkx-shell-rightpanel {
+  position: fixed;
+  right: clamp(12px, 2vw, 28px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--nkx-shell-z);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: var(--nkx-shadow-lift, 0 12px 32px rgba(0,0,0,.5));
+}
+.nkx-shell-rightpanel button,
+.nkx-shell-rightpanel a {
+  width: 36px; height: 36px;
+  border-radius: 40%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--line);
+  color: var(--text);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color .15s var(--ease,ease), color .15s var(--ease,ease), transform .15s var(--ease,ease);
+}
+.nkx-shell-rightpanel svg { width: 17px; height: 17px; }
+.nkx-shell-rightpanel button:hover,
+.nkx-shell-rightpanel a:hover { background: var(--accent); color: var(--black); transform: scale(1.06); }
+.nkx-shell-rightpanel .nkx-rp-logout:hover { background: #f87171; color: #1a0a0a; }
+
+@media (max-width: 900px) { .nkx-shell-rightpanel { display: none; } }
+
+/* ── Dashboard menu collapse toggle (Dashboard page only, section 13) ──
+   Added as the first child of the page's own `.db-sidebar` (its 16 real
+   panels/behavior are untouched) — this just gives that existing sidebar
+   a collapse/expand toggle matching ui(1).zip's rail-toggle button.
+   `.nkx-collapsed` has two classes, so it outranks the page's own
+   `.db-sidebar{width:236px}` rule regardless of link order. ────────── */
+.db-sidebar.nkx-collapsed {
+  width: 56px !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  overflow: hidden;
+}
+.db-sidebar.nkx-collapsed .db-nav-group-label,
+.db-sidebar.nkx-collapsed .db-nav-item {
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+.db-sidebar { transition: width .22s var(--ease,ease); }
+.nkx-shell-dashrail-toggle {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+.nkx-shell-dashrail-toggle svg { width: 16px; height: 16px; }
+
+/* ── Mobile bottom nav (main nav, icon-only) ────────────────────────── */
+.nkx-shell-bottomnav {
+  display: none;
+  position: fixed;
+  left: 12px; right: 12px; bottom: 12px;
+  z-index: var(--nkx-shell-z);
+  height: 56px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: var(--nkx-shadow-lift, 0 12px 32px rgba(0,0,0,.5));
+  align-items: stretch;
+  overflow: hidden;
+  padding: 4px;
+  gap: 2px;
+}
+.nkx-shell-bottomnav a {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.nkx-shell-bottomnav a svg { width: 19px; height: 19px; }
+.nkx-shell-bottomnav a.nkx-active { background: var(--accent); color: var(--black); }
+
+/* Secondary (account/ai/map/feedback/support/settings/logout) panel,
+   floating just above the bottom nav bar, per the brief. Collapsed to a
+   single toggle button by default so it doesn't compete for thumb space
+   with primary nav; expands upward into the same 7 actions as desktop. */
+.nkx-shell-mobtoggle {
+  display: none;
+  position: fixed;
+  right: 16px; bottom: 78px;
+  z-index: var(--nkx-shell-z);
+  width: 46px; height: 46px;
+  border-radius: 40%;
+  background: var(--accent);
+  color: var(--black);
+  border: none;
+  align-items: center; justify-content: center;
+  box-shadow: var(--nkx-shadow-lift, 0 12px 32px rgba(0,0,0,.5));
+}
+.nkx-shell-mobtoggle svg { width: 20px; height: 20px; }
+
+.nkx-shell-mobpanel {
+  display: none;
+  position: fixed;
+  right: 16px; bottom: 132px;
+  z-index: var(--nkx-shell-z);
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--nkx-shadow-lift, 0 12px 32px rgba(0,0,0,.5));
+}
+.nkx-shell-mobpanel.nkx-open { display: flex; }
+.nkx-shell-mobpanel button, .nkx-shell-mobpanel a {
+  width: 38px; height: 38px;
+  border-radius: 40%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--line);
+  color: var(--text);
+  border: none;
+  text-decoration: none;
+}
+.nkx-shell-mobpanel svg { width: 17px; height: 17px; }
+
+@media (max-width: 900px) {
+  .nkx-shell-bottomnav { display: flex; }
+  .nkx-shell-mobtoggle { display: flex; }
+  body { padding-bottom: 84px; }
+}
+
+/* ── Full-menu overlay (hamburger, and mobile nav-label fallback) ───── */
+.nkx-shell-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: calc(var(--nkx-shell-z) + 10);
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(2px);
+}
+.nkx-shell-overlay.nkx-open { display: block; }
+.nkx-shell-overlay-panel {
+  position: absolute;
+  top: 0; right: 0;
+  height: 100%;
+  width: min(320px, 88vw);
+  background: var(--panel);
+  border-left: 1px solid var(--line);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+.nkx-shell-overlay-close {
+  align-self: flex-end;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.nkx-shell-overlay-close svg { width: 15px; height: 15px; }
+.nkx-shell-overlay-section-label {
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); margin: 14px 4px 6px;
+}
+.nkx-shell-overlay-panel a, .nkx-shell-overlay-panel button {
+  display: flex; align-items: center; gap: 12px;
+  height: 42px; padding: 0 12px;
+  border-radius: 10px;
+  color: var(--text); text-decoration: none;
+  background: transparent; border: none; cursor: pointer;
+  font-size: 14px; text-align: left; width: 100%;
+}
+.nkx-shell-overlay-panel a svg, .nkx-shell-overlay-panel button svg { width: 17px; height: 17px; flex-shrink: 0; }
+.nkx-shell-overlay-panel a:hover, .nkx-shell-overlay-panel button:hover { background: var(--line); }
+.nkx-shell-overlay-panel a.nkx-active { background: var(--accent); color: var(--black); }
+
+/* ── Small profile dropdown (top bar profile icon) ──────────────────── */
+.nkx-shell-profilemenu {
+  display: none;
+  position: absolute;
+  top: calc(var(--nkx-shell-h) + 6px);
+  right: clamp(16px, 3vw, 32px);
+  z-index: calc(var(--nkx-shell-z) + 5);
+  min-width: 200px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: var(--nkx-shadow-lift, 0 12px 32px rgba(0,0,0,.5));
+}
+.nkx-shell-profilemenu.nkx-open { display: block; }
+.nkx-shell-profilemenu-head { padding: 8px 10px 10px; border-bottom: 1px solid var(--line); margin-bottom: 6px; }
+.nkx-shell-profilemenu-head .nkx-name { font-size: 13.5px; color: var(--white); font-weight: 600; }
+.nkx-shell-profilemenu-head .nkx-tier { font-size: 11.5px; color: var(--accent); margin-top: 2px; }
+.nkx-shell-profilemenu a, .nkx-shell-profilemenu button {
+  display: flex; align-items: center; gap: 10px;
+  height: 38px; padding: 0 10px;
+  border-radius: 8px;
+  color: var(--text); text-decoration: none;
+  background: transparent; border: none; cursor: pointer;
+  font-size: 13.5px; text-align: left; width: 100%;
+}
+.nkx-shell-profilemenu a svg, .nkx-shell-profilemenu button svg { width: 15px; height: 15px; flex-shrink: 0; }
+.nkx-shell-profilemenu a:hover, .nkx-shell-profilemenu button:hover { background: var(--line); }
+
+/* Default user avatar (section 6) — used wherever assets/shell/avatar.js
+   renders a fallback silhouette instead of a custom picture. */
+.nkx-default-avatar {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+  color: var(--muted);
+  background: var(--line);
+}
+.nkx-default-avatar svg { display: block; }
+
+/* Old per-page nav (db-nav, mp-nav, cm-nav, etc.) is hidden, not removed,
+   the moment shell.js takes over — see shell.js for why. */
+.nkx-shell-old-nav-hidden { display: none !important; }
