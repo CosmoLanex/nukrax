@@ -2,6 +2,7 @@
 // NUKRAX Community — search.js
 // ═══════════════════════════════════════════════
 import { supabase } from '../auth/auth-widget.js';
+import { avatarHtml } from '../shell/avatar.js';
 
 function escapeHtml(str) {
   const div = document.createElement('div');
@@ -54,12 +55,11 @@ async function runSearch(query, resultsEl) {
   }
 
   resultsEl.innerHTML = people.map(p => {
-    const initial = (p.display_name || p.username || '?').charAt(0).toUpperCase();
     const isSelf = currentUser && p.id === currentUser.id;
     const isFollowing = followingSet.has(p.id);
     return `
       <div class="cm-user-row" data-username="${escapeHtml(p.username)}">
-        <div class="cm-post-avatar">${p.avatar_url ? `<img src="${escapeHtml(p.avatar_url)}" alt="">` : initial}</div>
+        <div class="cm-post-avatar">${avatarHtml(p, escapeHtml)}</div>
         <div class="cm-user-row-text">
           <div class="cm-post-name">${escapeHtml(p.display_name || p.username)}</div>
           <div class="cm-post-handle">@${escapeHtml(p.username)}</div>

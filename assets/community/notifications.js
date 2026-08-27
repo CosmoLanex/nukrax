@@ -2,6 +2,7 @@
 // NUKRAX Community — notifications.js
 // ═══════════════════════════════════════════════
 import { supabase } from '../auth/auth-widget.js';
+import { avatarHtml } from '../shell/avatar.js';
 
 function timeAgo(dateStr) {
   const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
@@ -65,11 +66,10 @@ export async function renderNotifications(container, currentUser) {
     }
     const actor = profileMap[n.actor_id];
     const actorName = actor?.display_name || actor?.username || 'Someone';
-    const initial = (actorName || '?').charAt(0).toUpperCase();
     const verb = n.type === 'like' ? 'liked your post' : 'started following you';
     return `
       <div class="cm-notif-row ${n.read ? '' : 'unread'}">
-        <div class="cm-post-avatar">${actor?.avatar_url ? `<img src="${escapeHtml(actor.avatar_url)}" alt="">` : initial}</div>
+        <div class="cm-post-avatar">${avatarHtml(actor, escapeHtml)}</div>
         <div class="cm-notif-text">
           <strong>${escapeHtml(actorName)}</strong> ${verb}
           <div class="cm-post-time">${timeAgo(n.created_at)}</div>

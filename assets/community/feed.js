@@ -3,6 +3,7 @@
 // Renders the Home feed (or a single user's posts, via ?user=username).
 // ═══════════════════════════════════════════════
 import { supabase } from '../auth/auth-widget.js';
+import { avatarHtml } from '../shell/avatar.js';
 import { openComposer } from './composer.js';
 
 function timeAgo(dateStr) {
@@ -79,8 +80,6 @@ export async function renderFeed(container, currentUser, filterUsername = null) 
     const author = profileMap[post.user_id];
     const authorName = author?.display_name || author?.username || 'Unknown';
     const authorHandle = author?.username ? '@' + author.username : '';
-    const avatarUrl = author?.avatar_url || '';
-    const initial = (authorName || '?').charAt(0).toUpperCase();
     const likeIds = likesByPost[post.id] || [];
     const isLiked = currentUser && likeIds.includes(currentUser.id);
     const isOwn = currentUser && post.user_id === currentUser.id;
@@ -88,7 +87,7 @@ export async function renderFeed(container, currentUser, filterUsername = null) 
 
     return `
       <article class="cm-post" data-post-id="${post.id}" data-author-id="${post.user_id}">
-        <div class="cm-post-avatar cm-clickable-profile" data-username="${escapeHtml(author?.username || '')}">${avatarUrl ? `<img src="${escapeHtml(avatarUrl)}" alt="">` : initial}</div>
+        <div class="cm-post-avatar cm-clickable-profile" data-username="${escapeHtml(author?.username || '')}">${avatarHtml(author, escapeHtml)}</div>
         <div class="cm-post-body">
           <div class="cm-post-head">
             <span class="cm-post-name cm-clickable-profile" data-username="${escapeHtml(author?.username || '')}">${escapeHtml(authorName)}</span>
