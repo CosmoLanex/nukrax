@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Develop E.A — NUKRAX</title>
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/colour/theme.css">
+<script type="module" src="../assets/colour/theme.js"></script>
+<link rel="stylesheet" href="../assets/develop/develop.css">
+<style>body{background:var(--black);color:var(--text);font-family:var(--font-b);margin:0}</style>
+</head>
+<body>
+
+<script type="module" src="../assets/auth/auth-widget.js"></script>
+<script type="module" src="../assets/auth/guard.js"></script>
+
+<div class="nkx-dev-shell">
+  <div class="nkx-dev-bar">
+    <a href="/dashboard/" style="color:var(--muted);text-decoration:none;font-size:13px" title="Back to Dashboard">← Dashboard</a>
+    <button type="button" class="nkx-dev-panel-toggle" id="paletteToggle" title="Toggle block library">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M9.5 4.5v15"/></svg>
+    </button>
+    <input type="text" id="projectName" placeholder="Untitled E.A project" maxlength="80"/>
+    <div class="nkx-dev-bar-spacer"></div>
+    <button type="button" class="nkx-dev-send-btn" id="sendBtn">Send E.A</button>
+  </div>
+
+  <div class="nkx-dev-body">
+    <div class="nkx-dev-palette" id="palette"></div>
+    <div class="nkx-dev-canvas-wrap">
+      <div class="nkx-dev-canvas" id="canvas">
+        <svg class="nkx-cv-connections" id="connections"></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { supabase } from '../assets/auth/auth-widget.js';
+import { EA_BLOCKS } from '../assets/develop/blocks.js';
+import { initCanvas } from '../assets/develop/canvas.js';
+import { sendProject } from '../assets/develop/project-file.js';
+
+const paletteEl = document.getElementById('palette');
+const canvasEl = document.getElementById('canvas');
+const connectionsSvg = document.getElementById('connections');
+const nameInput = document.getElementById('projectName');
+
+let ideaText = '';
+const engine = initCanvas({ canvasEl, connectionsSvg, paletteEl, registry: EA_BLOCKS });
+
+document.getElementById('paletteToggle').addEventListener('click', () => {
+  document.getElementById('palette').classList.toggle('nkx-minimized');
+});
+
+document.getElementById('sendBtn').addEventListener('click', async () => {
+  const { data } = await supabase.auth.getSession();
+  const user = data.session?.user;
+  if (!user) { alert('Please log in to send your project.'); return; }
+
+  const idea = ideaText || prompt('Briefly describe your E.A idea (this goes to the dev team):') || '';
+  ideaText = idea;
+
+  const result = await sendProject({
+    projectType: 'ea',
+    projectName: nameInput.value.trim() || 'Untitled E.A project',
+    idea,
+    user: { id: user.id, email: user.email, username: user.user_metadata?.username },
+    project: engine.getProject(),
+  });
+
+  if (!result.ok && result.errors) alert(result.errors.join('\n'));
+});
+</script>
+</body>
+</html>
