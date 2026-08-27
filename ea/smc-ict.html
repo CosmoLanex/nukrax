@@ -1039,8 +1039,10 @@
 <script type="module">
 import { getProduct } from '../assets/data/products/products.js';
 import { renderPurchasePanel } from '../assets/marketplace/purchase-panel.js';
+import { wireDownloadGate } from '../assets/marketplace/download-gate.js';
 const product = getProduct('smc-ict');
 if (product) renderPurchasePanel(document.getElementById('eaPurchasePanel'), product);
+wireDownloadGate({ productId: 'smc-ict', kind: 'ea', onError: (msg) => alert(msg) });
 </script>
 <script>
 try {
