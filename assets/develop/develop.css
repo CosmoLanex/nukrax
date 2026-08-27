@@ -1,0 +1,176 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   NUKRAX — assets/develop/develop.css
+   The visual development workspace: project bar, block palette,
+   canvas + connections, per-block config, minimizable panels.
+   Uses existing design tokens throughout — no hardcoded colors except
+   each block's own category color (semantic, not theme-dependent, same
+   treatment as the order-status pills in admin.html).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.nkx-dev-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Project bar ── */
+.nkx-dev-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 20px;
+  height: 56px;
+  border-bottom: 1px solid var(--line);
+  background: var(--black);
+  flex-shrink: 0;
+}
+.nkx-dev-bar input[type="text"] {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--white);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  width: 240px;
+}
+.nkx-dev-bar-spacer { flex: 1; }
+.nkx-dev-send-btn {
+  background: var(--accent);
+  color: var(--black);
+  border: none;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+.nkx-dev-send-btn:hover { filter: brightness(1.08); }
+
+/* ── Body: palette | canvas ── */
+.nkx-dev-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.nkx-dev-palette {
+  width: 260px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--line);
+  background: var(--panel);
+  overflow-y: auto;
+  padding: 14px;
+  transition: width .2s var(--ease,ease), padding .2s var(--ease,ease);
+}
+.nkx-dev-palette.nkx-minimized { width: 0; padding: 0; overflow: hidden; border-right: none; }
+
+.nkx-dev-panel-toggle {
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.nkx-cv-palette-cat-label {
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); margin: 14px 0 6px;
+}
+.nkx-cv-palette-cat:first-child .nkx-cv-palette-cat-label { margin-top: 0; }
+.nkx-cv-palette-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: grab;
+  border: 1px solid transparent;
+}
+.nkx-cv-palette-item:hover { background: var(--line); border-color: var(--line-lit); }
+
+.nkx-cv-block-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--nkx-block-color, var(--accent));
+  flex-shrink: 0;
+}
+
+/* ── Canvas ── */
+.nkx-dev-canvas-wrap {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  background:
+    radial-gradient(circle, var(--line) 1px, transparent 1px) 0 0 / 22px 22px,
+    var(--black);
+}
+.nkx-dev-canvas {
+  position: relative;
+  min-width: 1400px;
+  min-height: 1000px;
+}
+.nkx-cv-connections {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.nkx-cv-connection {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: .6;
+}
+
+.nkx-cv-block {
+  position: absolute;
+  width: 220px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--nkx-block-color, var(--accent));
+  border-radius: 10px;
+  box-shadow: var(--nkx-shadow-soft, 0 8px 24px rgba(0,0,0,.35));
+}
+.nkx-cv-block.nkx-cv-connecting-from { outline: 2px solid var(--accent); }
+.nkx-cv-block-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 8px 9px 12px;
+  cursor: grab;
+}
+.nkx-cv-block-name { flex: 1; font-size: 12.5px; font-weight: 600; color: var(--white); }
+.nkx-cv-block-head button {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.nkx-cv-block-head button svg { width: 13px; height: 13px; }
+.nkx-cv-block-head button:hover { background: var(--line); color: var(--text); }
+.nkx-cv-block-delete:hover { color: #D9667A !important; }
+
+.nkx-cv-block-body { padding: 0 12px 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+.nkx-cv-block-desc { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+.nkx-cv-field { display: block; margin-bottom: 8px; }
+.nkx-cv-field span { display: block; font-size: 10.5px; color: var(--muted); margin-bottom: 3px; }
+.nkx-cv-field input, .nkx-cv-field select, .nkx-cv-field textarea {
+  width: 100%;
+  background: var(--black);
+  border: 1px solid var(--line);
+  color: var(--white);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  resize: vertical;
+}
+
+@media (max-width: 900px) {
+  .nkx-dev-palette { position: fixed; left: 0; top: 56px; bottom: 0; z-index: 400; width: 240px; }
+  .nkx-dev-palette.nkx-minimized { width: 0; }
+}
