@@ -1,0 +1,82 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   NUKRAX — assets/colour/theme.css
+   Single source of truth for the light/dark theme toggle (Settings →
+   Appearance, and the toggle in the new nav shell).
+
+   HOW THIS WORKS WITH THE EXISTING TOKEN SYSTEM
+   -----------------------------------------------
+   assets/css/tokens.css already defines every color the site uses as a
+   CSS custom property (--black, --panel, --text, --white, --accent, plus
+   the EA-detail-page --bg/--surface/--border/--silver scheme) and every
+   page already renders using `var(--whatever)`, never a hardcoded hex.
+   That means re-theming the entire site is just a matter of redefining
+   those same variable NAMES under a `html.nkx-light` selector — nothing
+   else anywhere in the codebase needs to change, and there is nothing to
+   duplicate. This file is that redefinition, and ONLY that — it doesn't
+   declare a single new visual rule, just new values for tokens that
+   already drive every background/text/card/border/input/button/nav/
+   shadow on the site.
+
+   Load this AFTER tokens.css (so its light-mode values can override the
+   dark defaults when `.nkx-light` is present) and BEFORE any page's own
+   <style> block.
+
+   Default (no class on <html>) = dark: black background, white text —
+   unchanged from what tokens.css already declares.
+   `html.nkx-light` = light: #FFFFFF background, black text.
+   The mist/accent color (--accent / --silver) is IDENTICAL in both
+   modes, by design — see theme.js.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+html.nkx-light {
+  /* ── Scheme 1 — primary site palette ── */
+  --black:      #FFFFFF;
+  --panel:      #F4F6F7;
+  --line:       #E1E6E8;
+  --line-lit:   #CCD5D8;
+  --muted:      #5B6A70;
+  --text:       #232B2E;
+  --white:      #0B0F11;
+  /* --accent / --accent-dim (the mist color) intentionally unchanged. */
+
+  /* ── Scheme 2 — EA detail page palette ── */
+  --bg:         #FFFFFF;
+  --surface:    #F4F6F7;
+  --surface2:   #EDF0F1;
+  --border:     #E1E6E8;
+  --border2:    #CCD5D8;
+  --silver-hi:  #0B0F11;
+  --card:       #F4F6F7;
+  /* --silver / --silver-dim (mist) intentionally unchanged. */
+  /* --green/--red/--amber (status colors) intentionally unchanged —
+     these carry semantic meaning (profit/loss/warning) that shouldn't
+     shift with the theme. */
+
+  color-scheme: light;
+}
+
+html:not(.nkx-light) {
+  color-scheme: dark;
+}
+
+/* Shadows read as pure-black glows against a dark UI; on a white surface
+   that same value is just an invisible/wrong-looking smudge. Anywhere the
+   site uses a shadow tied to the palette, it should reach for this token
+   rather than hardcoding rgba(0,0,0,...) — new shell/panel CSS does. */
+html.nkx-light {
+  --nkx-shadow-soft: 0 8px 24px rgba(35, 43, 46, 0.10);
+  --nkx-shadow-lift: 0 12px 32px rgba(35, 43, 46, 0.16);
+}
+html:not(.nkx-light) {
+  --nkx-shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --nkx-shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Smooth, cheap transition when the toggle flips — background/color/
+   border only, nothing layout-affecting, so this never causes jank. */
+html, body, * {
+  transition: background-color 0.18s var(--ease, ease), color 0.18s var(--ease, ease), border-color 0.18s var(--ease, ease);
+}
+html.nkx-theme-no-transition, html.nkx-theme-no-transition * {
+  transition: none !important;
+}
