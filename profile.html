@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
   <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/colour/theme.css">
+  <script type="module" src="assets/colour/theme.js"></script>
+  <link rel="stylesheet" href="assets/shell/shell.css">
+  <script type="module" src="assets/shell/shell.js" data-page="profile"></script>
   <link rel="stylesheet" href="assets/ui/interactions.css">
   <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -125,6 +129,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 <script type="module">
 import { supabase } from './assets/auth/auth-widget.js';
 import { compressImage } from './assets/utils/compress-image.js';
+import { avatarHtml } from './assets/shell/avatar.js';
 
 const page = document.getElementById('pf-page');
 let currentUser = null;
@@ -159,14 +164,12 @@ function escapeHtml(str) {
 async function renderView() {
   const username = currentProfile?.username || '';
   const displayName = currentProfile?.display_name || username || currentUser.email;
-  const avatarUrl = currentProfile?.avatar_url || '';
   const category = currentProfile?.position || '';
   const bio = currentProfile?.bio || '';
-  const initial = (displayName || '?').charAt(0).toUpperCase();
 
   page.innerHTML = `
     <div class="pf-top">
-      <div class="pf-avatar">${avatarUrl ? `<img src="${escapeHtml(avatarUrl)}" alt="">` : initial}</div>
+      <div class="pf-avatar">${avatarHtml(currentProfile, escapeHtml)}</div>
       <div class="pf-stats">
         <div class="pf-stat pf-stat-static"><strong>${counts.posts}</strong><span>Posts</span></div>
         <button class="pf-stat" id="pf-followers-btn"><strong>${counts.followers}</strong><span>Followers</span></button>
@@ -240,10 +243,9 @@ async function openListModal(kind) {
 
   const { data: profiles } = await supabase.from('profiles').select('*').in('id', ids);
   listEl.innerHTML = (profiles || []).map(p => {
-    const initial = (p.display_name || p.username || '?').charAt(0).toUpperCase();
     return `
       <div class="pf-modal-row" data-username="${escapeHtml(p.username || '')}">
-        <div class="pf-modal-avatar">${p.avatar_url ? `<img src="${escapeHtml(p.avatar_url)}" alt="">` : initial}</div>
+        <div class="pf-modal-avatar">${avatarHtml(p, escapeHtml)}</div>
         <div>${escapeHtml(p.display_name || p.username || 'User')}</div>
       </div>
     `;
@@ -263,16 +265,14 @@ let pendingAvatarFile = null;
 function renderEdit() {
   const username = currentProfile?.username || '';
   const displayName = currentProfile?.display_name || '';
-  const avatarUrl = currentProfile?.avatar_url || '';
   const category = currentProfile?.position || '';
   const bio = currentProfile?.bio || '';
-  const initial = (displayName || username || '?').charAt(0).toUpperCase();
   pendingAvatarFile = null;
 
   page.innerHTML = `
     <div class="pf-edit-head">Edit Profile</div>
     <div class="pf-edit-avatar-wrap">
-      <div class="pf-avatar" id="pf-edit-avatar" style="width:88px;height:88px">${avatarUrl ? `<img src="${escapeHtml(avatarUrl)}" alt="">` : initial}</div>
+      <div class="pf-avatar" id="pf-edit-avatar" style="width:88px;height:88px">${avatarHtml(currentProfile, escapeHtml)}</div>
       <div class="pf-edit-upload" id="pf-edit-upload-btn" title="Upload picture">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg>
       </div>

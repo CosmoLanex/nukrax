@@ -1,0 +1,75 @@
+# ═══════════════════════════════════════════════════════════════════════
+# NUKRAX — _redirects
+# Clean `/page/` URLs, handled entirely by Cloudflare's native _redirects
+# mechanism for Workers-with-static-assets — deliberately NOT implemented
+# in worker.js or wrangler.jsonc, so those two files stay exactly as-is.
+# (Docs: https://developers.cloudflare.com/workers/static-assets/redirects/)
+#
+# This file is parsed by Cloudflare itself, not by any code in this repo
+# — no build step, no deploy config change, no restart needed beyond a
+# normal `wrangler deploy`. Order matters: for the same source path, the
+# first matching rule wins, which is why each group below is ordered
+# redirect-before-proxy.
+#
+# HOW TO ADD A NEW CLEAN URL LATER: copy the two-line pattern for any
+# route below (one 301 line, one 200 line) with the new path/file.
+#
+# Group 1 — legacy `.html` URL → its new clean URL (permanent redirect,
+# so old bookmarks/links/search results still resolve).
+/dashboard.html            /dashboard/            301
+/marketplace.html          /marketplace/           301
+/community.html            /community/             301
+/leaderboard.html          /leaderboard/           301
+/account.html              /account/               301
+/settings.html             /settings/              301
+/contact.html               /contact/               301
+/profile.html               /profile/               301
+/feedback.html               /feedback/              301
+/chat.html                  /chat/                  301
+/map.html                    /map/                   301
+/tr.html                     /tr/                    301
+/cr.html                     /cr/                    301
+/ea-selection.html          /ea-section/            301
+/develop/ea.html             /develop/ea/            301
+/develop/automation.html     /develop/automation/    301
+
+# Group 2 — clean URL missing its trailing slash → canonical slashed form.
+/dashboard                  /dashboard/             301
+/marketplace                /marketplace/           301
+/community                  /community/             301
+/leaderboard                /leaderboard/           301
+/account                    /account/               301
+/settings                   /settings/               301
+/contact                    /contact/                301
+/profile                    /profile/                301
+/feedback                   /feedback/               301
+/chat                       /chat/                   301
+/map                        /map/                    301
+/tr                         /tr/                     301
+/cr                         /cr/                     301
+/ea-section                 /ea-section/             301
+/develop/ea                 /develop/ea/             301
+/develop/automation          /develop/automation/    301
+
+# Group 3 — the clean URL itself → invisibly served from the real file
+# (proxy/200 = address bar keeps showing the clean URL; no client-side
+# redirect, works on direct load/refresh/deep-link). The last two 404
+# until Phase 4 adds develop/ea.html + develop/automation.html — that's
+# expected and harmless; they'll start working the moment those files
+# are deployed, with nothing here needing to change.
+/dashboard/                 /dashboard.html          200
+/marketplace/                /marketplace.html        200
+/community/                 /community.html          200
+/leaderboard/                /leaderboard.html        200
+/account/                    /account.html            200
+/settings/                   /settings.html           200
+/contact/                    /contact.html            200
+/profile/                    /profile.html            200
+/feedback/                   /feedback.html           200
+/chat/                       /chat.html               200
+/map/                        /map.html                200
+/tr/                         /tr.html                 200
+/cr/                         /cr.html                 200
+/ea-section/                 /ea-selection.html       200
+/develop/ea/                 /develop/ea.html         200
+/develop/automation/         /develop/automation.html 200
