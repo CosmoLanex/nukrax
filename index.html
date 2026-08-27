@@ -325,11 +325,13 @@ nav.scrolled{
   background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
   border:1px solid rgba(255,255,255,0.14);
   box-shadow:0 1px 0 rgba(255,255,255,0.07) inset, 0 6px 18px rgba(0,0,0,0.35);
-  padding:9px 20px;border-radius:999px;text-decoration:none;
+  padding:9px 20px;border-radius:64px;text-decoration:none;
   transition:background .25s var(--ease),border-color .25s var(--ease),transform .15s var(--ease-out);
 }
-/* Desktop only — same premium rounded-rect treatment as the hero button. */
-@media(min-width:601px){.nav-get-started-link{border-radius:16px}}
+/* Desktop and mobile now share the same refined ~60–70px radius language
+   (both were previously different — mobile a full 999px pill, desktop a
+   near-square 16px rect). */
+@media(min-width:601px){.nav-get-started-link{border-radius:64px}}
 @media (hover:hover) and (pointer:fine){.nav-get-started-link:hover{
   background:linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04));
   border-color:rgba(255,255,255,0.24);
@@ -372,7 +374,9 @@ body.nkx-logged-out .nav-get-started-link{display:inline-flex}
   background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
   color:var(--white);
   border:1px solid rgba(255,255,255,0.14);
-  border-radius:999px;
+  /* Refined rounded-rect, not a full stadium pill — same shape language
+     on mobile and desktop (was 999px). */
+  border-radius:64px;
   font-weight:700;
   box-shadow:0 1px 0 rgba(255,255,255,0.07) inset, 0 8px 22px rgba(0,0,0,0.4);
   transition:background .25s var(--ease),border-color .25s var(--ease),
@@ -475,6 +479,8 @@ body.nkx-logged-out .nav-get-started-link{display:inline-flex}
     flex:0 1 460px;max-width:460px;
   }
   .hero-logo{font-size:var(--fs-hero-logo-lg);white-space:nowrap}
+  /* Infinity animation is mobile-only — hidden on desktop. */
+  .hero-globe-wrap{display:none}
   .hero-tagline{margin-left:0;margin-right:0;font-size:var(--fs-hero-tagline-lg)}
   .hero-ctas{justify-content:flex-start}
   /* Fills whatever space the 460px content column leaves inside the
@@ -3523,7 +3529,11 @@ supabase.auth.onAuthStateChange((_event, session) => applyAuthState(session));
 <script type="module" src="assets/home/home.js"></script>
 <script type="module">
   import { initInfinity } from './assets/infinity/infinity.js?v=1';
-  initInfinity({ canvasId: 'heroCubeCanvas', hostId: 'cubeScene', wrapId: 'heroGlobeWrap' });
+  // Mobile-only — matches the same 960px breakpoint the hero layout
+  // itself switches on (see @media(min-width:960px) above).
+  if (window.innerWidth < 960) {
+    initInfinity({ canvasId: 'heroCubeCanvas', hostId: 'cubeScene', wrapId: 'heroGlobeWrap' });
+  }
 </script>
 </body>
 </html>
