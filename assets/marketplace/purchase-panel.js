@@ -92,7 +92,7 @@ export async function renderPurchasePanel(container, product) {
       return;
     }
     track('purchase_started', { product_id: product.id, order_id: order.id });
-    window.location.href = `/cr/?order=${order.id}&product=${encodeURIComponent(product.id)}`;
+    window.location.href = `/cr?order=${order.id}&product=${encodeURIComponent(product.id)}`;
   });
 
   container.querySelector('#ppWishlist').addEventListener('click', async () => {
