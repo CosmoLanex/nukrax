@@ -13,8 +13,11 @@
 
 import { supabase } from './auth-widget.js';
 
-const IN_EA_FOLDER = window.location.pathname.includes('/ea/');
-const HOME_URL = IN_EA_FOLDER ? '../index.html' : 'index.html';
+// Absolute path — works correctly regardless of how deep/rewritten the
+// current URL is (clean `/page/` URLs are served via a proxy rewrite,
+// so a relative 'index.html' here would resolve to e.g.
+// '/dashboard/index.html' instead of the real homepage).
+const HOME_URL = '/';
 
 const { data } = await supabase.auth.getSession();
 

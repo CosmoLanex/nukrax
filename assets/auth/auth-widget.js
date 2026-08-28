@@ -42,7 +42,12 @@ const PROFILE_URL = '/profile/';
 const DASHBOARD_URL = '/dashboard/';
 const ACCOUNT_URL = '/account/';
 const SETTINGS_URL = '/settings/';
-const HOME_URL = `${BASE}index.html`;
+// Absolute path — works correctly regardless of how deep/rewritten the
+// current URL is (clean `/page/` URLs are served via a proxy rewrite),
+// and correctly concatenates with `window.location.origin` below (a
+// relative 'index.html' here would previously produce a malformed URL
+// like 'https://nukrax.comindex.html', missing the separating slash).
+const HOME_URL = '/';
 
 // The floating widget (Login button / account menu) is meant for pages that
 // don't already have their own dedicated auth UI. login.html and signup.html
@@ -71,7 +76,7 @@ const CURRENT_NORM = normalizePath(window.location.pathname);
 // ea-selection.html still exists as the older EA-only browse page, linked
 // from within the marketplace/category filters rather than the main nav.
 const GUEST_LINKS = [
-  { label: 'Home', href: `${BASE}index.html` },
+  { label: 'Home', href: '/' },
   { label: 'Products', href: '/marketplace/' },
   { label: 'Documentation', href: `${BASE}docs/introduction.html` },
   { label: 'Community', href: '/community/' },
@@ -82,7 +87,7 @@ const GUEST_LINKS = [
 ];
 
 const MEMBER_LINKS = [
-  { label: 'Home', href: `${BASE}index.html` },
+  { label: 'Home', href: '/' },
   { label: 'Dashboard', href: '/dashboard/' },
   { label: 'Products', href: '/marketplace/' },
   { label: 'Documentation', href: `${BASE}docs/introduction.html` },
@@ -516,6 +521,7 @@ function buildMenuWrap(user) {
   if (user) {
     wrap.querySelector('#nkx-w-menu-logout').addEventListener('click', async () => {
       await supabase.auth.signOut();
+      try { sessionStorage.removeItem('nkx_home_redirect_done'); } catch (e) {}
       window.location.href = HOME_URL;
     });
   }
