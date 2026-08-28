@@ -164,9 +164,9 @@ export async function renderFeed(container, currentUser, filterUsername = null) 
     el.addEventListener('click', (e) => {
       e.stopPropagation();
       if (selfUsername && username.toLowerCase() === selfUsername.toLowerCase()) {
-        window.location.href = 'profile.html';
+        window.location.href = '/profile/';
       } else {
-        window.location.href = `u.html?u=${encodeURIComponent(username)}`;
+        window.location.href = `/u.html?u=${encodeURIComponent(username)}`;
       }
     });
   });
