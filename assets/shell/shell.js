@@ -115,6 +115,7 @@ function inferPageKey() {
 
 async function doLogout() {
   try { await supabase.auth.signOut(); } catch (e) { /* ignore */ }
+  try { sessionStorage.removeItem('nkx_home_redirect_done'); } catch (e) { /* ignore */ }
   window.location.href = '/';
 }
 
@@ -137,8 +138,12 @@ export function initShell(opts = {}) {
 
   // ── Hide the page's own old nav (find it via the shared .nav-right
   // mount point auth-widget.js already uses — see file header). ──
+  // Most app pages share a `.nav-right` mount point (see file header).
+  // Product pages (ea/*.html) use a different, older nav structure with
+  // no `.nav-right` at all — but each has exactly one <nav> on the page,
+  // so it's still findable and hideable the same way.
   const oldNavRight = document.querySelector('.nav-right');
-  const oldNav = oldNavRight ? oldNavRight.closest('nav') : null;
+  const oldNav = oldNavRight ? oldNavRight.closest('nav') : document.querySelector('nav');
   if (oldNav) oldNav.classList.add('nkx-shell-old-nav-hidden');
 
   // ── Top bar ──
