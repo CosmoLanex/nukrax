@@ -74,7 +74,7 @@ export async function renderPurchasePanel(container, product) {
 
   container.querySelector('#ppCrypto').addEventListener('click', async () => {
     if (!user) {
-      window.location.href = `index.html?authRequired=1&redirect=${encodeURIComponent(window.location.pathname)}`;
+      window.location.href = `/?authRequired=1&redirect=${encodeURIComponent(window.location.pathname)}`;
       return;
     }
     const btn = container.querySelector('#ppCrypto');
@@ -92,12 +92,12 @@ export async function renderPurchasePanel(container, product) {
       return;
     }
     track('purchase_started', { product_id: product.id, order_id: order.id });
-    window.location.href = `cr.html?order=${order.id}&product=${encodeURIComponent(product.id)}`;
+    window.location.href = `/cr/?order=${order.id}&product=${encodeURIComponent(product.id)}`;
   });
 
   container.querySelector('#ppWishlist').addEventListener('click', async () => {
     if (!user) {
-      window.location.href = `index.html?authRequired=1&redirect=${encodeURIComponent(window.location.pathname)}`;
+      window.location.href = `/?authRequired=1&redirect=${encodeURIComponent(window.location.pathname)}`;
       return;
     }
     const btn = container.querySelector('#ppWishlist');

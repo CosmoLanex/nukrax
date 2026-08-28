@@ -63,7 +63,7 @@ export function wireFavoriteButtons(container, userId, onChange) {
     if (!btn) return;
     e.preventDefault();
     e.stopPropagation();
-    if (!userId) { window.location.href = 'index.html?authRequired=1'; return; }
+    if (!userId) { window.location.href = '/?authRequired=1'; return; }
     const productId = btn.dataset.favToggle;
     const currentlyIn = btn.classList.contains('active');
     const { inList, error } = await toggleListItem(userId, productId, 'favorite', currentlyIn);
