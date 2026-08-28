@@ -3523,7 +3523,21 @@ function applyAuthState(session) {
   document.body.classList.add(session ? 'nkx-logged-in' : 'nkx-logged-out');
 }
 
-supabase.auth.getSession().then(({ data }) => applyAuthState(data.session));
+supabase.auth.getSession().then(({ data }) => {
+  applyAuthState(data.session);
+  // Logged-in default landing page is always /dashboard/. Guarded so this
+  // can fire AT MOST ONCE per tab (sessionStorage flag) — a defensive
+  // circuit-breaker: even in a worst-case race where session state were
+  // ever momentarily wrong, this can never compound into a repeat
+  // redirect. Skipped entirely if we just got bounced here BY a guard
+  // (①authRequired=1 in the URL) so that "please log in" flow is never
+  // interrupted mid-way.
+  const justBounced = new URLSearchParams(window.location.search).has('authRequired');
+  if (data.session && !justBounced && !sessionStorage.getItem('nkx_home_redirect_done')) {
+    sessionStorage.setItem('nkx_home_redirect_done', '1');
+    window.location.replace('/dashboard/');
+  }
+});
 supabase.auth.onAuthStateChange((_event, session) => applyAuthState(session));
 </script>
 <script type="module" src="assets/home/home.js"></script>

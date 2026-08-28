@@ -613,7 +613,7 @@ function renderAccountSummary() {
 async function init() {
   const { data } = await supabase.auth.getSession();
   currentUser = data.session?.user || null;
-  if (!currentUser) { window.location.replace('index.html?authRequired=1'); return; }
+  if (!currentUser) { window.location.replace('/?authRequired=1'); return; }
 
   membership = await getMembershipProfile(currentUser) || { id: currentUser.id, membership_tier: 'free', level: 1, xp: 0, points: 0, lifetime_points: 0, badge_keys: [] };
 

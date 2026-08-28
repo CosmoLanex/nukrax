@@ -697,7 +697,7 @@ async function loadUserAndProfile() {
 
 async function init() {
   const { data } = await supabase.auth.getSession();
-  if (!data.session) { window.location.replace('index.html?authRequired=1'); return; }
+  if (!data.session) { window.location.replace('/?authRequired=1'); return; }
 
   populateSelects();
   await loadUserAndProfile();
