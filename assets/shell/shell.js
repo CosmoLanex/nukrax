@@ -15,7 +15,7 @@
 // is spec'd to always be null for `type="module"` scripts, so shell.js
 // instead infers the current page directly from the URL every time via
 // inferPageKey() below — which works reliably because it's driven by the
-// same clean-URL paths (`/dashboard/`, `/marketplace/`, ...) the rest of
+// same clean-URL paths (`/dashboard`, `/marketplace`, ...) the rest of
 // the site now uses, so it's never out of sync with what's actually
 // being viewed. Pass `{ page: 'x' }` to initShell() directly if you ever
 // need to override it programmatically.
@@ -79,22 +79,22 @@ export function defaultAvatarDataUri() {
 }
 
 const MAIN_NAV = [
-  { key: 'dashboard',   label: 'Dashboard',   href: '/dashboard/',   icon: ICON.dashboard },
-  { key: 'marketplace', label: 'Marketplace', href: '/marketplace/', icon: ICON.marketplace },
-  { key: 'community',   label: 'Community',   href: '/community/',   icon: ICON.community },
-  { key: 'leaderboard', label: 'Leaderboard', href: '/leaderboard/', icon: ICON.leaderboard },
-  { key: 'terminal',    label: 'Terminal',    href: '/tr/',          icon: ICON.terminal },
-  { key: 'ea',          label: 'E.A',         href: '/ea-section/',  icon: ICON.ea },
-  { key: 'payment',     label: 'Payment',     href: '/cr/',          icon: ICON.payment },
+  { key: 'dashboard',   label: 'Dashboard',   href: '/dashboard',   icon: ICON.dashboard },
+  { key: 'marketplace', label: 'Marketplace', href: '/marketplace', icon: ICON.marketplace },
+  { key: 'community',   label: 'Community',   href: '/community',   icon: ICON.community },
+  { key: 'leaderboard', label: 'Leaderboard', href: '/leaderboard', icon: ICON.leaderboard },
+  { key: 'terminal',    label: 'Terminal',    href: '/tr',          icon: ICON.terminal },
+  { key: 'ea',          label: 'E.A',         href: '/ea-section',  icon: ICON.ea },
+  { key: 'payment',     label: 'Payment',     href: '/cr',          icon: ICON.payment },
 ];
 
 const RIGHT_PANEL = [
-  { key: 'account',  label: 'Account',           href: '/account/',  icon: ICON.account },
-  { key: 'chat',     label: 'AI',                href: '/chat/',     icon: ICON.ai },
-  { key: 'map',      label: 'Market Map',        href: '/map/',      icon: ICON.map },
-  { key: 'feedback', label: 'Feedback',          href: '/feedback/', icon: ICON.feedback },
-  { key: 'contact',  label: 'Support',           href: '/contact/',  icon: ICON.support },
-  { key: 'settings', label: 'Settings',          href: '/settings/', icon: ICON.settings },
+  { key: 'account',  label: 'Account',           href: '/account',  icon: ICON.account },
+  { key: 'chat',     label: 'AI',                href: '/chat',     icon: ICON.ai },
+  { key: 'map',      label: 'Market Map',        href: '/map',      icon: ICON.map },
+  { key: 'feedback', label: 'Feedback',          href: '/feedback', icon: ICON.feedback },
+  { key: 'contact',  label: 'Support',           href: '/contact',  icon: ICON.support },
+  { key: 'settings', label: 'Settings',          href: '/settings', icon: ICON.settings },
   { key: 'logout',   label: 'Log Out',           href: null,         icon: ICON.logout, action: 'logout' },
 ];
 
@@ -149,12 +149,12 @@ export function initShell(opts = {}) {
   // ── Top bar ──
   const top = el(`
     <div class="nkx-shell-top">
-      <a href="/dashboard/" class="nkx-shell-logo"><img src="${B}assets/logo.png" alt="NUKRAX"/><span>nukrax</span></a>
+      <a href="/dashboard" class="nkx-shell-logo"><img src="${B}assets/logo.png" alt="NUKRAX"/><span>nukrax</span></a>
       <nav class="nkx-shell-mainnav" aria-label="Main">
         ${MAIN_NAV.map(i => navLinkHtml(i, currentKey)).join('')}
       </nav>
       <div class="nkx-shell-quick">
-        <a href="/feedback/" class="nkx-shell-iconbtn" title="Feedback" aria-label="Feedback">${ICON.feedback}</a>
+        <a href="/feedback" class="nkx-shell-iconbtn" title="Feedback" aria-label="Feedback">${ICON.feedback}</a>
         <button type="button" class="nkx-shell-iconbtn" id="nkxShellProfileBtn" title="Profile" aria-label="Profile menu">${ICON.avatar}</button>
         <button type="button" class="nkx-shell-iconbtn nkx-ghost" id="nkxShellMenuBtn" title="Menu" aria-label="Open menu">${ICON.menu}</button>
       </div>
@@ -169,9 +169,9 @@ export function initShell(opts = {}) {
         <div class="nkx-name" id="nkxShellProfileName">Loading…</div>
         <div class="nkx-tier" id="nkxShellProfileTier"></div>
       </div>
-      <a href="/profile/">${ICON.profile}<span>View Profile</span></a>
-      <a href="/account/">${ICON.account}<span>Account</span></a>
-      <a href="/settings/">${ICON.settings}<span>Settings</span></a>
+      <a href="/profile">${ICON.profile}<span>View Profile</span></a>
+      <a href="/account">${ICON.account}<span>Account</span></a>
+      <a href="/settings">${ICON.settings}<span>Settings</span></a>
       <button type="button" data-nkx-action="logout">${ICON.logout}<span>Log Out</span></button>
     </div>
   `);
