@@ -38,10 +38,10 @@ const BASE = IN_EA_FOLDER ? '../' : '';
 // These four now have clean, canonical `/name/` URLs (see
 // assets/data/routes.js + worker.js) — absolute site-root paths work
 // identically from any folder depth, so BASE no longer applies to them.
-const PROFILE_URL = '/profile/';
-const DASHBOARD_URL = '/dashboard/';
-const ACCOUNT_URL = '/account/';
-const SETTINGS_URL = '/settings/';
+const PROFILE_URL = '/profile';
+const DASHBOARD_URL = '/dashboard';
+const ACCOUNT_URL = '/account';
+const SETTINGS_URL = '/settings';
 // Absolute path — works correctly regardless of how deep/rewritten the
 // current URL is (clean `/page/` URLs are served via a proxy rewrite),
 // and correctly concatenates with `window.location.origin` below (a
@@ -59,7 +59,7 @@ const SKIP_FLOATING_WIDGET = ['login.html', 'signup.html'].includes(CURRENT_PAGE
 
 // Normalizes a path for active-link comparison so clean `/name/` URLs and
 // legacy `name.html` paths compare equal regardless of trailing slash or
-// extension — e.g. "/dashboard/", "dashboard.html", and "/dashboard.html"
+// extension — e.g. "/dashboard", "dashboard.html", and "/dashboard.html"
 // all normalize to "/dashboard".
 function normalizePath(p) {
   let path = p.split('?')[0].split('#')[0].replace(/index\.html$/, '');
@@ -77,25 +77,25 @@ const CURRENT_NORM = normalizePath(window.location.pathname);
 // from within the marketplace/category filters rather than the main nav.
 const GUEST_LINKS = [
   { label: 'Home', href: '/' },
-  { label: 'Products', href: '/marketplace/' },
+  { label: 'Products', href: '/marketplace' },
   { label: 'Documentation', href: `${BASE}docs/introduction.html` },
-  { label: 'Community', href: '/community/' },
-  { label: 'AI Assistant', href: '/chat/' },
-  { label: 'Market Map', href: '/map/' },
+  { label: 'Community', href: '/community' },
+  { label: 'AI Assistant', href: '/chat' },
+  { label: 'Market Map', href: '/map' },
   { label: 'Support', href: `${BASE}support.html` },
-  { label: 'Feedback', href: '/feedback/' },
+  { label: 'Feedback', href: '/feedback' },
 ];
 
 const MEMBER_LINKS = [
   { label: 'Home', href: '/' },
-  { label: 'Dashboard', href: '/dashboard/' },
-  { label: 'Products', href: '/marketplace/' },
+  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Products', href: '/marketplace' },
   { label: 'Documentation', href: `${BASE}docs/introduction.html` },
-  { label: 'Community', href: '/community/' },
-  { label: 'AI Assistant', href: '/chat/' },
-  { label: 'Market Map', href: '/map/' },
+  { label: 'Community', href: '/community' },
+  { label: 'AI Assistant', href: '/chat' },
+  { label: 'Market Map', href: '/map' },
   { label: 'Support', href: `${BASE}support.html` },
-  { label: 'Feedback', href: '/feedback/' },
+  { label: 'Feedback', href: '/feedback' },
 ];
 
 function siteLinksFor(user) {
