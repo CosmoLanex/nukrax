@@ -1801,17 +1801,17 @@ a.testimonial-card:hover{transform:translateY(-3px)}
     <div class="hero-divider"></div>
     <div class="hero-ctas">
       <div class="hero-ctas-loggedin" id="heroCtasLoggedIn">
-      <a href="/ea-section/" class="btn btn-primary btn-magnetic" id="btn-ea">
+      <a href="/ea-section" class="btn btn-primary btn-magnetic" id="btn-ea">
         Explore Expert Advisors
         <span class="btn-arrow">→</span>
       </a>
-      <a href="/community/" class="link-inline link-inline-glow" id="btn-community">
+      <a href="/community" class="link-inline link-inline-glow" id="btn-community">
         COMMUNITY <span class="btn-arrow">→</span>
       </a>
-      <a href="/cr/" class="link-inline" id="btn-cr">
+      <a href="/cr" class="link-inline" id="btn-cr">
         nukrax.cr <span class="btn-arrow">↗</span>
       </a>
-      <a href="/tr/" class="link-inline" id="btn-tr">
+      <a href="/tr" class="link-inline" id="btn-tr">
         nukrax.tr <span class="btn-arrow">↗</span>
       </a>
       </div>
@@ -1842,7 +1842,7 @@ a.testimonial-card:hover{transform:translateY(-3px)}
   <div class="welcome-membership-strip reveal-card" id="welcomeMembershipStrip" hidden>
     <div class="wms-ring" id="wmsRing"></div>
     <div class="wms-chips" id="wmsChips"></div>
-    <a href="/dashboard/" class="wms-dash-link">Open Dashboard <span class="btn-arrow">→</span></a>
+    <a href="/dashboard" class="wms-dash-link">Open Dashboard <span class="btn-arrow">→</span></a>
   </div>
 
   <a href="ea-selection.html" class="welcome-continue reveal-card" id="welcomeContinue" hidden>
@@ -3535,7 +3535,7 @@ supabase.auth.getSession().then(({ data }) => {
   const justBounced = new URLSearchParams(window.location.search).has('authRequired');
   if (data.session && !justBounced && !sessionStorage.getItem('nkx_home_redirect_done')) {
     sessionStorage.setItem('nkx_home_redirect_done', '1');
-    window.location.replace('/dashboard/');
+    window.location.replace('/dashboard');
   }
 });
 supabase.auth.onAuthStateChange((_event, session) => applyAuthState(session));
