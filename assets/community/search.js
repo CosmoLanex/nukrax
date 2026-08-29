@@ -90,7 +90,7 @@ async function runSearch(query, resultsEl) {
     row.addEventListener('click', () => {
       const username = row.dataset.username;
       if (currentUser && username.toLowerCase() === (currentUser.user_metadata?.username || '').toLowerCase()) {
-        window.location.href = '/profile';
+        window.location.href = '/profile.html';
       } else {
         window.location.href = `/u.html?u=${encodeURIComponent(username)}`;
       }
