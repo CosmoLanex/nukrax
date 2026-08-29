@@ -13,10 +13,9 @@
 
 import { supabase } from './auth-widget.js';
 
-// Absolute path — works correctly regardless of how deep/rewritten the
-// current URL is (clean `/page/` URLs are served via a proxy rewrite,
-// so a relative 'index.html' here would resolve to e.g.
-// '/dashboard/index.html' instead of the real homepage).
+// Absolute path — works correctly regardless of how deep the current
+// page is nested (e.g. from /ea/apex.html), so a relative 'index.html'
+// here can't resolve to the wrong place.
 const HOME_URL = '/';
 
 const { data } = await supabase.auth.getSession();
