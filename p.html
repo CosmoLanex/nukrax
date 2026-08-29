@@ -5,47 +5,23 @@
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/colour/theme.css">
   <script type="module" src="assets/colour/theme.js"></script>
-  <link rel="stylesheet" href="assets/shell/shell.css">
-  <script type="module" src="assets/shell/shell.js"></script>
-  <script type="module" src="assets/data/data.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>html{-webkit-text-size-adjust:100%;text-size-adjust:100%}</style>
 <title>Privacy Policy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="icon" href="assets/c-logo.png" type="image/png"/>
 <style>
-@font-face{
-  font-family:'NKX Display';
-  src:url('assets/fonts/nukrax-display.woff2') format('woff2');
-  font-weight:400;
-  font-style:normal;
-  font-display:swap;
-}
-:root {
-  --black:    #060606;
-  --deep:     #0c0c0c;
-  --charcoal: #141414;
-  --mid:      #1e1e1e;
-  --steel:    #2e2e2e;
-  --muted:    #8a8a8a;
-  --smoke:    #c9c9c6;
-  --offwhite: #eeeeec;
-  --white:    #f8f8f6;
-  --accent:   #c0c0bc;
-  --glow:     rgba(196,196,192,0.06);
-  --font-d:   'NKX Display', 'Bebas Neue', sans-serif;
-  --font-b:   'Outfit', sans-serif;
-  --font-m:   'Space Mono', monospace;
-  --ease:     cubic-bezier(0.16,1,0.3,1);
-}
-
+/* Design tokens come from the shared assets/css/tokens.css (linked above)
+   — --black, --white, --muted, --font-b, --font-m are the same names and
+   values used across the rest of the public site (index.html, docs/*).
+   This page no longer carries its own independent palette. */
 
 html{scroll-behavior:smooth;font-size:16px}
 body{
   background:var(--black);
-  color:var(--offwhite);
+  color:var(--text);
   font-family:var(--font-b);
   font-weight:300;
   overflow-x:hidden;
@@ -53,7 +29,7 @@ body{
 
 ::-webkit-scrollbar{width:2px}
 ::-webkit-scrollbar-track{background:var(--black)}
-::-webkit-scrollbar-thumb{background:var(--steel);border-radius:2px}
+::-webkit-scrollbar-thumb{background:var(--line-lit);border-radius:2px}
 
 /* ── GRAIN ── */
 body::after{
@@ -81,7 +57,7 @@ body::after{
   background:var(--black);
   pointer-events:none;
   opacity:0;
-  transition:opacity .5s var(--ease);
+  transition:opacity .5s var(--ease-out);
 }
 #page-curtain.active{
   opacity:1;
@@ -89,39 +65,39 @@ body::after{
 }
 
 /* ── NAV ── */
+/* Nav sizing/colors match the shared public-site treatment used by
+   index.html and docs/*.html (assets/docs/docs.css) — same 30px
+   rounded-square logo mark, same token names, same responsive step. */
 nav{
   position:fixed;top:0;left:0;right:0;
   z-index:100;
   display:flex;align-items:center;justify-content:space-between;
-  padding:20px 52px;
-  background:rgba(6,6,6,0.88);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(46,46,46,0.5);
+  padding:26px 52px;
+  background:rgba(3,5,7,0.88);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
 }
 /* nav itself is position:fixed, which already establishes a positioning
    context for the absolutely-centered .nav-links */
 .nav-logo-container{
-  display:flex;align-items:center;gap:16px;
+  display:flex;align-items:center;gap:11px;
 }
 .nav-logo-img{
-  width:42px;height:42px;
-  border-radius:50%;overflow:hidden;
-  background:var(--charcoal);
-  border:1px solid var(--steel);
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.3s var(--ease);
+  width:30px;height:30px;border-radius:7px;overflow:hidden;
+  border:1px solid var(--line);background:var(--panel);
+  display:block;
+  transition:all 0.3s var(--ease-out);
   text-decoration:none;
 }
 @media (hover:hover) and (pointer:fine){
 .nav-logo-img:hover{
   border-color:var(--muted);
-  box-shadow:0 0 20px rgba(196,196,192,0.1);
 }
 }
 .nav-logo-img img{width:100%;height:100%;object-fit:cover;}
 .nav-logo{
-  font-family:var(--font-d);
-  font-size:22px;letter-spacing:0.22em;
+  font-family:var(--font-logo);font-weight:400;
+  font-size:16px;letter-spacing:.05em;text-transform:uppercase;
   color:var(--white);text-decoration:none;
 }
 .nav-links{
@@ -133,12 +109,15 @@ nav{
   font-family:var(--font-b);
   font-size:12px;font-weight:600;
   letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--smoke);text-decoration:none;
+  color:var(--text);text-decoration:none;
   transition:color .25s;
   white-space:nowrap;
 }
-@media (hover:hover) and (pointer:fine){.nav-links a:hover{color:var(--offwhite)}}
+@media (hover:hover) and (pointer:fine){.nav-links a:hover{color:var(--text)}}
 @media(max-width:900px){.nav-links{display:none;}}
+.nav-actions{display:flex;align-items:center;gap:22px}
+.nav-login-link{font-family:var(--font-b);font-size:var(--fs-13);font-weight:700;color:var(--text);text-decoration:none;padding:9px 4px;white-space:nowrap;flex-shrink:0;transition:color .2s var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.nav-login-link:hover{color:var(--white)}}
 
 /* ── HERO ── */
 .pp-hero{
@@ -146,26 +125,26 @@ nav{
   padding:160px 64px 80px;
   max-width:1200px;
   margin:0 auto;
-  border-bottom:1px solid var(--steel);
+  border-bottom:1px solid var(--line-lit);
 }
 .pp-label{
   font-family:var(--font-b);
   font-weight:600;
   font-size:11px;letter-spacing:0.28em;
   text-transform:uppercase;
-  color:var(--smoke);
+  color:var(--text);
   margin-bottom:28px;
   opacity:0;
-  animation:fadeUp .8s var(--ease) .2s forwards;
+  animation:fadeUp .8s var(--ease-out) .2s forwards;
 }
 .pp-title{
-  font-family:var(--font-d);
+  font-family:var(--font-logo);
   font-size:clamp(24px,3.4vw,44px);
   letter-spacing:0.01em;
   line-height:1.05;
   color:var(--white);
   opacity:0;
-  animation:fadeUp .9s var(--ease) .35s forwards;
+  animation:fadeUp .9s var(--ease-out) .35s forwards;
   white-space:nowrap;
 }
 @media(max-width:768px){
@@ -175,17 +154,17 @@ nav{
   display:flex;align-items:center;gap:24px;
   margin-top:28px;
   opacity:0;
-  animation:fadeUp .8s var(--ease) .5s forwards;
+  animation:fadeUp .8s var(--ease-out) .5s forwards;
 }
 .pp-meta-item{
   font-family:var(--font-b);
   font-weight:500;
   font-size:11px;letter-spacing:0.14em;
   text-transform:uppercase;
-  color:var(--smoke);
+  color:var(--text);
 }
 .pp-meta-divider{
-  width:1px;height:14px;background:var(--steel);
+  width:1px;height:14px;background:var(--line-lit);
 }
 
 @keyframes fadeUp{
@@ -204,11 +183,11 @@ nav{
 /* Table of contents */
 .pp-toc{
   background:rgba(20,20,20,0.5);
-  border:1px solid var(--steel);
+  border:1px solid var(--line-lit);
   padding:28px 32px;
   margin-bottom:64px;
   opacity:0;
-  animation:fadeUp .8s var(--ease) .65s forwards;
+  animation:fadeUp .8s var(--ease-out) .65s forwards;
 }
 .pp-toc-title{
   font-family:var(--font-m);
@@ -225,17 +204,17 @@ nav{
   font-family:var(--font-m);
   font-size:10px;font-weight:700;
   letter-spacing:0.14em;
-  color:var(--smoke);
+  color:var(--text);
   text-decoration:none;
   display:flex;align-items:center;gap:10px;
   transition:color .2s;
 }
-@media (hover:hover) and (pointer:fine){.pp-toc-list a:hover{color:var(--offwhite)}}
+@media (hover:hover) and (pointer:fine){.pp-toc-list a:hover{color:var(--text)}}
 .pp-toc-list a::before{
   content:'';
   display:inline-block;
   width:16px;height:1px;
-  background:var(--steel);
+  background:var(--line-lit);
   flex-shrink:0;
   transition:background .2s, width .2s;
 }
@@ -250,35 +229,35 @@ nav{
   margin-bottom:64px;
   opacity:0;
   transform:translateY(16px);
-  transition:opacity .7s var(--ease), transform .7s var(--ease);
+  transition:opacity .7s var(--ease-out), transform .7s var(--ease-out);
 }
 .pp-section.visible{
   opacity:1;transform:translateY(0);
 }
 .pp-section-num{
-  font-family:var(--font-d);
+  font-family:var(--font-logo);
   font-size:13px;letter-spacing:0.2em;
-  color:var(--steel);
+  color:var(--line-lit);
   margin-bottom:12px;
 }
 .pp-section-title{
-  font-family:var(--font-d);
+  font-family:var(--font-logo);
   font-size:clamp(18px,2.2vw,24px);
   letter-spacing:0.03em;
   color:var(--white);
   margin-bottom:24px;
   padding-bottom:16px;
-  border-bottom:1px solid var(--steel);
+  border-bottom:1px solid var(--line-lit);
 }
 .pp-section p{
   font-size:14px;
   line-height:1.85;
-  color:var(--smoke);
+  color:var(--text);
   margin-bottom:16px;
 }
 .pp-section p:last-child{margin-bottom:0}
 .pp-section p strong{
-  font-weight:600;color:var(--offwhite);
+  font-weight:600;color:var(--text);
 }
 .pp-section ul{
   list-style:none;
@@ -287,26 +266,26 @@ nav{
 }
 .pp-section ul li{
   font-size:14px;line-height:1.7;
-  color:var(--smoke);
+  color:var(--text);
   padding-left:20px;
   position:relative;
 }
 .pp-section ul li::before{
   content:'—';
   position:absolute;left:0;
-  color:var(--steel);
+  color:var(--line-lit);
   font-family:var(--font-m);
 }
 .pp-section a{
-  color:var(--smoke);
+  color:var(--text);
   text-decoration:underline;
   text-underline-offset:3px;
-  text-decoration-color:var(--steel);
+  text-decoration-color:var(--line-lit);
   transition:color .2s, text-decoration-color .2s;
 }
 @media (hover:hover) and (pointer:fine){
 .pp-section a:hover{
-  color:var(--offwhite);
+  color:var(--text);
   text-decoration-color:var(--muted);
 }
 }
@@ -314,7 +293,7 @@ nav{
 /* Contact box */
 .pp-contact-box{
   background:rgba(20,20,20,0.5);
-  border:1px solid var(--steel);
+  border:1px solid var(--line-lit);
   padding:28px 32px;
   margin-top:24px;
   transition:border-color .3s;
@@ -325,8 +304,8 @@ nav{
 /* Highlight box — used for brand/security emphasis */
 .pp-highlight{
   background:rgba(24,24,24,0.65);
-  border:1px solid var(--steel);
-  border-left:3px solid var(--offwhite);
+  border:1px solid var(--line-lit);
+  border-left:3px solid var(--text);
   padding:26px 30px;
   margin:24px 0;
 }
@@ -336,7 +315,7 @@ nav{
   border-left:4px solid var(--white);
   margin-bottom:48px;
   opacity:0;
-  animation:fadeUp .8s var(--ease) .55s forwards;
+  animation:fadeUp .8s var(--ease-out) .55s forwards;
 }
 .pp-highlight-title{
   font-family:var(--font-b);
@@ -347,12 +326,12 @@ nav{
 }
 .pp-highlight p{
   font-size:14px;line-height:1.85;
-  color:var(--smoke);margin-bottom:14px;
+  color:var(--text);margin-bottom:14px;
 }
 .pp-highlight p:last-child{margin-bottom:0}
-.pp-highlight p strong{font-weight:600;color:var(--offwhite);}
+.pp-highlight p strong{font-weight:600;color:var(--text);}
 .pp-highlight ul{list-style:none;margin:14px 0;display:flex;flex-direction:column;gap:10px;}
-.pp-highlight ul li{font-size:14px;line-height:1.7;color:var(--smoke);padding-left:20px;position:relative;}
+.pp-highlight ul li{font-size:14px;line-height:1.7;color:var(--text);padding-left:20px;position:relative;}
 .pp-highlight ul li::before{content:'—';position:absolute;left:0;color:var(--muted);font-family:var(--font-m);}
 
 /* Contact grid */
@@ -369,7 +348,7 @@ nav{
   font-family:var(--font-b);
   font-weight:600;
   font-size:11px;letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--smoke);white-space:nowrap;
+  color:var(--text);white-space:nowrap;
 }
 .pp-contact-row a{
   font-size:13px;
@@ -389,8 +368,8 @@ a:has(> .link-arrow){display:inline-flex;align-items:center;gap:4px;}
 /* ── FOOTER ── */
 footer{
   position:relative;z-index:1;
-  background:var(--deep);
-  border-top:1px solid var(--steel);
+  background:var(--panel);
+  border-top:1px solid var(--line-lit);
   padding:40px 52px;
 }
 .footer-inner{
@@ -399,7 +378,7 @@ footer{
   flex-wrap:wrap;gap:20px;
 }
 .footer-logo{
-  font-family:var(--font-d);
+  font-family:var(--font-logo);
   font-size:20px;letter-spacing:0.2em;color:var(--white);
 }
 .footer-copy{
@@ -419,8 +398,9 @@ footer{
   footer{padding:32px 24px;}
 }
 @media(max-width:480px){
-  .nav-logo{font-size:16px;letter-spacing:0.15em;}
-  .nav-logo-img{width:36px;height:36px;}
+  nav{padding:16px 24px;}
+  .nav-logo{font-size:16px;letter-spacing:0.05em;}
+  .nav-logo-img{width:26px;height:26px;}
 }
 </style>
 </head>
@@ -443,6 +423,9 @@ footer{
     <a href="#brand">Brand &amp; Logo</a>
     <a href="#licensing">Licensing</a>
     <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-actions">
+    <a href="login.html" class="nav-login-link">Login</a>
   </div>
 </nav>
 
@@ -709,6 +692,5 @@ const io = new IntersectionObserver(entries => {
 }, { threshold: 0.08 });
 sections.forEach(el => io.observe(el));
 </script>
-<script type="module" src="assets/auth/auth-widget.js"></script>
 </body>
 </html>

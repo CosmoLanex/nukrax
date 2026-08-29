@@ -118,13 +118,13 @@ let usernameCheckTimer = null;
 async function init() {
   const { data } = await supabase.auth.getSession();
   currentUser = data.session?.user || null;
-  if (!currentUser) { window.location.replace('index.html?authRequired=1'); return; }
+  if (!currentUser) { window.location.replace('/?authRequired=1'); return; }
 
   // Already set up? Skip straight to the site. (A blank profile row already
   // exists for everyone right after signup — a username is what actually
   // means "done".)
   const { data: existing } = await supabase.from('profiles').select('username').eq('id', currentUser.id).maybeSingle();
-  if (existing?.username) { window.location.replace('index.html'); return; }
+  if (existing?.username) { window.location.replace('/'); return; }
 
   document.body.style.visibility = 'visible';
 }

@@ -38,6 +38,7 @@
 /ea-selection.html              /ea-section              301
 /develop/ea.html                 /develop/ea              301
 /develop/automation.html         /develop/automation      301
+/p.html                          /privacy                 301
 
 # Group 2 — the OLD trailing-slash URLs from a previous version of this
 # scheme (e.g. `/dashboard/`) → the new no-slash canonical form. Kept so
@@ -59,13 +60,11 @@
 /ea-section/                     /ea-section               301
 /develop/ea/                      /develop/ea               301
 /develop/automation/              /develop/automation       301
+/privacy/                         /privacy                  301
 
 # Group 3 — the clean URL itself → invisibly served from the real file
 # (proxy/200 = address bar keeps showing the clean URL; no client-side
-# redirect, works on direct load/refresh/deep-link). The last two 404
-# until the development workspace files are deployed — expected and
-# harmless; they'll start working the moment those files land, with
-# nothing here needing to change.
+# redirect, works on direct load/refresh/deep-link).
 /dashboard                     /dashboard.html           200
 /marketplace                    /marketplace.html         200
 /community                     /community.html           200
@@ -82,3 +81,4 @@
 /ea-section                      /ea-selection.html        200
 /develop/ea                       /develop/ea.html          200
 /develop/automation                /develop/automation.html  200
+/privacy                          /p.html                   200

@@ -173,7 +173,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
         <div class="db-info-row" style="padding:14px 18px"><span class="db-label">Rank</span><span class="db-value" id="dbInfoRank">—</span></div>
         <div class="db-info-row" style="padding:14px 18px"><span class="db-label">Points</span><span class="db-value" id="dbInfoPoints">—</span></div>
       </div>
-      <a href="profile.html" class="db-link-btn">Edit full profile →</a>
+      <a href="/profile" class="db-link-btn">Edit full profile →</a>
     </section>
 
     <section class="db-panel" id="panel-membership" role="tabpanel">
@@ -241,7 +241,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
     <section class="db-panel" id="panel-account-summary" role="tabpanel">
       <div class="db-panel-head"><h1>Account Summary</h1><p>The essentials, at a glance.</p></div>
       <div class="db-list" id="dbAccountSummary"></div>
-      <a href="account.html" class="db-link-btn">Manage account →</a>
+      <a href="/account" class="db-link-btn">Manage account →</a>
     </section>
 
     <section class="db-panel" id="panel-security" role="tabpanel">
@@ -251,7 +251,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 
     <section class="db-panel" id="panel-settings" role="tabpanel">
       <div class="db-panel-head"><h1>Settings</h1><p>Notifications, privacy, appearance, and more.</p></div>
-      <a href="settings.html" class="db-link-btn">Open full Settings →</a>
+      <a href="/settings" class="db-link-btn">Open full Settings →</a>
     </section>
 
   </main>
@@ -529,7 +529,7 @@ async function renderPurchasesAndDownloads() {
           <span class="db-row-time">Issued ${new Date(l.issued_at).toLocaleDateString()}</span>
         </div>
       `).join('')
-    : `<div class="db-empty">No purchases yet. <a href="marketplace.html" class="db-link-btn" style="margin-top:10px">Browse the marketplace →</a></div>`;
+    : `<div class="db-empty">No purchases yet. <a href="/marketplace" class="db-link-btn" style="margin-top:10px">Browse the marketplace →</a></div>`;
 
   document.getElementById('dbDownloads').innerHTML = licenses.length
     ? licenses.map(l => `
@@ -568,7 +568,7 @@ async function renderWishlist() {
   const products = productIds.map(getProduct).filter(Boolean);
   document.getElementById('dbWishlistGrid').innerHTML = products.length
     ? productCardGrid(products, {})
-    : `<div class="db-empty">Nothing saved yet. <a href="marketplace.html" class="db-link-btn" style="margin-top:10px">Browse the marketplace →</a></div>`;
+    : `<div class="db-empty">Nothing saved yet. <a href="/marketplace" class="db-link-btn" style="margin-top:10px">Browse the marketplace →</a></div>`;
 }
 
 async function renderOrders() {
