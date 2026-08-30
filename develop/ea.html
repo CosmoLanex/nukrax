@@ -12,7 +12,6 @@
 </head>
 <body>
 
-<script type="module" src="../assets/auth/auth-widget.js"></script>
 <script type="module" src="../assets/auth/guard.js"></script>
 
 <div class="nkx-dev-shell">
@@ -52,7 +51,7 @@
 </div>
 
 <script type="module">
-import { supabase } from '../assets/auth/auth-widget.js';
+import { supabase } from '../assets/auth/client.js';
 import { EA_BLOCKS } from '../assets/develop/blocks.js';
 import { initCanvas } from '../assets/develop/canvas.js';
 import { sendProject } from '../assets/develop/project-file.js';
