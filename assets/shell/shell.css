@@ -57,11 +57,19 @@
 .nkx-shell-mainnav {
   display: flex;
   align-items: stretch;
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   max-width: 760px;
+  /* auto margins center this within the remaining header space (after
+     the fixed-width logo and quick-icon cluster) instead of hugging
+     the logo with dead space left after it on wide viewports */
+  margin: 0 auto;
   height: 44px;
   background: var(--panel);
-  border: 1px solid var(--line);
+  /* Reference (Desktop-screens.svg): this container's stroke is
+     literally white, not the muted --line grey used for ordinary
+     dividers elsewhere on the site. */
+  border: 1px solid rgba(255,255,255,.85);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -154,7 +162,9 @@
   width: 45px;
   padding: 6px;
   background: var(--panel);
-  border: 1px solid var(--line);
+  /* Reference (Desktop-screens.svg): white stroke, same as the main
+     nav — not the muted --line grey. */
+  border: 1px solid rgba(255,255,255,.85);
   border-radius: 999px;
   box-shadow: var(--nkx-shadow-lift, 0 12px 32px rgba(0,0,0,.5));
 }
@@ -229,7 +239,9 @@
   z-index: var(--nkx-shell-z);
   height: 51px;
   background: var(--panel);
-  border: 1px solid var(--line);
+  /* Reference (mobile-screens.svg): white stroke, same reasoning as
+     the desktop nav/rail. */
+  border: 1px solid rgba(255,255,255,.85);
   border-radius: 12px;
   box-shadow: var(--nkx-shadow-lift, 0 12px 32px rgba(0,0,0,.5));
   align-items: stretch;
