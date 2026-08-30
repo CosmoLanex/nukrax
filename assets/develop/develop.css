@@ -20,11 +20,6 @@
   align-items: center;
   gap: 14px;
   padding: 0 20px;
-  /* Extra right padding reserves room for the fixed-position auth
-     widget (menu + avatar, ~94px, pinned at top:16px;right:16px by
-     assets/auth/auth-widget.js's no-nav fallback) so it doesn't sit
-     on top of the Send button. */
-  padding-right: 130px;
   height: 56px;
   border-bottom: 1px solid var(--line);
   background: var(--black);
@@ -147,10 +142,24 @@
   flex-shrink: 0;
 }
 
+.nkx-cv-palette-cat { margin-bottom: 4px; }
 .nkx-cv-palette-cat-label {
+  display: flex; align-items: center; justify-content: space-between;
   font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
   color: var(--muted); margin: 14px 0 6px;
+  cursor: pointer; user-select: none;
+  list-style: none; /* remove default disclosure triangle, draw our own */
 }
+.nkx-cv-palette-cat-label::-webkit-details-marker { display: none; }
+.nkx-cv-palette-cat-label::after {
+  content: '';
+  width: 7px; height: 7px;
+  border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted);
+  transform: rotate(-45deg);
+  transition: transform .15s var(--ease, ease);
+  flex-shrink: 0;
+}
+.nkx-cv-palette-cat[open] > .nkx-cv-palette-cat-label::after { transform: rotate(45deg); }
 .nkx-cv-palette-cat:first-child .nkx-cv-palette-cat-label { margin-top: 0; }
 .nkx-cv-palette-item {
   display: flex; align-items: center; gap: 8px;

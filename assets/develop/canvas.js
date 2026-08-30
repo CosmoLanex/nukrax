@@ -148,15 +148,23 @@ function drawConnections() {
 function renderPalette() {
   const { paletteEl, registry } = state;
   const categories = [...new Set(registry.map(b => b.category))];
-  paletteEl.innerHTML = categories.map(cat => `
-    <div class="nkx-cv-palette-cat">
-      <div class="nkx-cv-palette-cat-label">${esc(cat)}</div>
+  // Preserve which categories the user already opened across re-renders
+  // (renderPalette() re-runs on every canvas change) — only default to
+  // "just the first one open" the very first time.
+  const openCats = new Set(
+    [...paletteEl.querySelectorAll('details[open]')].map(d => d.dataset.cat)
+  );
+  const isFirstRender = paletteEl.querySelectorAll('details').length === 0;
+
+  paletteEl.innerHTML = categories.map((cat, i) => `
+    <details class="nkx-cv-palette-cat" data-cat="${esc(cat)}" ${(isFirstRender ? i === 0 : openCats.has(cat)) ? 'open' : ''}>
+      <summary class="nkx-cv-palette-cat-label">${esc(cat)}</summary>
       ${registry.filter(b => b.category === cat).map(b => `
         <div class="nkx-cv-palette-item" draggable="true" data-type-id="${b.id}" style="--nkx-block-color:${b.color}">
           <span class="nkx-cv-block-dot"></span>${esc(b.name)}
         </div>
       `).join('')}
-    </div>
+    </details>
   `).join('');
 
   paletteEl.querySelectorAll('.nkx-cv-palette-item').forEach(item => {
