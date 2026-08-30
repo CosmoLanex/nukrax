@@ -11,7 +11,7 @@
 //     (from /ea/, use "../assets/auth/guard.js")
 // ═══════════════════════════════════════════════
 
-import { supabase } from './auth-widget.js';
+import { supabase } from './client.js';
 
 // Absolute path — works correctly regardless of how deep the current
 // page is nested (e.g. from /ea/apex.html), so a relative 'index.html'
