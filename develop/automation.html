@@ -22,8 +22,23 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M9.5 4.5v15"/></svg>
     </button>
     <input type="text" id="projectName" placeholder="Untitled automation project" maxlength="80"/>
+    <span class="nkx-dev-draft-note" id="draftNote" hidden>Unfinished draft restored</span>
     <div class="nkx-dev-bar-spacer"></div>
+    <div class="nkx-dev-saved-menu">
+      <button type="button" class="nkx-dev-ghost-btn" id="savedMenuBtn">Saved ▾</button>
+      <div class="nkx-dev-saved-list" id="savedList" hidden></div>
+    </div>
+    <button type="button" class="nkx-dev-ghost-btn" id="newBtn">New</button>
+    <button type="button" class="nkx-dev-ghost-btn" id="saveBtn">Save</button>
     <button type="button" class="nkx-dev-send-btn" id="sendBtn">Send Automation</button>
+  </div>
+
+  <div class="nkx-dev-steps" id="devSteps">
+    <div class="nkx-dev-step" data-step="name"><span class="nkx-dev-step-num">1</span>Name your automation</div>
+    <div class="nkx-dev-step-sep"></div>
+    <div class="nkx-dev-step" data-step="build"><span class="nkx-dev-step-num">2</span>Build it on the canvas</div>
+    <div class="nkx-dev-step-sep"></div>
+    <div class="nkx-dev-step" data-step="send"><span class="nkx-dev-step-num">3</span>Save &amp; send to NUKRAX</div>
   </div>
 
   <div class="nkx-dev-body">
@@ -41,17 +56,120 @@ import { supabase } from '../assets/auth/auth-widget.js';
 import { AUTOMATION_BLOCKS } from '../assets/develop/blocks.js';
 import { initCanvas } from '../assets/develop/canvas.js';
 import { sendProject } from '../assets/develop/project-file.js';
+import { loadDraft, saveDraft, clearDraft, listSaved, saveNamed, deleteSaved, getSaved } from '../assets/develop/storage.js';
 
+const PROJECT_TYPE = 'automation';
 const paletteEl = document.getElementById('palette');
 const canvasEl = document.getElementById('canvas');
 const connectionsSvg = document.getElementById('connections');
 const nameInput = document.getElementById('projectName');
+const draftNote = document.getElementById('draftNote');
+const savedMenuBtn = document.getElementById('savedMenuBtn');
+const savedList = document.getElementById('savedList');
+const devSteps = document.getElementById('devSteps');
+
+function updateSteps() {
+  const hasName = nameInput.value.trim().length > 0;
+  const hasBlocks = engine.getProject().blocks.length > 0;
+  const step = !hasName ? 'name' : !hasBlocks ? 'build' : 'send';
+  devSteps.querySelectorAll('.nkx-dev-step').forEach(el => {
+    el.classList.toggle('nkx-dev-step-done', (el.dataset.step === 'name' && hasName) || (el.dataset.step === 'build' && hasBlocks));
+    el.classList.toggle('nkx-dev-step-active', el.dataset.step === step);
+  });
+}
 
 let ideaText = '';
-const engine = initCanvas({ canvasEl, connectionsSvg, paletteEl, registry: AUTOMATION_BLOCKS });
+let currentSavedId = null;
+
+const draft = loadDraft(PROJECT_TYPE);
+if (draft) {
+  nameInput.value = draft.projectName || '';
+  ideaText = draft.idea || '';
+  draftNote.hidden = false;
+}
+
+const engine = initCanvas({
+  canvasEl, connectionsSvg, paletteEl, registry: AUTOMATION_BLOCKS,
+  initialProject: draft ? draft.project : null,
+  onChange: () => {
+    draftNote.hidden = true;
+    saveDraft(PROJECT_TYPE, { projectName: nameInput.value.trim(), idea: ideaText, project: engine.getProject() });
+    updateSteps();
+  },
+});
+nameInput.addEventListener('input', () => {
+  saveDraft(PROJECT_TYPE, { projectName: nameInput.value.trim(), idea: ideaText, project: engine.getProject() });
+  updateSteps();
+});
+updateSteps();
 
 document.getElementById('paletteToggle').addEventListener('click', () => {
   document.getElementById('palette').classList.toggle('nkx-minimized');
+});
+
+function renderSavedList() {
+  const items = listSaved(PROJECT_TYPE);
+  savedList.innerHTML = items.length
+    ? items.map(it => `
+      <div class="nkx-dev-saved-item" data-id="${it.id}">
+        <button type="button" class="nkx-dev-saved-open" data-open="${it.id}">${it.name.replace(/</g,'&lt;')}</button>
+        <button type="button" class="nkx-dev-saved-del" data-del="${it.id}" title="Delete">✕</button>
+      </div>`).join('')
+    : `<div class="nkx-dev-saved-empty">No saved automations yet.</div>`;
+}
+
+savedMenuBtn.addEventListener('click', () => {
+  renderSavedList();
+  savedList.hidden = !savedList.hidden;
+});
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.nkx-dev-saved-menu')) savedList.hidden = true;
+});
+savedList.addEventListener('click', (e) => {
+  const openId = e.target.dataset.open;
+  const delId = e.target.dataset.del;
+  if (openId) {
+    const entry = getSaved(PROJECT_TYPE, openId);
+    if (!entry) return;
+    currentSavedId = entry.id;
+    nameInput.value = entry.name;
+    ideaText = entry.idea || '';
+    Object.assign(engine, initCanvas({ canvasEl, connectionsSvg, paletteEl, registry: AUTOMATION_BLOCKS, initialProject: entry.project, onChange: () => {
+      draftNote.hidden = true;
+      saveDraft(PROJECT_TYPE, { projectName: nameInput.value.trim(), idea: ideaText, project: engine.getProject() });
+    }}));
+    saveDraft(PROJECT_TYPE, { projectName: entry.name, idea: entry.idea, project: entry.project });
+    updateSteps();
+    savedList.hidden = true;
+  } else if (delId) {
+    if (confirm('Delete this saved automation? This cannot be undone.')) {
+      deleteSaved(PROJECT_TYPE, delId);
+      if (currentSavedId === delId) currentSavedId = null;
+      renderSavedList();
+    }
+  }
+});
+
+document.getElementById('newBtn').addEventListener('click', () => {
+  const hasContent = engine.getProject().blocks.length > 0;
+  if (hasContent && !confirm('Start a new automation project? Your current unsaved draft will be cleared (anything you already Saved is untouched).')) return;
+  engine.clear();
+  nameInput.value = '';
+  ideaText = '';
+  currentSavedId = null;
+  clearDraft(PROJECT_TYPE);
+  draftNote.hidden = true;
+  updateSteps();
+});
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const defaultName = nameInput.value.trim() || 'Untitled automation project';
+  const name = prompt('Save this automation as:', defaultName);
+  if (name === null) return;
+  const entry = saveNamed(PROJECT_TYPE, { id: currentSavedId, name, idea: ideaText, project: engine.getProject() });
+  currentSavedId = entry.id;
+  nameInput.value = entry.name;
+  alert(`Saved as "${entry.name}".`);
 });
 
 document.getElementById('sendBtn').addEventListener('click', async () => {
@@ -71,6 +189,7 @@ document.getElementById('sendBtn').addEventListener('click', async () => {
   });
 
   if (!result.ok && result.errors) alert(result.errors.join('\n'));
+  if (result.ok) clearDraft(PROJECT_TYPE);
 });
 </script>
 </body>
