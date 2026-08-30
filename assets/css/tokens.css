@@ -180,3 +180,22 @@ html.nkx-reduce-motion *::after {
 /* No extra reduced-motion override needed here — the existing blanket
    html.nkx-reduce-motion rule above (animation-duration: 0.001ms
    !important on *::after) already freezes this spinner correctly. */
+
+/* ── Global scrollbar theming ──────────────────────────────────────────
+   Every scrollable container on the site (the EA/automation canvas, the
+   dashboard sidebar, mobile drawers, etc.) was previously left to the
+   browser's default scrollbar — thick, grey/white, and visually out of
+   place against the dark theme. This themes it site-wide (thin, dark,
+   matching --panel/--line) without touching overflow/scroll behavior on
+   any individual element, so real scrolling keeps working everywhere. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line, #2a353c) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: var(--line, #2a353c);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--muted, #5a6b73); }
