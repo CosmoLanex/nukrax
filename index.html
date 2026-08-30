@@ -2,6 +2,43 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>
+// ── Fast-path authenticated redirect ─────────────────────────────────
+// This is a UX speed optimization ONLY — it is not the security check.
+// The real one is the supabase.auth.getSession() call further down
+// this page (and again via shell.js/guard.js on every authenticated
+// page), which is what actually decides whether the user is let in
+// anywhere. This block just avoids making a logged-in user wait for
+// ~160KB of marketing HTML/CSS/JS (including the Three.js cube
+// animation) to load and render before we even start asking whether
+// they should be redirected.
+//
+// Supabase's JS client persists its session to localStorage under
+// `sb-<project-ref>-auth-token` by default. Reading that directly is a
+// synchronous, network-free, SDK-free check we can run before the
+// browser has parsed anything else — so a returning logged-in user is
+// sent to /dashboard.html almost immediately instead of after the
+// whole homepage has rendered.
+//
+// If this guess is wrong (token stale/expired/malformed), nothing bad
+// happens: dashboard.html's own guard.js runs the real check and
+// bounces back to /?authRequired=1, which the redirect-once flag below
+// (shared with the fallback check later in this page) prevents from
+// ever looping.
+(function () {
+  try {
+    if (new URLSearchParams(location.search).has('authRequired')) return;
+    if (sessionStorage.getItem('nkx_home_redirect_done')) return;
+    var raw = localStorage.getItem('sb-gxmpaurwuiaxurqnxeck-auth-token');
+    if (!raw) return;
+    var parsed = JSON.parse(raw);
+    var expiresAt = parsed && (parsed.expires_at || (parsed.currentSession && parsed.currentSession.expires_at));
+    if (!expiresAt || expiresAt * 1000 <= Date.now()) return; // expired/missing — let the real check decide
+    sessionStorage.setItem('nkx_home_redirect_done', '1');
+    location.replace('/dashboard.html');
+  } catch (e) { /* malformed localStorage — fall through to the real check below */ }
+})();
+</script>
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/colour/theme.css">
   <script type="module" src="assets/colour/theme.js"></script>

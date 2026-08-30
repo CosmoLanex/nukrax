@@ -52,7 +52,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 @keyframes db-fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 .db-panel-head{margin-bottom:28px}
-.db-panel-head h1{font-family:var(--font-logo);font-size:clamp(24px,3.4vw,32px);color:var(--white);margin-bottom:8px}
+.db-panel-head h1{font-family:var(--font-b);font-size:clamp(24px,3.4vw,32px);color:var(--white);margin-bottom:8px;font-weight:700}
 .db-panel-head p{font-size:13.5px;color:var(--muted);line-height:1.6}
 
 /* ── mobile tab bar ── */
@@ -83,6 +83,11 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 
 .db-section-title{font-family:var(--font-m);font-size:var(--fs-11);letter-spacing:.1em;text-transform:uppercase;
   color:var(--muted);margin:0 0 14px}
+.db-section-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.db-section-title-row .db-section-title{margin-bottom:0}
+.db-link-btn{background:none;border:none;color:var(--accent);font-family:var(--font-b);font-size:13px;
+  cursor:pointer;padding:0;display:inline-flex;align-items:center;gap:4px}
+.db-link-btn:hover{text-decoration:underline}
 
 .db-list{border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .db-list-row{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);font-size:13.5px}
@@ -147,7 +152,10 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
         <div class="wms-chips" id="dbOverviewChips"></div>
       </div>
       <div class="db-grid" id="dbOverviewStats"></div>
-      <h3 class="db-section-title">Quick Actions</h3>
+      <div class="db-section-title-row">
+        <h3 class="db-section-title">Quick Actions</h3>
+        <button type="button" class="db-link-btn db-section-title-link" data-nkx-go-panel="quick-actions">See all →</button>
+      </div>
       <div class="db-quick-grid" id="dbOverviewQuick"></div>
       <h3 class="db-section-title">Recent Notifications</h3>
       <div class="db-list" id="dbOverviewNotifs"></div>
@@ -350,6 +358,17 @@ function quickActionCards() {
   ].map(c => `<a href="${c.href}" class="db-quick-card"><div class="db-quick-card-title">${c.title}<span class="btn-arrow">→</span></div><div class="db-quick-card-desc">${c.desc}</div></a>`).join('');
 }
 
+// Overview tab's action area is intentionally just the two "create"
+// actions (per the brief) — everything else quickActionCards() offers
+// is still one click away via the "See all →" link into the full
+// Quick Actions tab, so nothing is actually removed, just decluttered.
+function overviewCreatorCards() {
+  return [
+    { title: 'Develop E.A', desc: 'Build a custom Expert Advisor on the visual canvas.', href: '/develop/ea.html' },
+    { title: 'Create Automation', desc: 'Build a custom automation on the visual canvas.', href: '/develop/automation.html' },
+  ].map(c => `<a href="${c.href}" class="db-quick-card"><div class="db-quick-card-title">${c.title}<span class="btn-arrow">→</span></div><div class="db-quick-card-desc">${c.desc}</div></a>`).join('');
+}
+
 function notifRow(n) {
   const verb = n.title ? esc(n.title) : (n.type === 'like' ? 'Someone liked your post' : n.type === 'follow' ? 'Someone started following you' : 'Update');
   return `<div class="db-list-row ${n.read ? '' : 'unread'}"><span>${verb}</span><span class="db-row-time">${timeAgo(n.created_at)}</span></div>`;
@@ -368,7 +387,7 @@ async function renderOverview() {
     <div class="db-card"><div class="db-card-label">Rank</div><div class="db-card-value">${getRankInfo(membership.rank_number).title}</div><div class="db-card-sub">${membership.rank_number ? '#' + membership.rank_number : 'Not yet ranked'}</div></div>
     <div class="db-card"><div class="db-card-label">Membership</div><div class="db-card-value">${TIERS[membership.membership_tier] ? TIERS[membership.membership_tier].label : 'Free'}</div><div class="db-card-sub">Since ${membership.membership_since ? new Date(membership.membership_since).toLocaleDateString() : '—'}</div></div>
   `;
-  document.getElementById('dbOverviewQuick').innerHTML = quickActionCards();
+  document.getElementById('dbOverviewQuick').innerHTML = overviewCreatorCards();
 
   const notifs = await getNotifications(currentUser, 5);
   document.getElementById('dbOverviewNotifs').innerHTML = notifs.length
@@ -649,6 +668,10 @@ async function init() {
 
   const lastTab = getUIState('dashboard_last_tab', 'overview');
   switchPanel(lastTab);
+
+  document.querySelectorAll('[data-nkx-go-panel]').forEach(btn => {
+    btn.addEventListener('click', () => switchPanel(btn.dataset.nkxGoPanel));
+  });
 }
 
 init();

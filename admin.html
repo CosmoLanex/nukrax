@@ -26,7 +26,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 
 .ad-main{max-width:1100px;margin:0 auto;padding:36px clamp(20px,4vw,44px) 100px}
 .ad-denied{text-align:center;padding:100px 20px;color:var(--muted)}
-.ad-denied h1{color:var(--white);margin-bottom:12px;font-family:var(--font-logo)}
+.ad-denied h1{color:var(--white);margin-bottom:12px;font-family:var(--font-b);font-weight:700}
 
 .ad-tabs{display:flex;gap:4px;margin-bottom:28px;border-bottom:1px solid var(--line);overflow-x:auto}
 .ad-tab{background:none;border:none;color:var(--muted);font-family:var(--font-m);font-size:12px;padding:12px 16px;
@@ -78,6 +78,7 @@ import { supabase } from './assets/auth/auth-widget.js';
 import { PRODUCTS } from './assets/data/products/products.js';
 import { issueLicense, revokeLicense, findUserByUsername } from './assets/data/licenses/key-manager.js';
 import { ORDER_STATUS_LABEL } from './assets/data/licenses/types.js';
+import { listAllPricesForAdmin, setAdminPriceOverride, formatPrice } from './assets/data/pricing.js';
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
 
@@ -86,10 +87,12 @@ const ADMIN_SHELL = `
     <button class="ad-tab active" data-tab="orders">Orders</button>
     <button class="ad-tab" data-tab="issue">Issue a Key</button>
     <button class="ad-tab" data-tab="licenses">Licenses</button>
+    <button class="ad-tab" data-tab="pricing">Pricing</button>
   </div>
   <section class="ad-panel active" id="adOrders"></section>
   <section class="ad-panel" id="adIssue"></section>
   <section class="ad-panel" id="adLicenses"></section>
+  <section class="ad-panel" id="adPricing"></section>
 `;
 
 function renderOrderRow(o) {
@@ -170,6 +173,60 @@ function renderIssuePanel(container) {
       resultEl.innerHTML = `<div class="ad-issued-key">${esc(license.key_value)}</div><p class="muted" style="margin-top:8px">Share this Key with the customer directly (email/Telegram) — it's also visible to them in their own Dashboard \u2192 Profile.</p>`;
     }
   });
+}
+
+const PRICING_LABELS = {
+  'apex': 'Apex (EA)', 'aurum': 'Aurum (EA)', 'smc-ict': 'SMC ICT (EA)',
+  'auto-trade-journal-sync': 'Trade Journal Sync (Automation)',
+  'auto-risk-guard': 'Risk Guard (Automation)',
+  'auto-news-filter': 'News Filter (Automation)',
+  'auto-multi-account-copier': 'Multi-Account Copier (Automation)',
+  'auto-session-scheduler': 'Session Scheduler (Automation)',
+  'auto-equity-alert': 'Equity Alert (Automation)',
+  'auto-equity-dashboard': 'Equity Dashboard (Automation)',
+  'custom-ea': 'Custom E.A (build-for-you)',
+  'onboard-ea': 'Onboard an existing E.A',
+  'custom-automation': 'Custom Automation (build-for-you)',
+  'pro': 'Pro membership', 'advanced': 'Advanced membership',
+};
+
+function pricingLabel(id) {
+  return PRICING_LABELS[id] || (PRODUCTS.find(p => p.id === id)?.name) || id;
+}
+
+function renderPricingPanel(container) {
+  function draw() {
+    const rows = listAllPricesForAdmin();
+    container.innerHTML = `
+      <p class="muted" style="margin-bottom:16px">
+        Overrides here take effect immediately, site-wide, on this browser's stored admin session
+        — no code changes or redeploy needed. Leave a field blank and save to fall back to the coded default.
+      </p>
+      <div class="ad-list">${rows.map(r => `
+        <div class="ad-row" style="grid-template-columns:1fr 110px 140px 100px" data-kind="${r.kind}" data-id="${esc(r.id)}">
+          <div>${esc(pricingLabel(r.id))}<div class="muted">${esc(r.kind)} · default ${r.default === null ? 'TBD' : formatPrice(r.default)}</div></div>
+          <input type="number" min="0" step="1" class="ad-price-input" placeholder="${r.default ?? ''}" value="${r.override ?? ''}" style="background:var(--panel);border:1px solid var(--line);color:var(--white);border-radius:6px;padding:6px 8px;width:100px"/>
+          <button type="button" class="ad-price-save" style="background:var(--accent);color:var(--black);border:none;border-radius:6px;padding:7px 12px;font-size:12px;cursor:pointer">Save</button>
+          <button type="button" class="ad-price-clear" style="background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:7px 10px;font-size:12px;cursor:pointer">Reset</button>
+        </div>`).join('')}</div>
+    `;
+    container.querySelectorAll('.ad-price-save').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const row = btn.closest('[data-kind]');
+        const input = row.querySelector('.ad-price-input');
+        setAdminPriceOverride(row.dataset.kind, row.dataset.id, input.value.trim() === '' ? null : input.value.trim());
+        draw();
+      });
+    });
+    container.querySelectorAll('.ad-price-clear').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const row = btn.closest('[data-kind]');
+        setAdminPriceOverride(row.dataset.kind, row.dataset.id, null);
+        draw();
+      });
+    });
+  }
+  draw();
 }
 
 async function loadLicenses(container) {

@@ -39,9 +39,16 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 
 .pd-hero{max-width:1200px;margin:0 auto;padding:54px clamp(20px,4vw,44px) 20px}
 .pd-hero-cat{font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
-.pd-hero h1{font-family:var(--font-logo);font-size:clamp(30px,4.4vw,46px);color:var(--white);margin-bottom:14px}
+.pd-hero h1{font-family:var(--font-b);font-size:clamp(30px,4.4vw,46px);color:var(--white);margin-bottom:14px;font-weight:700}
 .pd-hero-tagline{font-size:15px;color:var(--muted);max-width:640px;line-height:1.7;margin-bottom:8px}
 .pd-hero-meta{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px;font-size:12px;color:var(--muted);font-family:var(--font-m)}
+.pd-gallery-wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,44px) 12px}
+.pd-gallery-main{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);aspect-ratio:16/9}
+.pd-gallery-main img{width:100%;height:100%;object-fit:cover;display:block}
+.pd-gallery-thumbs{display:flex;gap:10px;margin-top:10px}
+.pd-gallery-thumb{border:1px solid var(--line);border-radius:8px;overflow:hidden;padding:0;width:100px;height:60px;cursor:pointer;background:var(--panel);opacity:.6}
+.pd-gallery-thumb.active{opacity:1;border-color:var(--accent)}
+.pd-gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 
 .pd-layout{max-width:1200px;margin:0 auto;padding:20px clamp(20px,4vw,44px) 100px;display:grid;grid-template-columns:1fr 340px;gap:44px}
 @media(max-width:920px){.pd-layout{grid-template-columns:1fr}}
@@ -103,6 +110,11 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
     <span>Version <span id="pdVersion"></span></span>
     <span id="pdReleaseDate"></span>
   </div>
+</div>
+
+<div class="pd-gallery-wrap" id="pdGalleryWrap" hidden>
+  <div class="pd-gallery-main"><img src="" alt=""/></div>
+  <div class="pd-gallery-thumbs" id="pdGalleryThumbs"></div>
 </div>
 
 <div class="pd-layout">
@@ -184,6 +196,7 @@ import { recordRecentlyViewed } from './assets/marketplace/catalog.js';
 import { initScrollReveal } from './assets/ui/reveal.js';
 import { initTilt } from './assets/ui/tilt.js';
 import { track } from './assets/analytics/track.js';
+import { mountProductGallery } from './assets/data/products/screenshots.js';
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
 function hideIfEmpty(sectionId, hasContent) { const el = document.getElementById(sectionId); if (el && !hasContent) el.hidden = true; }
@@ -204,6 +217,7 @@ async function init() {
 
   recordRecentlyViewed(product.id);
   track('product_view', { product_id: product.id, category: product.categoryId });
+  mountProductGallery(document.getElementById('pdGalleryWrap'), product);
   document.getElementById('pageTitle').textContent = `${product.name} — NUKRAX`;
   document.getElementById('pageDescription').setAttribute('content', product.tagline);
   document.getElementById('pageOgTitle').setAttribute('content', `${product.name} — NUKRAX`);
