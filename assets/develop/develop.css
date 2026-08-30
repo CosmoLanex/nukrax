@@ -20,6 +20,11 @@
   align-items: center;
   gap: 14px;
   padding: 0 20px;
+  /* Extra right padding reserves room for the fixed-position auth
+     widget (menu + avatar, ~94px, pinned at top:16px;right:16px by
+     assets/auth/auth-widget.js's no-nav fallback) so it doesn't sit
+     on top of the Send button. */
+  padding-right: 130px;
   height: 56px;
   border-bottom: 1px solid var(--line);
   background: var(--black);
@@ -35,6 +40,50 @@
   width: 240px;
 }
 .nkx-dev-bar-spacer { flex: 1; }
+.nkx-dev-draft-note {
+  font-size: 12px; color: var(--accent); font-family: var(--font-b);
+  white-space: nowrap;
+}
+.nkx-dev-ghost-btn {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-family: var(--font-b);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.nkx-dev-ghost-btn:hover { background: var(--panel); border-color: var(--muted); }
+.nkx-dev-saved-menu { position: relative; }
+.nkx-dev-saved-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px;
+  z-index: 50;
+  box-shadow: 0 12px 32px rgba(0,0,0,.5);
+}
+.nkx-dev-saved-item { display: flex; align-items: center; gap: 4px; }
+.nkx-dev-saved-open {
+  flex: 1; text-align: left; background: none; border: none; color: var(--text);
+  font-family: var(--font-b); font-size: 13px; padding: 8px 10px; border-radius: 6px; cursor: pointer;
+}
+.nkx-dev-saved-open:hover { background: var(--line); }
+.nkx-dev-saved-del {
+  background: none; border: none; color: var(--muted); cursor: pointer;
+  padding: 6px 8px; border-radius: 6px; font-size: 12px;
+}
+.nkx-dev-saved-del:hover { background: rgba(248,113,113,.15); color: #f87171; }
+.nkx-dev-saved-empty { padding: 10px; font-size: 12.5px; color: var(--muted); font-family: var(--font-b); }
+
 .nkx-dev-send-btn {
   background: var(--accent);
   color: var(--black);
@@ -46,6 +95,28 @@
   cursor: pointer;
 }
 .nkx-dev-send-btn:hover { filter: brightness(1.08); }
+
+.nkx-dev-steps {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--black);
+  font-family: var(--font-b); font-size: 12.5px;
+  overflow-x: auto;
+}
+.nkx-dev-step {
+  display: flex; align-items: center; gap: 7px;
+  color: var(--muted); white-space: nowrap;
+}
+.nkx-dev-step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1px solid var(--line); font-size: 11px;
+}
+.nkx-dev-step-sep { flex: 0 0 24px; height: 1px; background: var(--line); }
+.nkx-dev-step-active { color: var(--white); }
+.nkx-dev-step-active .nkx-dev-step-num { background: var(--accent); border-color: var(--accent); color: var(--black); }
+.nkx-dev-step-done:not(.nkx-dev-step-active) .nkx-dev-step-num { border-color: var(--accent); color: var(--accent); }
 
 /* ── Body: palette | canvas ── */
 .nkx-dev-body {
