@@ -254,3 +254,27 @@
   .nkx-dev-palette { position: fixed; left: 0; top: 56px; bottom: 0; z-index: 400; width: 240px; }
   .nkx-dev-palette.nkx-minimized { width: 0; }
 }
+/* .nkx-dev-bar (project-name input + Saved/New/Save/Send buttons) had no
+   mobile treatment at all — the input's fixed 240px width plus four
+   buttons add up to well over 600px, badly overflowing any phone
+   viewport. Wraps to two rows instead: name input full-width on its
+   own row, action buttons flowing on the row below. */
+@media (max-width: 640px) {
+  .nkx-dev-bar {
+    height: auto; min-height: 56px;
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding: 10px 14px;
+  }
+  .nkx-dev-bar input[type="text"] {
+    width: auto; flex: 1 1 100%; order: 1;
+  }
+  .nkx-dev-draft-note { order: 2; flex: 1 1 auto; }
+  .nkx-dev-bar-spacer { display: none; }
+  .nkx-dev-saved-menu, .nkx-dev-ghost-btn, .nkx-dev-send-btn { order: 3; }
+  .nkx-dev-ghost-btn, .nkx-dev-send-btn { padding: 7px 11px; font-size: 12px; }
+  .nkx-dev-saved-list { left: 0; right: auto; min-width: 200px; }
+}
+/* .nkx-dev-steps already has overflow-x:auto + white-space:nowrap in
+   its base rule above — contained, safe scroll at any width already,
+   no extra mobile rule needed. */
