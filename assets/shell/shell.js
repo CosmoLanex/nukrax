@@ -141,15 +141,18 @@ export function initShell(opts = {}) {
   // Most app pages share a `.nav-right` mount point (see file header).
   // Product pages (ea/*.html) use a different, older nav structure with
   // no `.nav-right` at all — but each has exactly one <nav> on the page,
-  // so it's still findable and hideable the same way.
+  // so it's still findable and hideable the same way. The fallback
+  // explicitly skips role="tablist" navs (e.g. dashboard.html's own
+  // .db-mobile-tabs) — those are real in-page section switchers, never
+  // legacy branding chrome, so they should never be a hide candidate.
   const oldNavRight = document.querySelector('.nav-right');
-  const oldNav = oldNavRight ? oldNavRight.closest('nav') : document.querySelector('nav');
+  const oldNav = oldNavRight ? oldNavRight.closest('nav') : document.querySelector('nav:not([role="tablist"])');
   if (oldNav) oldNav.classList.add('nkx-shell-old-nav-hidden');
 
   // ── Top bar ──
   const top = el(`
     <div class="nkx-shell-top">
-      <a href="/dashboard.html" class="nkx-shell-logo"><img src="${B}assets/logo.png" alt="NUKRAX"/><span>nukrax</span></a>
+      <a href="/dashboard.html" class="nkx-shell-logo"><span>nukrax</span><svg class="nkx-shell-logo-notch" viewBox="0 0 156 19" preserveAspectRatio="none" aria-hidden="true"><path d="M0,0 L156,0 L140.7,18.2 L14.9,18.2 Z" style="fill:var(--black);stroke:var(--line);stroke-width:1"/></svg></a>
       <nav class="nkx-shell-mainnav" aria-label="Main">
         ${MAIN_NAV.map(i => navLinkHtml(i, currentKey)).join('')}
       </nav>

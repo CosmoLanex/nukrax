@@ -37,16 +37,40 @@
   padding: 0 clamp(16px, 3vw, 32px);
   background: var(--black);
   border-bottom: 1px solid var(--line);
+  overflow: visible;
+}
+
+/* Reference (Desktop-screens.svg): the header isn't a plain rectangle —
+   its outline is one continuous path that dips into a trapezoid "flap"
+   below the bottom edge, right where the logo sits (path:
+   M29.5 20H0V-7H1556V20H244L223 45H50L29.5 20Z in the 1556-wide
+   reference). This SVG reproduces just that flap (the header's own
+   background/border already cover the plain rectangle part) — scaled
+   down from the reference's literal proportions to stay tasteful
+   against the real 64px header height rather than a ~107px overhang.
+   NOTE: implemented from the reference's path data via static analysis
+   only — this has not been visually rendered/confirmed and may need
+   adjustment once it can actually be seen. */
+.nkx-shell-logo-notch {
+  position: absolute;
+  left: 0; top: 100%;
+  width: 156px; height: 18px;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .nkx-shell-logo {
   display: flex;
   align-items: center;
-  gap: 11px;
   text-decoration: none;
   flex-shrink: 0;
+  position: relative;
 }
-.nkx-shell-logo img { width: 28px; height: 28px; border-radius: 6px; }
+/* Reference (Desktop-screens.svg): the wordmark sits alone inside the
+   header's angular notch — no separate icon badge/square beside it
+   anywhere in the source. The <img> that used to render one here has
+   been removed; .nkx-shell-logo span (the actual wordmark, in the logo
+   font) is the entire logo now, matching the reference exactly. */
 .nkx-shell-logo span { font-family: var(--font-logo); font-size: 18px; color: var(--white); }
 
 /* Main nav container — desktop.
@@ -308,6 +332,15 @@
 @media (max-width: 900px) {
   .nkx-shell-bottomnav { display: flex; }
   .nkx-shell-mobtoggle { display: flex; }
+  /* The reference (mobile-screens.svg) has no top nav pill at all at this
+     width — the 7-segment nav relocates entirely to .nkx-shell-bottomnav.
+     Without this, .nkx-shell-mainnav kept rendering as a squeezed
+     icon-only strip (it only loses its text at 1100px, never its layout
+     space) crammed into the same header row as the logo and the quick-
+     icon cluster — on a ~360-430px phone that combination doesn't fit,
+     which is what was forcing the whole page into horizontal overflow
+     and, in turn, throwing off the fixed bottom nav. */
+  .nkx-shell-mainnav { display: none; }
   body { padding-bottom: 84px; }
   /* Reference (mobile-screens.svg): the two header quick buttons are
      27x27 with rx=7 at this width — smaller than the 35x35 desktop
