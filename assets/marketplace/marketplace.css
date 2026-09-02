@@ -23,7 +23,8 @@
 .nkx-mp-card-tagline{color:var(--muted);font-size:12.5px;line-height:1.6;margin-bottom:18px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .nkx-mp-card-foot{display:flex;align-items:center;justify-content:space-between}
-.nkx-mp-card-price{color:var(--white);font-family:var(--font-m);font-size:13px}
+.nkx-mp-card-price{color:var(--white);font-family:var(--font-m);font-size:13px;font-weight:700;
+  background:rgba(143,184,196,.08);border:1px solid var(--line);border-radius:6px;padding:5px 10px}
 .nkx-mp-card-arrow{color:var(--accent)}
 .nkx-mp-empty{grid-column:1/-1;padding:50px 20px;text-align:center;color:var(--muted);font-size:13.5px;
   border:1px dashed var(--line);border-radius:12px}
