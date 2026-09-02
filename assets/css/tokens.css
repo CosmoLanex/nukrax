@@ -129,6 +129,13 @@
    modulo whitespace) and duplicated in every page's own <style> block. */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* Site-wide horizontal-overflow safety net (see Phase 3 mobile audit notes).
+   This does not fix whatever page-level element is actually wider than the
+   viewport — those are being tracked down and fixed at the source — but it
+   stops any single oversized element from dragging the whole document into
+   a horizontal pan on mobile, which is what breaks position:fixed/sticky
+   elements (top bar, bottom nav) tracking the visual viewport correctly. */
+html, body { max-width: 100%; overflow-x: hidden; }
 
 /* In-app "Reduce motion" preference (Settings → Appearance), applied by
    assets/membership/motion.js on top of the OS-level prefers-reduced-motion
