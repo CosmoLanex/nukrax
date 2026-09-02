@@ -60,9 +60,17 @@ canvas#bg { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.25
 }
 #page.show { opacity: 1; transform: none; }
 
-/* NAV */
+/* This bar keeps its original class name for minimal churn, but it's no
+   longer a full nav — the duplicate NUKRAX logo/wordmark and the
+   redundant "Visit Site" link (both duplicated the global shell) have
+   been removed; what's left is genuine page-specific context (a back
+   button + the current crypto/network breadcrumb), so the wrapper is a
+   <div> now, not a <nav> — that also means assets/shell/shell.js's
+   old-nav-hider correctly leaves it alone instead of hiding real
+   content. top: offset by the shell's own bar height so this sticks
+   just below it instead of both competing for position:sticky;top:0. */
 .nkx-legacy-nav {
-  position: sticky; top: 0; z-index: 100;
+  position: sticky; top: var(--nkx-shell-h,64px); z-index: 100;
   background: rgba(7,9,11,0.55);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
@@ -81,24 +89,6 @@ canvas#bg { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.25
   text-decoration: none;
 }
 @media (hover:hover) and (pointer:fine){.back-btn:hover { background: var(--layer4); border-color: var(--border2); }}
-.nav-logo {
-  display: flex; align-items: center; gap: 9px; text-decoration: none;
-}
-.nav-logo-mark {
-  width: 30px; height: 30px; background: var(--layer3);
-  border: 1px solid var(--border2); border-radius: 7px;
-  display: flex; align-items:center; justify-content:center;
-  font-family: 'Outfit', sans-serif;
-  font-size: 12px; font-weight: 700; color: var(--white);
-  overflow: hidden;
-}
-.nav-logo-mark img { width:100%;height:100%;object-fit:cover;display:none; }
-.nav-logo-mark img.ok { display:block; }
-.nav-brand {
-  font-family: 'NKX Display', 'Outfit', sans-serif;
-  font-size: 17px; font-weight: 400; color: var(--white); letter-spacing: 0.02em;
-}
-.nav-brand em { color: var(--accent); font-style: normal; }
 
 .nav-right { display:flex; align-items:center; gap:8px; }
 .nav-breadcrumb {
@@ -108,25 +98,6 @@ canvas#bg { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.25
 }
 .nav-breadcrumb .sep { color: var(--border2); }
 .nav-breadcrumb .curr { color: var(--accent); }
-.nav-visit-btn {
-  display: inline-flex; align-items: center;
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px; font-weight: 700; letter-spacing: 0.01em;
-  color: var(--white);
-  background: linear-gradient(180deg, rgba(242,245,245,0.10), rgba(242,245,245,0.02));
-  border: 1px solid rgba(242,245,245,0.14);
-  box-shadow: 0 1px 0 rgba(242,245,245,0.07) inset, 0 6px 18px rgba(0,0,0,0.35);
-  padding: 9px 20px; border-radius: 14px; text-decoration: none;
-  transition: background .25s cubic-bezier(0.22,1,0.36,1), border-color .25s cubic-bezier(0.22,1,0.36,1), transform .15s cubic-bezier(0.16,1,0.3,1);
-  white-space: nowrap;
-}
-@media (hover:hover) and (pointer:fine){
-  .nav-visit-btn:hover {
-    background: linear-gradient(180deg, rgba(242,245,245,0.15), rgba(242,245,245,0.04));
-    border-color: rgba(242,245,245,0.24);
-  }
-}
-.nav-visit-btn:active { transform: scale(.95); }
 
 /* MAIN */
 main {
@@ -377,18 +348,15 @@ footer {
 
 /* ── RESPONSIVE ── */
 @media(max-width:480px) {
-  .nav-visit-btn { padding: 7px 14px; font-size: 12px; }
   .asset-badge { display:none; }
   .nav-breadcrumb { display:none; }
   .switch-row { flex-direction:column; }
   .switch-btn { width:100%; }
 }
 @media(max-width:360px) {
-  nav { padding: 0 14px; gap: 8px; }
+  .nkx-legacy-nav { padding: 0 14px; gap: 8px; }
   .nav-left { gap: 8px; }
   .back-btn { width: 30px; height: 30px; font-size: 14px; }
-  .nav-logo-mark { width: 26px; height: 26px; }
-  .nav-brand { font-size: 14px; }
 }
 </style>
 </head>
@@ -397,16 +365,9 @@ footer {
 <div id="toast"></div>
 
 <div id="page">
-  <nav class="nkx-legacy-nav">
+  <div class="nkx-legacy-nav">
     <div class="nav-left">
       <a href="/cr.html" class="back-btn" id="backBtn">←</a>
-      <a href="/cr.html" class="nav-logo">
-        <div class="nav-logo-mark">
-          <img src="assets/logo.png" id="navLogo" alt="N">
-          <span id="navFb">N</span>
-        </div>
-        <span class="nav-brand">nukrax<em>.cr</em></span>
-      </a>
     </div>
     <div class="nav-right">
       <div class="nav-breadcrumb">
@@ -416,9 +377,8 @@ footer {
         <span class="sep">/</span>
         <span class="curr" id="bcNet">—</span>
       </div>
-      <a href="https://nukrax.com" class="nav-visit-btn" target="_blank" rel="noopener">Visit Site</a>
     </div>
-  </nav>
+  </div>
 
   <main>
     <!-- Asset header -->
@@ -505,10 +465,8 @@ footer {
 <script src="assets/address.js"></script>
 <script src="data.js"></script>
 <script>
-// ── Logo ──
-const navLogo = document.getElementById('navLogo');
-navLogo.onload  = () => { navLogo.classList.add('ok'); document.getElementById('navFb').style.display='none'; };
-navLogo.onerror = () => navLogo.style.display='none';
+// (navLogo/navFb removed along with the old nav — assets/shell/shell.js
+// now owns the one NUKRAX logo shown on this page.)
 
 // ── Params ──
 const params  = new URLSearchParams(location.search);

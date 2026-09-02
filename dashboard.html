@@ -24,18 +24,11 @@
 <style>
 body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
 
-/* ── nav ── */
-.db-nav{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,4vw,40px);
-  border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--black);z-index:500}
-.db-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
-.db-logo img{width:28px;height:28px;border-radius:6px}
-.db-logo span{font-family:var(--font-logo);font-size:18px;color:var(--white)}
-
 /* ── shell: sidebar + content ── */
-.db-shell{display:flex;max-width:1440px;margin:0 auto;min-height:calc(100vh - 68px)}
+.db-shell{display:flex;max-width:1440px;margin:0 auto;min-height:calc(100vh - var(--nkx-shell-h,64px))}
 
 .db-sidebar{width:236px;flex-shrink:0;border-right:1px solid var(--line);padding:24px 12px;position:sticky;
-  top:68px;height:calc(100vh - 68px);overflow-y:auto}
+  top:var(--nkx-shell-h,64px);height:calc(100vh - var(--nkx-shell-h,64px));overflow-y:auto}
 .db-nav-item{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;color:var(--muted);
   font-family:var(--font-b);font-size:13.5px;text-align:left;padding:10px 14px;border-radius:8px;cursor:pointer;
   margin-bottom:2px;transition:background .2s var(--ease),color .2s var(--ease)}
@@ -60,7 +53,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 @media(max-width:900px){
   .db-sidebar{display:none}
   .db-mobile-tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line);
-    padding:0 clamp(20px,4vw,44px);position:sticky;top:68px;background:var(--black);z-index:400}
+    padding:0 clamp(20px,4vw,44px);position:sticky;top:var(--nkx-shell-h,64px);background:var(--black);z-index:400}
   .db-mobile-tabs::-webkit-scrollbar{display:none}
   .db-mobile-tabs .db-nav-item{white-space:nowrap;margin-bottom:0;border-radius:0;padding:14px 12px;
     border-bottom:2px solid transparent}
@@ -103,6 +96,22 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 .db-quick-card-title{color:var(--white);font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:space-between}
 .db-quick-card-desc{color:var(--muted);font-size:12px;margin-top:6px;line-height:1.5}
 
+/* ── Overview's two primary creation actions ──
+   Deliberately a different, more prominent visual weight than the plain
+   .db-quick-card links used everywhere else on the dashboard (Community,
+   Marketplace, Terminal, etc.) — these two are the dashboard's actual
+   primary actions per the brief, so they read as such at a glance
+   instead of blending into a generic link grid. */
+.db-create-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:32px}
+.db-create-card{display:flex;align-items:center;gap:16px;border:1px solid var(--line);background:var(--panel);
+  border-radius:12px;padding:20px 22px;text-decoration:none;transition:border-color .25s var(--ease),background .25s var(--ease),transform .3s var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.db-create-card:hover{border-color:var(--accent);background:rgba(143,184,196,.06);transform:translateY(-2px)}}
+.db-create-icon{flex-shrink:0;width:42px;height:42px;border-radius:10px;background:var(--accent);color:var(--black);
+  display:flex;align-items:center;justify-content:center}
+.db-create-icon svg{width:20px;height:20px}
+.db-create-title{color:var(--white);font-size:15.5px;font-weight:600}
+.db-create-desc{color:var(--muted);font-size:12.5px;margin-top:3px;line-height:1.5}
+
 /* ── membership tiers ── */
 .db-tier-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:28px}
 .db-tier-card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:24px}
@@ -134,13 +143,10 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 </head>
 <body>
 
-<nav class="db-nav">
-  <a href="index.html" class="db-logo"><img src="assets/logo.png" alt="NUKRAX"/><span>nukrax</span></a>
-  <div class="nav-right"></div>
-</nav>
-
 <div class="db-shell">
-  <aside class="db-sidebar" id="dbSidebar" role="tablist" aria-label="Dashboard sections"></aside>
+  <aside class="db-sidebar" id="dbSidebar" role="tablist" aria-label="Dashboard sections">
+    <div id="dbSidebarNav"></div>
+  </aside>
   <nav class="db-mobile-tabs" id="dbMobileTabs" role="tablist" aria-label="Dashboard sections"></nav>
 
   <main class="db-main" id="dbMain">
@@ -151,12 +157,13 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
         <h2 id="dbGreeting">Welcome back</h2>
         <div class="wms-chips" id="dbOverviewChips"></div>
       </div>
+      <div class="db-create-grid" id="dbOverviewQuick"></div>
       <div class="db-grid" id="dbOverviewStats"></div>
       <div class="db-section-title-row">
         <h3 class="db-section-title">Quick Actions</h3>
         <button type="button" class="db-link-btn db-section-title-link" data-nkx-go-panel="quick-actions">See all →</button>
       </div>
-      <div class="db-quick-grid" id="dbOverviewQuick"></div>
+      <div class="db-quick-grid" id="dbOverviewShortcuts"></div>
       <h3 class="db-section-title">Recent Notifications</h3>
       <div class="db-list" id="dbOverviewNotifs"></div>
       <h3 class="db-section-title" style="margin-top:28px">Product Updates</h3>
@@ -362,10 +369,21 @@ function quickActionCards() {
 // actions (per the brief) — everything else quickActionCards() offers
 // is still one click away via the "See all →" link into the full
 // Quick Actions tab, so nothing is actually removed, just decluttered.
+const PLUS_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`;
 function overviewCreatorCards() {
   return [
-    { title: 'Develop E.A', desc: 'Build a custom Expert Advisor on the visual canvas.', href: '/develop/ea.html' },
+    { title: 'Create E.A', desc: 'Build a custom Expert Advisor on the visual canvas.', href: '/develop/ea.html' },
     { title: 'Create Automation', desc: 'Build a custom automation on the visual canvas.', href: '/develop/automation.html' },
+  ].map(c => `<a href="${c.href}" class="db-create-card"><span class="db-create-icon" aria-hidden="true">${PLUS_ICON}</span><div><div class="db-create-title">${c.title}</div><div class="db-create-desc">${c.desc}</div></div></a>`).join('');
+}
+
+// A handful of secondary shortcuts on Overview (the rest live one click
+// away in the full Quick Actions tab via "See all →" above).
+function overviewSecondaryCards() {
+  return [
+    { title: 'Community', desc: 'See what other traders are posting right now.', href: 'community.html' },
+    { title: 'Leaderboard', desc: 'See where you rank against the Top 28.', href: 'leaderboard.html' },
+    { title: 'Marketplace', desc: 'Browse EAs, automations, and more.', href: 'marketplace.html' },
   ].map(c => `<a href="${c.href}" class="db-quick-card"><div class="db-quick-card-title">${c.title}<span class="btn-arrow">→</span></div><div class="db-quick-card-desc">${c.desc}</div></a>`).join('');
 }
 
@@ -388,6 +406,7 @@ async function renderOverview() {
     <div class="db-card"><div class="db-card-label">Membership</div><div class="db-card-value">${TIERS[membership.membership_tier] ? TIERS[membership.membership_tier].label : 'Free'}</div><div class="db-card-sub">Since ${membership.membership_since ? new Date(membership.membership_since).toLocaleDateString() : '—'}</div></div>
   `;
   document.getElementById('dbOverviewQuick').innerHTML = overviewCreatorCards();
+  document.getElementById('dbOverviewShortcuts').innerHTML = overviewSecondaryCards();
 
   const notifs = await getNotifications(currentUser, 5);
   document.getElementById('dbOverviewNotifs').innerHTML = notifs.length
@@ -636,7 +655,15 @@ async function init() {
 
   membership = await getMembershipProfile(currentUser) || { id: currentUser.id, membership_tier: 'free', level: 1, xp: 0, points: 0, lifetime_points: 0, badge_keys: [] };
 
-  buildNav(document.getElementById('dbSidebar'), false);
+  // NOTE: this targets #dbSidebarNav (an inner wrapper), not #dbSidebar
+  // itself — #dbSidebar also holds the shell's collapse/minimize toggle
+  // button (assets/shell/shell.js prepends it there on page load), and
+  // this function replaces its target's innerHTML wholesale every time
+  // panels are (re)built, which was silently deleting that toggle button
+  // moments after shell.js inserted it. Scoping to the inner wrapper
+  // means this can keep doing a full innerHTML replace without touching
+  // anything the shell owns.
+  buildNav(document.getElementById('dbSidebarNav'), false);
   buildNav(document.getElementById('dbMobileTabs'), true);
 
   // Show the shell immediately with skeleton placeholders rather than
@@ -664,7 +691,7 @@ async function init() {
   ]);
   renderQuickActions();
   renderRecommended();
-  initTilt('.db-quick-card, .nkx-tier-card', { strength: 2, lift: 3 });
+  initTilt('.db-quick-card, .db-create-card, .nkx-tier-card', { strength: 2, lift: 3 });
 
   const lastTab = getUIState('dashboard_last_tab', 'overview');
   switchPanel(lastTab);

@@ -41,19 +41,12 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 @keyframes cm-drift-b{to{transform:translate(-50px,-30px)}}
 @media (prefers-reduced-motion: reduce){.cm-ambient::before,.cm-ambient::after{animation:none}}
 
-.cm-nav{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(16px,4vw,48px);
-  border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(3,5,7,0.75);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter: blur(14px);
-  z-index:50}
-.cm-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.cm-logo img{width:26px;height:26px;border-radius:6px}
-.cm-logo span{font-family:var(--font-logo);font-size:17px;color:var(--white)}
 .cm-back{font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none}
 @media (hover:hover) and (pointer:fine){.cm-back:hover{color:var(--accent)}}
 .cm-nav .nav-right{display:flex;align-items:center;gap:14px}
 
 /* ── main area ── */
-.cm-main{max-width:640px;margin:0 auto;padding:14px 0 100px;position:relative;z-index:1}
+.cm-main{max-width:640px;margin:0 auto;padding:14px 0 40px;position:relative;z-index:1}
 .cm-view.active{animation:cm-rise .5s cubic-bezier(.22,1,.36,1) both}
 @media (prefers-reduced-motion: reduce){.cm-view.active{animation:none}}
 .cm-view{display:none;padding:0 clamp(12px,3vw,24px)}
@@ -129,11 +122,22 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 .cm-notif-row.unread{border-color:var(--accent-dim);background:rgba(143,184,196,.06)}
 .cm-notif-text{font-size:13.5px;color:var(--text);line-height:1.5}
 
-/* ── bottom nav ── */
-.cm-bottomnav{position:fixed;bottom:0;left:0;right:0;background:rgba(3,5,7,.92);-webkit-backdrop-filter: blur(10px);
+/* ── bottom nav ──
+   Mobile (<860px): this used to be its own position:fixed;bottom:0 bar,
+   which duplicated/collided with the global shell's own fixed bottom nav
+   (assets/shell/shell.js — .nkx-shell-bottomnav, also bottom-fixed). Since
+   Community's nav items (Search/Lunox AI/Notifications/Post) aren't a
+   subset of the shell's global 7, this stays as Community's own nav, but
+   now sticks to the TOP (right below the shell's sticky top bar) instead
+   of competing for the bottom edge — matching the same "in-page section
+   tabs" pattern the Dashboard uses (.db-mobile-tabs) rather than a second
+   bottom bar. Desktop (≥860px) is unaffected: it already becomes a left
+   rail there, which never conflicted with the shell's bottom nav (which
+   is mobile-only, display:none above 900px). */
+.cm-bottomnav{position:sticky;top:var(--nkx-shell-h,64px);left:0;right:0;background:rgba(3,5,7,.92);-webkit-backdrop-filter: blur(10px);
   backdrop-filter:blur(10px);
   border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-around;
-  padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:500}
+  padding:10px 0;z-index:400}
 .cm-nav-item{background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;display:flex;
   align-items:center;justify-content:center;transition:color .2s ease,background .2s ease;text-decoration:none}
 .cm-nav-item svg{width:23px;height:23px;flex-shrink:0}
@@ -145,7 +149,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 
 @media(min-width:860px){
   .cm-bottomnav{
-    top:64px;bottom:0;left:0;right:auto;width:88px;
+    position:fixed;top:64px;bottom:0;left:0;right:auto;width:88px;
     flex-direction:column;justify-content:flex-start;align-items:stretch;gap:6px;
     padding:20px 14px;border-top:none;border-right:1px solid var(--line);
     background:rgba(3,5,7,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter: blur(14px);
@@ -230,10 +234,6 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 
 <div class="cm-ambient" aria-hidden="true"></div>
 
-<nav class="cm-nav">
-  <a href="index.html" class="cm-logo"><img src="assets/logo.png" alt=""/><span>nukrax</span></a>
-  <div class="nav-right"></div>
-</nav>
 
 <main class="cm-main">
   <div class="cm-view active" id="cm-view-home">

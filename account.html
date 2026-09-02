@@ -26,14 +26,6 @@
 
 body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
 
-.ac-nav{display:flex;align-items:center;justify-content:space-between;padding:22px clamp(24px,5vw,64px);
-  border-bottom:1px solid var(--line)}
-.ac-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
-.ac-logo img{width:30px;height:30px;border-radius:6px}
-.ac-logo span{font-family:var(--font-logo);font-size:20px;color:var(--white)}
-.ac-back{font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none}
-@media (hover:hover) and (pointer:fine){.ac-back:hover{color:var(--accent)}}
-
 .ac-page{width:100%;max-width:640px;margin:0 auto;padding:56px clamp(24px,5vw,64px) 100px}
 .ac-page h1{font-family:var(--font-b);font-size:clamp(28px,4vw,36px);color:var(--white);margin-bottom:12px;font-weight:700}
 .ac-page-sub{font-size:13.5px;color:var(--muted);margin-bottom:40px}
@@ -137,13 +129,6 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 </style>
 </head>
 <body>
-
-<nav class="ac-nav">
-  <a href="index.html" class="ac-logo"><img src="assets/logo.png" alt=""/><span>nukrax</span></a>
-  <div class="nav-right" style="display:flex;align-items:center;gap:14px">
-    <a href="index.html" class="ac-back">← Back to site</a>
-  </div>
-</nav>
 
 <div class="ac-page">
   <h1>Account</h1>

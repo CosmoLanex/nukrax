@@ -92,45 +92,18 @@ body::before{
   .reveal{opacity:1;transform:none;transition:none}
   *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important}
 }
-
-/* ══════════ NAV ══════════ */
-.nkx-legacy-nav{
-  position:fixed;top:0;left:0;right:0;
-  z-index:100;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:26px var(--gutter);
-  background:rgba(3,5,7,0.88);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--line);
-}
-.nav-logo-container{display:flex;align-items:center;gap:11px}
-.nav-logo-img{
-  width:30px;height:30px;border-radius:7px;overflow:hidden;
-  border:1px solid var(--line);
-  background:var(--panel);
-}
-.nav-logo-img img{width:100%;height:100%;object-fit:cover}
-.nav-logo{
-  font-family:var(--font-logo);font-weight:400;font-size:16px;
-  letter-spacing:.05em;text-transform:uppercase;color:var(--white);
-}
-.nav-right{display:flex;align-items:center;gap:16px}
-.nav-back{
-  display:flex;align-items:center;gap:8px;
-  font-family:var(--font-m);font-size:11px;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--muted);
-  transition:color .3s var(--ease);
-}
-@media (hover:hover) and (pointer:fine){.nav-back:hover{color:var(--white)}}
-.nav-back .arrow{transition:transform .3s var(--ease-out)}
-@media (hover:hover) and (pointer:fine){.nav-back:hover .arrow{transform:translateX(-3px)}}
-
 /* ══════════ PAGE HEADER ══════════ */
 .page-header{
   max-width:var(--container);
   margin:0 auto;
-  padding:150px var(--gutter) 6px;
+  /* Was 150px, sized to clear the old *fixed* nav below — but that nav
+     never occupied real layout space (fixed elements don't), so this
+     padding was pure manual compensation. The global shell's own top
+     bar (assets/shell/shell.js) is sticky, not fixed — it already
+     pushes this element down naturally in normal flow. This is now
+     just this section's own breathing room on top of that, not nav
+     clearance. */
+  padding:56px var(--gutter) 6px;
   position:relative;
   z-index:2;
 }
@@ -393,9 +366,7 @@ footer{
 @media(max-width:640px){.footer-bottom{flex-direction:column;align-items:flex-start}}
 
 @media (max-width: 480px) {
-  nav{padding:16px 18px}
-  .nav-logo-img{width:26px;height:26px}
-  .page-header{padding:112px 20px 6px}
+  .page-header{padding:36px 20px 6px}
   .meta-strip{padding:16px 20px}
   .section{padding:64px 20px 0}
   .matrix-wrap{padding:26px 16px 24px}
@@ -408,13 +379,6 @@ footer{
 
 <div class="bg-glow"></div>
 
-<nav class="nkx-legacy-nav">
-  <div class="nav-logo-container">
-    <a href="index.html" class="nav-logo-img"><img src="assets/logo.png" alt="NUKRAX Logo"></a>
-    <a href="index.html" class="nav-logo">nukrax</a>
-  </div>
-  <div class="nav-right"><a href="index.html" class="nav-back"><span class="arrow">←</span> Back to Hub</a></div>
-</nav>
 
 <div class="page-header">
   <div class="section-label reveal">03 — Market Overview</div>

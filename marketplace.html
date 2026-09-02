@@ -41,25 +41,34 @@
 <style>
 body{background:var(--black);color:var(--text);font-family:var(--font-b);min-height:100vh}
 
-.mp-nav{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,4vw,40px);border-bottom:1px solid var(--line)}
-.mp-logo{display:flex;align-items:center;gap:11px;text-decoration:none}
-.mp-logo img{width:28px;height:28px;border-radius:6px}
-.mp-logo span{font-family:var(--font-logo);font-size:18px;color:var(--white)}
-
-.mp-hero{padding:52px clamp(20px,4vw,44px) 30px;max-width:1440px;margin:0 auto}
+.mp-hero{padding:44px clamp(20px,4vw,44px) 22px;max-width:1440px;margin:0 auto}
 .mp-hero h1{font-family:var(--font-b);font-size:clamp(28px,4vw,42px);color:var(--white);margin-bottom:10px;font-weight:700}
-.mp-hero p{color:var(--muted);font-size:14px;max-width:560px;line-height:1.7}
+.mp-hero p{color:var(--muted);font-size:14px;max-width:560px;line-height:1.7;margin-bottom:18px}
 
-.mp-toolbar{max-width:1440px;margin:0 auto;padding:0 clamp(20px,4vw,44px) 20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+/* Genuine, non-gamified catalog stats — real counts, not invented. */
+.mp-stats{display:flex;gap:22px;flex-wrap:wrap}
+.mp-stat{display:flex;align-items:baseline;gap:6px}
+.mp-stat-value{font-family:var(--font-m);font-size:15px;color:var(--white);font-weight:700}
+.mp-stat-label{font-family:var(--font-m);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+.mp-toolbar{max-width:1440px;margin:0 auto;padding:18px clamp(20px,4vw,44px) 16px;border-top:1px solid var(--line);
+  display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .mp-search{flex:1;min-width:220px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px 16px;color:var(--white);font-size:13.5px}
 .mp-search::placeholder{color:var(--muted)}
 .mp-sort, .mp-toggle{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px 14px;color:var(--text);font-size:12.5px;font-family:var(--font-m)}
 .mp-toggle{cursor:pointer;user-select:none;display:flex;align-items:center;gap:6px}
 .mp-toggle.active{border-color:var(--accent);color:var(--accent)}
 
-.mp-cats{max-width:1440px;margin:0 auto;padding:0 clamp(20px,4vw,44px) 26px;display:flex;gap:8px;flex-wrap:wrap}
+/* Category filter — one horizontally-scrollable row instead of wrapping
+   into a ragged multi-row block (11 categories + "All" never fit one row
+   past ~1100px, and wrapping made the filter area read as visual noise
+   rather than a clean control). Same "scroll strip" convention already
+   used elsewhere on the site (e.g. Community's mobile section tabs). */
+.mp-cats{max-width:1440px;margin:0 auto;padding:0 clamp(20px,4vw,44px) 26px;display:flex;gap:8px;
+  flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.mp-cats::-webkit-scrollbar{display:none}
 .mp-cat-chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:12px;
-  color:var(--muted);cursor:pointer;white-space:nowrap;font-family:var(--font-m)}
+  color:var(--muted);cursor:pointer;white-space:nowrap;font-family:var(--font-m);flex-shrink:0}
 .mp-cat-chip.active{border-color:var(--accent);color:var(--accent);background:rgba(143,184,196,.08)}
 
 .mp-section{max-width:1440px;margin:0 auto;padding:0 clamp(20px,4vw,44px) 40px}
@@ -73,14 +82,10 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 </head>
 <body>
 
-<nav class="mp-nav">
-  <a href="index.html" class="mp-logo"><img src="assets/logo.png" alt="NUKRAX"/><span>nukrax</span></a>
-  <div class="nav-right"></div>
-</nav>
-
 <div class="mp-hero">
   <h1>Marketplace</h1>
   <p>Expert Advisors, automation tools, AI models, and more — built for traders and developers who want execution-grade systems, not templates.</p>
+  <div class="mp-stats" id="mpStats"></div>
 </div>
 
 <div class="mp-toolbar">
@@ -151,6 +156,11 @@ async function init() {
   const { data } = await supabase.auth.getSession();
   currentUser = data.session?.user || null;
   favoriteIds = currentUser ? await getFavoriteIds(currentUser.id) : [];
+
+  document.getElementById('mpStats').innerHTML = `
+    <div class="mp-stat"><span class="mp-stat-value">${filterProducts({}).length}</span><span class="mp-stat-label">Products</span></div>
+    <div class="mp-stat"><span class="mp-stat-value">${CATEGORIES.length}</span><span class="mp-stat-label">Categories</span></div>
+  `;
 
   const recent = getRecentlyViewed();
   if (recent.length) {

@@ -882,17 +882,11 @@ window.addEventListener('pageshow', function(event){
   }
 });
 
-/* ── NAVBAR SCROLL ── */
-const navbar = document.getElementById('navbar');
-let navScrollTicking = false;
-window.addEventListener('scroll', ()=>{
-  if(navScrollTicking) return;
-  navScrollTicking = true;
-  requestAnimationFrame(()=>{
-    navbar.classList.toggle('scrolled', window.scrollY > 60);
-    navScrollTicking = false;
-  });
-}, { passive:true });
+/* NOTE: the old "NAVBAR SCROLL" listener that used to live here toggled
+   a .scrolled class on #navbar (assets/shell/shell.js hides that whole
+   legacy nav on load — see the shared-shell architecture fix) — it was
+   running a scroll handler, throttled or not, purely to style an
+   invisible element. Removed as dead weight rather than left running. */
 
 /* ── REVEAL ON SCROLL — reversible, word-split headings ── */
 const REDUCE_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -134,51 +134,6 @@ body::after{
 }
 @media (hover:hover) and (pointer:fine){#sidebar:hover{width:220px}}
 @media (hover:hover) and (pointer:fine){#sidebar:hover .nav-label{opacity:1;transform:translateX(0)}}
-@media (hover:hover) and (pointer:fine){#sidebar:hover .logo-full{opacity:1;width:auto}}
-@media (hover:hover) and (pointer:fine){#sidebar:hover .logo-short{opacity:0;width:0}}
-
-.logo-area{
-  width:100%;padding:0 16px;margin-bottom:16px;
-  display:flex;align-items:center;gap:12px;
-  white-space:nowrap;overflow:hidden;position:relative;
-}
-.logo-img-container {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  background: rgba(30,30,30,0.5);
-  border: 1px solid rgba(70,70,70,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s;
-}
-.logo-img-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-@media (hover:hover) and (pointer:fine){
-#sidebar:hover .logo-img-container {
-  border-color: rgba(100,100,100,0.5);
-  box-shadow: 0 0 12px rgba(242,245,245,0.1);
-}
-}
-.logo-short{
-  font-family:var(--font-logo);font-size:22px;font-weight:400;
-  color:var(--white);letter-spacing:.04em;flex-shrink:0;
-  transition:opacity .3s,width .3s;
-  display: none;
-}
-.logo-full{
-  font-family:var(--font-logo);font-size:16px;font-weight:400;
-  color:var(--text);opacity:0;width:0;letter-spacing:.02em;
-  transition:opacity .3s .1s;overflow:hidden;
-  white-space:nowrap;
-}
-.logo-full span{color:var(--muted);font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-shadow:none}
 
 .nav-item{
   width:calc(100% - 12px);padding:0 16px;margin:0 6px;
@@ -436,7 +391,7 @@ body::after{
   font-family:var(--font-head);font-size:24px;font-weight:800;
   color:var(--white);letter-spacing:-.01em;
 }
-.brand-mark{font-family:var(--font-logo);font-weight:400;letter-spacing:.02em}
+.brand-mark{font-weight:800;letter-spacing:.02em}
 .dash-greeting .brand-mark > span{
   color:var(--accent);
   text-shadow:0 0 20px rgba(143,184,196,.25);
@@ -1070,24 +1025,31 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
   button,a,.filter-btn,.nav-item,.recent-row,tbody tr,.psych-tag,.result-opt,.toggle,.modal-close,.form-input,.form-select,.form-textarea{cursor:pointer!important}
   textarea,input{cursor:text!important}
 
-  /* ── SIDEBAR → FIXED BOTTOM NAV ── */
+  /* ── SIDEBAR → IN-PAGE TAB STRIP ──
+     Previously became its own position:fixed;bottom:0 bar here, which
+     duplicated the global shell's fixed bottom nav (assets/shell/shell.js
+     — .nkx-shell-bottomnav). The shell already owns the fixed bottom
+     edge site-wide, so this internal Dashboard/Journal/Analytics/Settings
+     switcher for the Terminal now sits as an ordinary horizontal tab
+     strip at the top of the content area instead of competing for the
+     bottom edge — same convention as Dashboard's own .db-mobile-tabs. */
   #sidebar{
-    position:fixed!important;
-    width:100%!important;height:62px;
-    top:auto!important;bottom:0;left:0;right:0;
+    position:relative!important;
+    width:100%!important;height:56px;
+    flex-shrink:0;
+    top:auto!important;bottom:auto;left:auto;right:auto;
     flex-direction:row;padding:0;gap:0;
-    border-right:none;border-top:1px solid var(--border);
+    border-right:none;border-bottom:1px solid var(--border);
     justify-content:space-around;align-items:stretch;
-    z-index:200;overflow:visible;
+    z-index:1;overflow-x:auto;overflow-y:hidden;
     background:rgba(10,15,19,.97);
     backdrop-filter:blur(20px);
     -webkit-backdrop-filter:blur(20px);
-    box-shadow:0 -4px 24px rgba(0,0,0,.5);
+    box-shadow:none;
   }
   @media (hover:hover) and (pointer:fine){#sidebar:hover{width:100%!important}}
   #sidebar::before{display:none}
 
-  .logo-area{display:none}
   .sidebar-bottom{
     display:contents;/* children become direct flex children of sidebar */
   }
@@ -1103,10 +1065,10 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
   @media (hover:hover) and (pointer:fine){.nav-item:hover{transform:none!important}}
   .nav-item::before{display:none}
   .nav-item.active::after{
-    left:50%;top:0;bottom:auto;
+    left:50%;bottom:0;top:auto;
     transform:translateX(-50%);
     width:36px;height:2px;
-    border-radius:0 0 2px 2px;
+    border-radius:2px 2px 0 0;
   }
   .nav-icon{
     font-size:20px;width:auto;
@@ -1124,10 +1086,14 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
     color:inherit;
   }
 
-  /* ── TOPBAR — stack on two rows if needed ── */
+  /* ── TOPBAR — no longer independently fixed. The global shell
+     (assets/shell/shell.js) already provides a persistent sticky top bar
+     across the whole app; this page-local topbar now sticks directly
+     below it instead of being a second fixed layer competing for the
+     same top:0 position at mobile widths. ── */
   #topbar{
-    position:fixed!important;
-    top:0;left:0;right:0;
+    position:sticky!important;
+    top:var(--nkx-shell-h,64px);left:0;right:0;
     height:auto!important;min-height:56px;
     padding:8px 14px;
     flex-wrap:wrap;
@@ -1154,20 +1120,20 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
     white-space:nowrap;
   }
 
-  /* ── MAIN layout — clear fixed topbar + fixed bottom nav ── */
+  /* ── MAIN layout — #topbar and #sidebar are in normal flow now (see
+     above), so #content only needs its own comfortable padding; the
+     global shell (assets/shell/shell.js/shell.css) already reserves
+     body-level clearance for its own fixed bottom nav. ── */
   #main{
     margin-left:0!important;
-    height:100vh;
+    height:auto;overflow:visible;
     display:flex;flex-direction:column;
     padding-top:0;
-    overflow:hidden;
   }
   #content{
-    flex:1;height:0;
+    flex:1;
     padding:12px;
-    padding-top:72px;  /* clears fixed topbar (~56px min-height + gap) */
-    padding-bottom:78px; /* clears fixed bottom nav (62px + breathing room) */
-    overflow-y:auto;overflow-x:hidden;
+    overflow-y:visible;overflow-x:hidden;
     -webkit-overflow-scrolling:touch;
   }
 
@@ -1605,16 +1571,11 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 <!-- ═══ APP ═══ -->
 <div id="app">
 
-  <!-- SIDEBAR -->
+  <!-- SIDEBAR — internal Terminal sub-navigation (Dashboard/Journal/Analytics/Settings
+       views within the trading journal tool itself). The old NUKRAX logo block that used
+       to live here was a duplicate of the global shell's own logo (assets/shell/shell.js)
+       and has been removed — the shell now owns all top-level NUKRAX branding site-wide. -->
   <nav id="sidebar">
-    <div class="logo-area">
-      <a href="index.html" class="logo-img-container">
-        <img src="assets/logo.png" alt="NUKRAX Logo">
-      </a>
-      <span class="logo-short">N</span>
-      <span class="logo-full">NUKRAX<span>.TR</span></span>
-    </div>
-
     <button class="nav-item active" data-page="dashboard" onclick="navigate(this)">
       <span class="nav-icon">⬡</span>
       <span class="nav-label">Dashboard</span>
@@ -1660,9 +1621,6 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
           </div>
         </div>
         <button class="btn-settings-edit" onclick="openQS()" title="Edit Account Settings">⚙ Edit Settings</button>
-        <a href="index.html" class="btn-settings-edit" style="text-decoration:none;display:flex;align-items:center;gap:6px" title="Back to Hub">
-          <span style="transform:translateY(-1px)">←</span> Back to Hub
-        </a>
         <button class="btn btn-primary" onclick="openModal()">+ Add Trade</button>
       </div>
     </div>
@@ -1921,7 +1879,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
             <div class="card card-sm">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:16px">
                 <div>
-                  <div style="font-family:var(--font-logo);font-size:20px;font-weight:400;color:var(--white);margin-bottom:4px">NUKRAX.TR</div>
+                  <div style="font-family:var(--font-head);font-size:19px;font-weight:800;color:var(--white);margin-bottom:4px">NUKRAX.TR</div>
                   <div style="font-size:11px;color:var(--muted)">Version 2.0.0 — Elite 3D Trading Journal</div>
                   <div style="font-size:11px;color:var(--muted);margin-top:4px">Built for discipline, precision, and performance.</div>
                 </div>

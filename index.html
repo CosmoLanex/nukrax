@@ -288,13 +288,10 @@ nav.scrolled{
   }
 }
 
-.nav-logo-container{display:flex;align-items:center;gap:11px}
-.nav-logo-img{
-  width:30px;height:30px;border-radius:7px;overflow:hidden;
-  border:1px solid var(--line);
-  background:var(--panel);
-}
-.nav-logo-img img{width:100%;height:100%;object-fit:cover}
+.nav-logo-container{display:flex;align-items:center}
+/* Reference (Desktop-screens.svg): the wordmark sits alone, no icon
+   badge beside it — the .nav-logo-img icon box that used to render one
+   here has been removed. */
 .nav-logo{
   font-family:var(--font-logo);font-weight:400;font-size:var(--fs-16);
   letter-spacing:.05em;text-transform:uppercase;color:var(--white);
@@ -382,7 +379,24 @@ body.nkx-logged-out #nkx-w-menu-wrap{display:none!important}
 body.nkx-logged-out .nav-login-link{display:inline-block}
 body.nkx-logged-out .nav-get-started-link{display:inline-flex}
 
-@media(max-width:860px){.nav-links{display:none}}
+/* Was display:none here — the Infrastructure/Terminal/Execution Systems
+   links (in-page section jumps) became completely inaccessible on
+   mobile rather than just hidden behind a toggle. Kept reachable as a
+   horizontally-scrollable strip instead — same safe, contained-overflow
+   pattern already used elsewhere on the site (marketplace category
+   chips, community's mobile section tabs) rather than introducing new
+   toggle/drawer JS this late. Overrides the desktop absolute-centering
+   positioning, which doesn't suit a scrollable strip. */
+@media(max-width:860px){
+  .nav-links{
+    display:flex; position:static; left:auto; transform:none;
+    justify-content:flex-start; gap:22px;
+    overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    flex-shrink:1; min-width:0; max-width:none;
+  }
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-links li{flex-shrink:0}
+}
 
 
 /* ══════════ BUTTONS / LINKS ══════════ */
@@ -668,7 +682,6 @@ body.nkx-logged-in #security{display:none}
   .hero-logo{font-size:var(--fs-hero-logo-sm);letter-spacing:.02em}
   nav{padding-left:16px;padding-right:16px}
   .nav-logo{font-size:var(--fs-14)}
-  .nav-logo-img{width:26px;height:26px}
   .nav-right{gap:10px}
   .nav-login-link{font-size:var(--fs-12);padding:9px 2px}
   .nav-get-started-link{font-size:var(--fs-12);padding:8px 14px}
@@ -1805,10 +1818,7 @@ a.testimonial-card:hover{transform:translateY(-3px)}
 <!-- NAV -->
 <nav id="navbar">
   <div class="nav-logo-container">
-    <a href="index.html" class="nav-logo-img">
-      <img src="assets/logo.png" alt="NUKRAX Logo" width="30" height="30">
-    </a>
-    <span class="nav-logo">nukrax</span>
+    <a href="index.html" class="nav-logo">nukrax</a>
   </div>
   <ul class="nav-links">
     <li><a href="#about">Infrastructure</a></li>
@@ -1838,18 +1848,15 @@ a.testimonial-card:hover{transform:translateY(-3px)}
     <div class="hero-divider"></div>
     <div class="hero-ctas">
       <div class="hero-ctas-loggedin" id="heroCtasLoggedIn">
-      <a href="/ea-selection.html" class="btn btn-primary btn-magnetic" id="btn-ea">
-        Explore Expert Advisors
+      <a href="/dashboard.html" class="btn btn-primary btn-magnetic" id="btn-dashboard">
+        Go to Dashboard
         <span class="btn-arrow">→</span>
       </a>
-      <a href="/community.html" class="link-inline link-inline-glow" id="btn-community">
+      <a href="/ea-selection.html" class="link-inline link-inline-glow" id="btn-ea">
+        Expert Advisors <span class="btn-arrow">→</span>
+      </a>
+      <a href="/community.html" class="link-inline" id="btn-community">
         COMMUNITY <span class="btn-arrow">→</span>
-      </a>
-      <a href="/cr.html" class="link-inline" id="btn-cr">
-        nukrax.cr <span class="btn-arrow">↗</span>
-      </a>
-      <a href="/tr.html" class="link-inline" id="btn-tr">
-        nukrax.tr <span class="btn-arrow">↗</span>
       </a>
       </div>
       <div class="hero-ctas-loggedout" id="heroCtasLoggedOut">
@@ -3562,18 +3569,18 @@ function applyAuthState(session) {
 
 supabase.auth.getSession().then(({ data }) => {
   applyAuthState(data.session);
-  // Logged-in default landing page is always /dashboard/. Guarded so this
-  // can fire AT MOST ONCE per tab (sessionStorage flag) — a defensive
-  // circuit-breaker: even in a worst-case race where session state were
-  // ever momentarily wrong, this can never compound into a repeat
-  // redirect. Skipped entirely if we just got bounced here BY a guard
-  // (①authRequired=1 in the URL) so that "please log in" flow is never
-  // interrupted mid-way.
-  const justBounced = new URLSearchParams(window.location.search).has('authRequired');
-  if (data.session && !justBounced && !sessionStorage.getItem('nkx_home_redirect_done')) {
-    sessionStorage.setItem('nkx_home_redirect_done', '1');
-    window.location.replace('/dashboard.html');
-  }
+  // NOTE: this used to also force window.location.replace('/dashboard.html')
+  // here — but by the time this runs, the full homepage has already
+  // loaded and rendered, so that was exactly the "blindly redirect away
+  // from a page that's already showing" behavior we don't want. The fast
+  // pre-render check at the very top of <head> already sends a returning
+  // logged-in user straight to /dashboard.html *before* any of this page
+  // loads, which is the legitimate speed optimization; if that one
+  // missed (stale/absent token) and the visitor is looking at the actual
+  // rendered homepage, applyAuthState() above is enough — the CSS rules
+  // for body.nkx-logged-in (.hero-ctas-loggedin, .welcome-panel, hiding
+  // #testimonials/#faq/#why/#stack/#security) already swap this exact
+  // page into the "Go to Dashboard" logged-in state in place.
 });
 supabase.auth.onAuthStateChange((_event, session) => applyAuthState(session));
 </script>
