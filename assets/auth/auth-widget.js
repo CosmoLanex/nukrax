@@ -531,6 +531,23 @@ function buildMenuWrap(user) {
 function renderWidget(user) {
   if (SKIP_FLOATING_WIDGET) return;
 
+  // assets/shell/shell.js is now the single source of truth for the
+  // logged-in app chrome (top nav, profile menu, hamburger menu) on every
+  // page that includes it — it renders its top bar (.nkx-shell-top)
+  // synchronously on DOMContentLoaded, before this function's caller
+  // (an async supabase.auth.getSession().then(...)) can run. Where that
+  // bar exists, this legacy floating widget would just duplicate it
+  // (extra avatar + menu buttons stacked on top of the shell's own), so
+  // it defers entirely rather than injecting anything. The login modal
+  // system below (openModal/renderView) is unaffected — pages that use
+  // the shell still need it for e.g. the ?authRequired=1 redirect flow.
+  if (document.querySelector('.nkx-shell-top')) {
+    document.getElementById('nkx-w-login-wrap')?.remove();
+    document.getElementById('nkx-w-menu-wrap')?.remove();
+    document.getElementById('nkx-auth-widget')?.remove();
+    return;
+  }
+
   // Remove any previously injected instances before re-rendering.
   document.getElementById('nkx-w-login-wrap')?.remove();
   document.getElementById('nkx-w-menu-wrap')?.remove();
