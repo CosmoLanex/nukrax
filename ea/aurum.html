@@ -55,8 +55,13 @@
     z-index: 200;
   }
 
-  /* ── NAV ── */
-  nav {
+  /* ── NAV ──
+     Was a bare nav-tag selector — applied to ANY <nav> on the
+     page, including the global shell's own .nkx-shell-mainnav and
+     .nkx-shell-bottomnav once assets/shell/shell.js injects them
+     (position:fixed, padding, background all leaking in with no
+     competing declaration to stop them). Scoped to a class instead. */
+  .nkx-legacy-nav {
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
@@ -829,17 +834,27 @@
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
   @media(max-width:640px) {
-    nav { padding: 16px 20px; }
+    .nkx-legacy-nav { padding: 16px 20px; }
     .nav-links { display: none; }
     .hero-stats { flex-direction: column; }
     .stat { border-right: none; border-bottom: 1px solid var(--border); }
   }
+/* -- Screenshot gallery -- assets/data/products/screenshots.js (shared
+   with product.html and every other product page). Hidden entirely if
+   no screenshots exist yet for this product; never a broken-image box. */
+.pd-gallery-wrap{max-width:900px;margin:40px auto 0;padding:0 clamp(20px,4vw,44px)}
+.pd-gallery-main{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);aspect-ratio:16/9}
+.pd-gallery-main img{width:100%;height:100%;object-fit:cover;display:block}
+.pd-gallery-thumbs{display:flex;gap:10px;margin-top:10px}
+.pd-gallery-thumb{border:1px solid var(--line);border-radius:8px;overflow:hidden;padding:0;width:100px;height:60px;cursor:pointer;background:var(--panel);opacity:.6}
+.pd-gallery-thumb.active{opacity:1;border-color:var(--accent)}
+.pd-gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav>
+<nav class="nkx-legacy-nav">
   <div class="nav-logo-container">
     <a href="../index.html" class="nav-logo-img">
       <img src="../assets/logo.png" alt="NUKRAX Logo">
@@ -905,6 +920,11 @@
     <div class="scroll-arrow"></div>
   </div>
   <div id="eaPurchasePanel" style="max-width:420px;margin-top:32px"></div>
+</div>
+
+<div class="pd-gallery-wrap" id="pdGalleryWrap" hidden>
+  <div class="pd-gallery-main"><img src="" alt=""/></div>
+  <div class="pd-gallery-thumbs" id="pdGalleryThumbs"></div>
 </div>
 
 <hr class="divider"/>
@@ -1762,29 +1782,11 @@
     if(hint) hint.textContent = detail.classList.contains('open') ? '↑ Click to collapse' : '↓ Click to expand details';
   }
 
-  // Nav active highlight on scroll
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  let sectionOffsets = Array.from(sections).map(s => ({ id: s.id, top: s.offsetTop }));
-  window.addEventListener('resize', () => {
-    sectionOffsets = Array.from(sections).map(s => ({ id: s.id, top: s.offsetTop }));
-  }, { passive: true });
-  let navActive = '';
-  function updateNavHighlight(){
-    let cur = '';
-    sectionOffsets.forEach(s => { if(window.scrollY >= s.top - 140) cur = s.id; });
-    if(cur === navActive) return;
-    navActive = cur;
-    navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--silver)' : '';
-    });
-  }
-  let navTicking = false;
-  window.addEventListener('scroll', () => {
-    if(navTicking) return;
-    navTicking = true;
-    requestAnimationFrame(() => { updateNavHighlight(); navTicking = false; });
-  }, { passive: true });
+  // The scroll-spy nav-highlight system that used to live here only
+  // ever touched .nav-links a elements inside this page's own old nav
+  // (assets/shell/shell.js permanently hides that whole <nav> now —
+  // see the Phase 2/13 shell fixes) — removed as confirmed wasted
+  // scroll+resize listener work rather than left running for nothing.
 
 
   // Handle navigation to index.html
@@ -1804,8 +1806,10 @@
 import { getProduct } from '../assets/data/products/products.js';
 import { renderPurchasePanel } from '../assets/marketplace/purchase-panel.js';
 import { wireDownloadGate } from '../assets/marketplace/download-gate.js';
+import { mountProductGallery } from '../assets/data/products/screenshots.js';
 const product = getProduct('aurum');
 if (product) renderPurchasePanel(document.getElementById('eaPurchasePanel'), product);
+if (product) mountProductGallery(document.getElementById('pdGalleryWrap'), product);
 wireDownloadGate({ productId: 'aurum', kind: 'ea', onError: (msg) => alert(msg) });
 </script>
 <script>
