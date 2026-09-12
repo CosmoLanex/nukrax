@@ -10,7 +10,12 @@
 .nkx-dev-shell {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  /* The global app shell (assets/shell/shell.css) pushes the whole page
+     down by --nkx-shell-h via `body:has(> .nkx-shell-top){padding-top:…}`,
+     so the workspace only needs to fill what's left of the viewport —
+     not a full 100vh, which would run --nkx-shell-h past the bottom of
+     the screen and force an extra page-level scrollbar. */
+  height: calc(100vh - var(--nkx-shell-h, 64px));
   overflow: hidden;
 }
 
@@ -251,8 +256,32 @@
 }
 
 @media (max-width: 900px) {
-  .nkx-dev-palette { position: fixed; left: 0; top: 56px; bottom: 0; z-index: 400; width: 240px; }
-  .nkx-dev-palette.nkx-minimized { width: 0; }
+  /* Inverted from desktop: here, .nkx-dev-palette (no .nkx-minimized)
+     is the CLOSED state. On mobile the palette was permanently open
+     (position:fixed, 240px wide, no way to tell it was even an
+     overlay) — on a 390px phone that's 60%+ of the width, and it
+     visually buried the project-name input, Send button, and steps
+     bar behind it since it had no backdrop and sat above everything.
+     #paletteToggle already just does classList.toggle('nkx-minimized')
+     with no other logic, so swapping which class-state means "open"
+     here needs no JS change — the same button now opens/closes it. */
+  .nkx-dev-body { position: relative; }
+  .nkx-dev-palette {
+    /* position:absolute against .nkx-dev-body (not position:fixed
+       against the viewport) so top/bottom automatically start right
+       below the toolbar+steps, whatever their actual wrapped height
+       is, instead of a hardcoded top:56px that assumed a single-row
+       56px toolbar — that hardcoded value put the open overlay on
+       top of its own toggle button once the toolbar wrapped to ~130px
+       tall at this width, making it impossible to close. */
+    position: absolute; left: 0; top: 0; bottom: 0; z-index: 400;
+    width: 0; padding: 0; overflow: hidden; border-right: none;
+  }
+  .nkx-dev-palette.nkx-minimized {
+    width: min(260px, 78vw); padding: 14px; overflow-y: auto;
+    border-right: 1px solid var(--line);
+    box-shadow: var(--nkx-shadow-soft, 0 8px 24px rgba(0,0,0,.35));
+  }
 }
 /* .nkx-dev-bar (project-name input + Saved/New/Save/Send buttons) had no
    mobile treatment at all — the input's fixed 240px width plus four
