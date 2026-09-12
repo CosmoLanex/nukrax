@@ -47,7 +47,7 @@ body::before{
 /* ── Top nav (same visual language as the rest of the site) ── */
 nav#navbar{
   position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-content:space-between;
-  padding:26px var(--gutter);background:rgba(3,5,7,0.88);backdrop-filter:blur(16px);
+  padding:26px var(--gutter);background:color-mix(in srgb, var(--black) 88%, transparent);backdrop-filter:blur(16px);
   border-bottom:1px solid var(--line);gap:12px;
 }
 @media (max-width:768px){ nav#navbar{padding:18px 24px} }
@@ -201,6 +201,15 @@ nav#navbar{
 .docs-callout.info .docs-callout-title{color:var(--text)}
 .docs-callout.planned{border-left-style:dashed;border-left-color:var(--muted);background:transparent;border:1px dashed var(--line-lit);border-left-width:3px}
 .docs-callout.planned .docs-callout-title{color:var(--muted)}
+/* Light-mode-only: --green/--amber/--accent are intentionally identical in
+   both themes (semantic/brand colors), which is fine against the dark
+   panel background they were tuned for, but reads as low-contrast label
+   text against docs-callout's light-mode panel. Darken just these three
+   callout-title text colors under html.nkx-light; every other use of
+   --green/--amber/--accent elsewhere on the site is untouched. */
+html.nkx-light .docs-callout.note .docs-callout-title{color:var(--accent-dim)}
+html.nkx-light .docs-callout.tip .docs-callout-title{color:#166534}
+html.nkx-light .docs-callout.warning .docs-callout-title{color:#92400e}
 
 /* ── Code blocks + copy button ── */
 .docs-code{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:18px 0;overflow:hidden;
