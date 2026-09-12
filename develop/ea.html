@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="../assets/css/tokens.css">
 <link rel="stylesheet" href="../assets/colour/theme.css">
 <script type="module" src="../assets/colour/theme.js"></script>
+<link rel="stylesheet" href="../assets/shell/shell.css">
+<script type="module" src="../assets/shell/shell.js" data-page="ea"></script>
 <link rel="stylesheet" href="../assets/develop/develop.css">
 <style>body{background:var(--black);color:var(--text);font-family:var(--font-b);margin:0}</style>
 </head>
@@ -68,6 +70,7 @@ const savedList = document.getElementById('savedList');
 const devSteps = document.getElementById('devSteps');
 
 function updateSteps() {
+  if (!engine) return;
   const hasName = nameInput.value.trim().length > 0;
   const hasBlocks = engine.getProject().blocks.length > 0;
   const step = !hasName ? 'name' : !hasBlocks ? 'build' : 'send';
@@ -88,12 +91,15 @@ if (draft) {
   draftNote.hidden = false;
 }
 
-const engine = initCanvas({
+let engine; // declared before initCanvas() so it's safely `undefined`
+            // (not a TDZ error) during initCanvas's own first synchronous
+            // render/onChange call, below.
+engine = initCanvas({
   canvasEl, connectionsSvg, paletteEl, registry: EA_BLOCKS,
   initialProject: draft ? draft.project : null,
   onChange: () => {
     draftNote.hidden = true;
-    saveDraft(PROJECT_TYPE, { projectName: nameInput.value.trim(), idea: ideaText, project: engine.getProject() });
+    if (engine) saveDraft(PROJECT_TYPE, { projectName: nameInput.value.trim(), idea: ideaText, project: engine.getProject() });
     updateSteps();
   },
 });
