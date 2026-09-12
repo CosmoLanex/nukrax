@@ -152,7 +152,8 @@ export function initShell(opts = {}) {
   // ── Top bar ──
   const top = el(`
     <div class="nkx-shell-top">
-      <a href="/dashboard.html" class="nkx-shell-logo"><span>nukrax</span><svg class="nkx-shell-logo-notch" viewBox="0 0 156 19" preserveAspectRatio="none" aria-hidden="true"><path d="M0,0 L156,0 L140.7,18.2 L14.9,18.2 Z" style="fill:var(--black);stroke:var(--line);stroke-width:1"/></svg></a>
+      <div class="nkx-shell-frame" aria-hidden="true"><div class="nkx-shell-frame-notch"></div><div class="nkx-shell-frame-line"></div></div>
+      <a href="/dashboard.html" class="nkx-shell-logo"><span>nukrax</span></a>
       <nav class="nkx-shell-mainnav" aria-label="Main">
         ${MAIN_NAV.map(i => navLinkHtml(i, currentKey)).join('')}
       </nav>
@@ -164,6 +165,33 @@ export function initShell(opts = {}) {
     </div>
   `);
   document.body.prepend(top);
+
+  // ── Skip to content ──
+  // Finds whatever each page already uses as its main content wrapper
+  // (a real <main> where one exists, else the common app-shell content
+  // classes already in use across these pages) and gives it a stable,
+  // focusable id — instead of requiring every page's own markup to
+  // agree on one id/tabindex ahead of time. Falls back to just moving
+  // focus to <body> if nothing matches, rather than silently no-op'ing.
+  const mainEl = document.querySelector(
+    'main, [role="main"], #main, #page, #content, [id$="-page"], ' +
+    '[class$="-page"], [class$="-wrap"], [class$="-hero"], .page-header, .nkx-dev-shell'
+  );
+  if (mainEl) {
+    if (!mainEl.id) mainEl.id = 'nkx-main-content';
+    if (!mainEl.hasAttribute('tabindex')) mainEl.setAttribute('tabindex', '-1');
+  }
+  const skipLink = el(`<a href="#${mainEl ? mainEl.id : ''}" class="nkx-shell-skiplink">Skip to main content</a>`);
+  if (!mainEl) {
+    // No recognizable content wrapper on this page — still give keyboard
+    // users a working skip target rather than a dead link.
+    skipLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.body.setAttribute('tabindex', '-1');
+      document.body.focus();
+    });
+  }
+  document.body.prepend(skipLink);
 
   // ── Profile dropdown ──
   const profileMenu = el(`

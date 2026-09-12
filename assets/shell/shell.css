@@ -25,10 +25,26 @@
   --nkx-shell-z: 500;
 }
 
+/* ── Skip to content ───────────────────────────────────────────────────
+   Visually hidden until keyboard-focused, then pinned above the fixed
+   header (z-index higher than --nkx-shell-z). Same pattern as index.html's
+   own standalone skip-link — that page doesn't mount this shell, so it
+   keeps its own copy; every other page gets this one for free via
+   shell.js, instead of each page needing its own. */
+.nkx-shell-skiplink {
+  position: fixed; top: -60px; left: 16px; z-index: 10001;
+  background: var(--white); color: var(--black);
+  font-family: var(--font-b); font-size: var(--fs-13-5); font-weight: 600;
+  padding: 12px 20px; border-radius: 2px;
+  text-decoration: none;
+  transition: top .25s var(--ease-out);
+}
+.nkx-shell-skiplink:focus { top: 16px; }
+
 /* ── Top bar ─────────────────────────────────────────────────────────── */
 .nkx-shell-top {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: 0; left: 0; right: 0;
   z-index: var(--nkx-shell-z);
   display: flex;
   align-items: center;
@@ -36,27 +52,49 @@
   height: var(--nkx-shell-h);
   padding: 0 clamp(16px, 3vw, 32px);
   background: var(--black);
-  border-bottom: 1px solid var(--line);
   overflow: visible;
+}
+/* Fixed (not sticky) so the shell never moves, resizes, or re-paints on
+   scroll. Page content is pushed down by the matching amount instead of
+   the header holding its own space in the flow — applies to every page
+   that mounts the shell (shell.js always prepends .nkx-shell-top as a
+   direct child of <body>). */
+body:has(> .nkx-shell-top) {
+  padding-top: var(--nkx-shell-h);
 }
 
 /* Reference (Desktop-screens.svg): the header isn't a plain rectangle —
    its outline is one continuous path that dips into a trapezoid "flap"
-   below the bottom edge, right where the logo sits (path:
+   right where the logo sits, then continues as a plain straight line
+   for the rest of the header's width (traced path:
    M29.5 20H0V-7H1556V20H244L223 45H50L29.5 20Z in the 1556-wide
-   reference). This SVG reproduces just that flap (the header's own
-   background/border already cover the plain rectangle part) — scaled
-   down from the reference's literal proportions to stay tasteful
-   against the real 64px header height rather than a ~107px overhang.
-   NOTE: implemented from the reference's path data via static analysis
-   only — this has not been visually rendered/confirmed and may need
-   adjustment once it can actually be seen. */
-.nkx-shell-logo-notch {
+   reference, top line at y=20, flap floor at y=45 — i.e. a 25px-deep
+   flap). Reproduced here at ~1:1 scale (245×26) rather than compressed:
+   compressing it to fit inside the main nav's own vertical rhythm
+   flattened the taper and left no room for the wordmark, so instead the
+   flap is sized to the logo (independent of the 44px main-nav, which
+   already matches the reference correctly on its own) and simply
+   layered at the top of the bar — the two don't occupy the same
+   horizontal space, so they don't need to share a vertical anchor.
+   Rendered and compared side-by-side against the reference PNG to
+   confirm the taper/positioning before landing. */
+.nkx-shell-frame {
   position: absolute;
-  left: 0; top: 100%;
-  width: 156px; height: 18px;
+  left: 0; top: 0; right: 0; height: 26px;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
+}
+.nkx-shell-frame-notch {
+  position: absolute;
+  left: 0; top: 0;
+  width: 245px; height: 26px;
+  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 245 26'%3E%3Cpath d='M0.5,0.5 L244,0.5 L223,25 L50,25 L29.5,0.5 Z' fill='none' stroke='rgba(255,255,255,.85)' stroke-width='1'/%3E%3C/svg%3E");
+}
+.nkx-shell-frame-line {
+  position: absolute;
+  left: 244px; top: 0; right: 0; height: 1px;
+  background: rgba(255,255,255,.85);
 }
 
 .nkx-shell-logo {
@@ -64,7 +102,10 @@
   align-items: center;
   text-decoration: none;
   flex-shrink: 0;
+  align-self: flex-start;
+  padding-top: 3px;
   position: relative;
+  z-index: 1;
 }
 /* Reference (Desktop-screens.svg): the wordmark sits alone inside the
    header's angular notch — no separate icon badge/square beside it
@@ -83,10 +124,13 @@
   align-items: stretch;
   flex: 1 1 auto;
   min-width: 0;
-  max-width: 760px;
-  /* auto margins center this within the remaining header space (after
-     the fixed-width logo and quick-icon cluster) instead of hugging
-     the logo with dead space left after it on wide viewports */
+  /* Reference (Desktop-screens.svg): the nav fills essentially all of the
+     remaining header width between the logo and the right icon cluster
+     (1103px of a 1103px gap at the reference's 1556px width) — it isn't
+     a narrower, centered element with dead space on either side, so no
+     max-width cap here. Capped at 1400px purely as a sanity ceiling for
+     ultra-wide monitors, well past any real-world header width. */
+  max-width: 1400px;
   margin: 0 auto;
   height: 44px;
   background: var(--panel);
@@ -347,6 +391,35 @@
      size, same corner radius. */
   .nkx-shell-iconbtn { width: 27px; height: 27px; }
   .nkx-shell-iconbtn svg { width: 14px; height: 14px; }
+
+  /* With .nkx-shell-mainnav hidden above, there's no flex:1 element
+     left between the logo and the icon cluster to push it toward the
+     right edge — reference (mobile-screens.svg) has the icon cluster
+     flush right (icons at x=284-356 of the 421-wide canvas), not
+     bunched up against the logo. */
+  .nkx-shell-quick { margin-left: auto; }
+
+  /* Reference (mobile-screens.svg): the header frame notch is
+     traced from the same path style as desktop but at mobile scale —
+     path M14.5 20H-12V-7H1544V20H200.795L185.5 38H30.5L14.5 20Z in the
+     421-wide reference: top-flat spans x=14.5→200.8 (≈44% of that
+     width) down to a depth of 18 (y=20→38), vs desktop's 244-wide/
+     25-deep. Scaled here by the same ratio (≈0.7) applied uniformly
+     to width and depth, which reproduces that reference depth (18)
+     as a natural consequence rather than a separate guess. The logo
+     wordmark is sized down to fit that shallower notch (16px here vs
+     18px on desktop) — matching the reference, whose own mobile logo
+     raster is shorter than its desktop one (15px vs 17px tall) for
+     the same reason: an unscaled 18px wordmark doesn't fit inside an
+     18px-deep frame. */
+  .nkx-shell-frame { height: 18px; }
+  .nkx-shell-frame-notch {
+    width: 172px; height: 18px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 172 18'%3E%3Cpath d='M0.5,0.5 L171,0.5 L157,17.5 L35,17.5 L21,0.5 Z' fill='none' stroke='rgba(255,255,255,.85)' stroke-width='1'/%3E%3C/svg%3E");
+  }
+  .nkx-shell-frame-line { left: 172px; }
+  .nkx-shell-logo { padding-top: 1px; }
+  .nkx-shell-logo span { font-size: 16px; }
 }
 
 /* ── Full-menu overlay (hamburger, and mobile nav-label fallback) ───── */
