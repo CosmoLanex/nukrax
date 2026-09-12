@@ -143,10 +143,10 @@
 </section>
 
 <section class="docs-section" id="planned-ci">
-  <h2 class="docs-h2">Planned: CI checks on deploy</h2>
-  <div class="docs-callout planned">
-  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>Planned</span></div>
-  <div>Automated checks (broken-link detection, HTML/CSS validation) running on every push are being considered, building on the same validation approach used to QA this documentation system before release.</div>
+  <h2 class="docs-h2">CI checks on every push</h2>
+  <div class="docs-callout tip">
+  <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a6 6 0 0 0-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0 0 12 2Z"/></svg><span>Tip</span></div>
+  <div>A GitHub Actions workflow (<code class="docs-inline-code">.github/workflows/qa-checks.yml</code>) runs <code class="docs-inline-code">scripts/qa-checks.py</code> on every push: broken internal link/asset detection, and lightweight HTML/CSS validation (parse errors, duplicate ids, unbalanced braces). It's intentionally not a full W3C validator — kept dependency-free, in the same no-build-step spirit as the rest of the site.</div>
 </div>
 </section>
 
@@ -169,7 +169,7 @@
     <a href="#no-build" class="docs-toc-link">Why there's no build step</a>
     <a href="#keep-alive-workflow" class="docs-toc-link">Scheduled keep-alive</a>
     <a href="#environments" class="docs-toc-link">Environments</a>
-    <a href="#planned-ci" class="docs-toc-link">Planned: CI checks on deploy</a>
+    <a href="#planned-ci" class="docs-toc-link">CI checks on every push</a>
   </aside>
 </div>
 

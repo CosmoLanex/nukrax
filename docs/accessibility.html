@@ -149,7 +149,7 @@
   <h2 class="docs-h2">Known gaps</h2>
   <div class="docs-callout warning">
   <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="m10.29 3.86-8.18 14.18A2 2 0 0 0 3.82 21h16.36a2 2 0 0 0 1.71-2.96L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg><span>Warning</span></div>
-  <div>A full audit against WCAG 2.1 AA (systematic alt-text review, complete focus-order testing, and screen-reader pass on the trading terminal's data-heavy views) hasn't been completed yet. Treat this page as a snapshot of what's known to work rather than a compliance guarantee.</div>
+  <div>A full, formal audit against WCAG 2.1 AA (systematic alt-text review, complete focus-order testing across every page, and a screen-reader pass on every one of the terminal's data-heavy views) hasn't been completed yet. Treat this page as a snapshot of what's known to work rather than a compliance guarantee.</div>
 </div>
 </section>
 
@@ -157,7 +157,7 @@
   <h2 class="docs-h2">Planned improvements</h2>
   <div class="docs-callout planned">
   <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>Planned</span></div>
-  <div>A dedicated skip-to-content link on every page, and a full screen-reader pass on the live trading terminal, are planned but not yet implemented.</div>
+  <div>A dedicated skip-to-content link is now implemented site-wide (present on every page that uses the shared shell, plus index.html's own copy), moving keyboard focus straight to each page's main content and bypassing the repeated header/navigation. A practical pass has also been done on the live trading terminal: keyboard access to previously mouse-only controls (trade result selection, psychology tags, journal column sorting), accessible names for icon-only controls and toggle switches, proper label/input association across its forms, and an aria-current state on the active section tab. This was a targeted, practical pass rather than a formal, complete audit — deeper review (full focus-order testing, live-region behavior under all data states, and the terminal's remaining data-heavy views) is still planned.</div>
 </div>
 </section>
 
