@@ -47,6 +47,32 @@
   --sh2: 0 2px 8px rgba(0,0,0,.35);
   --ease-out: cubic-bezier(.22,1,.36,1);
   --ease-spring: cubic-bezier(.25,1,.4,1);
+
+  /* ── Theme-aware surface bases ──────────────────────────────────
+     The four literal dark RGB triples used throughout this file's
+     panel/card/input backgrounds, exposed as variables so they can
+     be overridden under html.nkx-light below. Every declaration
+     that used to hardcode e.g. rgba(14,20,26,X) now reads
+     rgba(var(--trm-surf-1),X) instead — same alpha, theme-aware base.
+     Dark-mode values are unchanged from the original literals. */
+  --trm-surf-1: 14,20,26;   /* was rgba(14,20,26,*) */
+  --trm-surf-2: 10,15,19;   /* was rgba(10,15,19,*) */
+  --trm-surf-3: 22,22,26;   /* was rgba(22,22,26,*) */
+  --trm-surf-4: 16,16,20;   /* was rgba(16,16,20,*) */
+}
+
+/* Light-mode overrides for the surface bases above, plus this file's
+   own --sh/--sh2 shadow tokens — same pattern assets/colour/theme.css
+   already uses site-wide for --nkx-shadow-soft/--nkx-shadow-lift
+   (a pure-black glow reads as a smudge on a white surface), just
+   scoped locally since --sh/--sh2 are private to this page. */
+html.nkx-light {
+  --trm-surf-1: 244,246,247;
+  --trm-surf-2: 237,240,241;
+  --trm-surf-3: 255,255,255;
+  --trm-surf-4: 244,246,247;
+  --sh: 0 8px 32px rgba(35,43,46,.14);
+  --sh2: 0 2px 8px rgba(35,43,46,.10);
 }
 
 /* Wordmark display face — matches main page, loaded from assets/fonts */
@@ -116,7 +142,7 @@ body::after{
 /* ── SIDEBAR ── */
 #sidebar{
   width:72px;
-  background:rgba(10,15,19,.75);
+  background:rgba(var(--trm-surf-2),.75);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
   border-right:1px solid var(--border);
@@ -185,7 +211,7 @@ body::after{
 /* ── TOPBAR ── */
 #topbar{
   height:64px;
-  background:rgba(22,22,26,.7);
+  background:rgba(var(--trm-surf-3),.7);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
   border-bottom:1px solid var(--border);
@@ -203,7 +229,7 @@ body::after{
 .topbar-right{display:flex;align-items:center;gap:12px}
 .xau-ticker{
   display:flex;align-items:center;gap:8px;
-  background:rgba(14,20,26,.6);
+  background:rgba(var(--trm-surf-1),.6);
   backdrop-filter:blur(8px);
   border:1px solid var(--border);
   border-radius:var(--r2);padding:6px 14px;
@@ -256,7 +282,7 @@ body::after{
 }
 }
 .btn-ghost{
-  background:rgba(14,20,26,.6);
+  background:rgba(var(--trm-surf-1),.6);
   backdrop-filter:blur(8px);
   color:var(--text);
   border:1px solid var(--border);
@@ -297,7 +323,7 @@ body::after{
    CARD SYSTEM — 3D ENHANCED
 ═══════════════════════════════════════════════════════════════ */
 .card{
-  background:linear-gradient(135deg,rgba(14,20,26,.8),rgba(22,22,26,.8));
+  background:linear-gradient(135deg,rgba(var(--trm-surf-1),.8),rgba(var(--trm-surf-3),.8));
   backdrop-filter:blur(12px) saturate(120%);
   -webkit-backdrop-filter:blur(12px) saturate(120%);
   border:1px solid var(--border);
@@ -468,7 +494,7 @@ body::after{
 }
 .search-box{
   display:flex;align-items:center;gap:8px;
-  background:rgba(14,20,26,.6);
+  background:rgba(var(--trm-surf-1),.6);
   backdrop-filter:blur(8px);
   border:1px solid var(--border);
   border-radius:var(--r2);padding:9px 14px;flex:1;min-width:200px;
@@ -486,7 +512,7 @@ body::after{
 .filter-group{display:flex;gap:6px;flex-wrap:wrap}
 .filter-btn{
   padding:7px 14px;border-radius:20px;border:1px solid var(--border);
-  background:rgba(14,20,26,.4);color:var(--muted);font-family:var(--font-mono);font-size:11px;
+  background:rgba(var(--trm-surf-1),.4);color:var(--muted);font-family:var(--font-mono);font-size:11px;
   transition:all .25s var(--ease-out);
   backdrop-filter:blur(6px);
 }
@@ -500,12 +526,12 @@ body::after{
 .table-wrap{
   overflow-x:auto;border-radius:var(--r);
   border:1px solid var(--border);
-  background:rgba(22,22,26,.5);
+  background:rgba(var(--trm-surf-3),.5);
   backdrop-filter:blur(8px);
 }
 table{width:100%;border-collapse:collapse;font-size:12px}
 thead tr{
-  background:rgba(10,15,19,.8);
+  background:rgba(var(--trm-surf-2),.8);
   border-bottom:1px solid var(--border);
 }
 th{
@@ -585,7 +611,7 @@ td{padding:13px 16px;color:var(--text);white-space:nowrap}
 .modal-overlay.open{opacity:1;pointer-events:all}
 
 .modal{
-  background:linear-gradient(135deg,rgba(22,22,26,.95),rgba(16,16,20,.95));
+  background:linear-gradient(135deg,rgba(var(--trm-surf-3),.95),rgba(var(--trm-surf-4),.95));
   backdrop-filter:blur(20px);
   border:1px solid var(--border2);
   border-radius:18px;padding:32px;width:100%;max-width:640px;
@@ -639,7 +665,7 @@ td{padding:13px 16px;color:var(--text);white-space:nowrap}
 label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;text-transform:uppercase}
 
 .form-input,.form-select,.form-textarea{
-  background:rgba(10,15,19,.6);
+  background:rgba(var(--trm-surf-2),.6);
   border:1px solid var(--border);
   border-radius:var(--r2);padding:11px 14px;
   color:var(--text);font-family:var(--font-mono);font-size:12px;
@@ -647,7 +673,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
   width:100%;}
 .form-input:focus,.form-select:focus,.form-textarea:focus{
   border-color:var(--subtle);
-  background:rgba(10,15,19,.9);
+  background:rgba(var(--trm-surf-2),.9);
   box-shadow:0 0 0 3px rgba(242,245,245,.04),0 0 20px rgba(242,245,245,.03);
 }
 .form-select{appearance:none;
@@ -661,7 +687,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 /* RR Preview */
 .rr-preview{
   display:flex;align-items:center;gap:10px;
-  padding:12px 16px;background:rgba(10,15,19,.6);
+  padding:12px 16px;background:rgba(var(--trm-surf-2),.6);
   border:1px solid var(--border);border-radius:var(--r2);
   font-size:12px;
 }
@@ -673,7 +699,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
   flex:1;padding:12px;border:1px solid var(--border);border-radius:var(--r2);
   text-align:center;transition:all .3s var(--ease-spring);
   font-family:var(--font-head);font-size:12px;font-weight:600;
-  background:rgba(14,20,26,.4);color:var(--muted);
+  background:rgba(var(--trm-surf-1),.4);color:var(--muted);
   position:relative;overflow:hidden;
 }
 @media (hover:hover) and (pointer:fine){.result-opt:hover{border-color:var(--border2);transform:translateY(-2px)}}
@@ -686,7 +712,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 .psych-tag{
   padding:7px 13px;border:1px solid var(--border);border-radius:20px;
   font-size:11px;font-family:var(--font-head);
-  color:var(--muted);background:rgba(14,20,26,.4);
+  color:var(--muted);background:rgba(var(--trm-surf-1),.4);
   transition:all .25s var(--ease-out);
 }
 @media (hover:hover) and (pointer:fine){.psych-tag:hover{border-color:var(--gold);color:var(--text);transform:translateY(-1px)}}
@@ -714,7 +740,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 #detail-overlay.open{opacity:1;pointer-events:all}
 
 .detail-panel{
-  background:linear-gradient(135deg,rgba(22,22,26,.95),rgba(16,16,20,.95));
+  background:linear-gradient(135deg,rgba(var(--trm-surf-3),.95),rgba(var(--trm-surf-4),.95));
   backdrop-filter:blur(24px);
   border:1px solid var(--border2);
   border-radius:20px;width:100%;max-width:760px;max-height:92vh;
@@ -762,7 +788,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 
 .detail-pnl-hero{
   text-align:center;padding:24px;
-  background:rgba(10,15,19,.6);
+  background:rgba(var(--trm-surf-2),.6);
   border:1px solid var(--border);
   border-radius:var(--r);
   margin-bottom:20px;
@@ -780,7 +806,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 
 .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px, 100%), 1fr));gap:12px}
 .detail-stat{
-  background:rgba(10,15,19,.5);
+  background:rgba(var(--trm-surf-2),.5);
   border:1px solid var(--border);
   border-radius:var(--r2);
   padding:14px 16px;
@@ -794,7 +820,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 
 /* Price visualization bar */
 .price-viz{
-  padding:16px;background:rgba(10,15,19,.6);
+  padding:16px;background:rgba(var(--trm-surf-2),.6);
   border:1px solid var(--border);border-radius:var(--r);
   position:relative;
 }
@@ -831,7 +857,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 .rr-viz-reward{background:linear-gradient(90deg,rgba(76,175,130,.6),var(--green));border-radius:0 4px 4px 0;box-shadow:0 0 10px var(--green-dim)}
 
 .detail-notes{
-  padding:16px;background:rgba(10,15,19,.5);
+  padding:16px;background:rgba(var(--trm-surf-2),.5);
   border:1px solid var(--border);border-radius:var(--r2);
   font-size:12px;line-height:1.7;color:var(--text);
   white-space:pre-wrap;
@@ -867,7 +893,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 /* Analytics stat row */
 .an-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px, 100%), 1fr));gap:12px;margin-bottom:28px}
 .an-stat{
-  background:linear-gradient(135deg,rgba(14,20,26,.8),rgba(22,22,26,.8));
+  background:linear-gradient(135deg,rgba(var(--trm-surf-1),.8),rgba(var(--trm-surf-3),.8));
   backdrop-filter:blur(10px);
   border:1px solid var(--border);border-radius:var(--r);
   padding:16px 20px;
@@ -974,7 +1000,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
   display:flex;flex-direction:column;gap:8px;
 }
 .toast{
-  background:rgba(14,20,26,.85);
+  background:rgba(var(--trm-surf-1),.85);
   backdrop-filter:blur(14px);
   border:1px solid var(--border);
   border-radius:var(--r2);padding:12px 20px;
@@ -1006,7 +1032,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 }
 #confirm-overlay.open{opacity:1;pointer-events:all}
 .confirm-box{
-  background:linear-gradient(135deg,rgba(22,22,26,.95),rgba(16,16,20,.95));
+  background:linear-gradient(135deg,rgba(var(--trm-surf-3),.95),rgba(var(--trm-surf-4),.95));
   backdrop-filter:blur(20px);
   border:1px solid var(--border2);border-radius:var(--r);
   padding:28px;max-width:380px;width:100%;
@@ -1050,7 +1076,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
     border-right:none;border-bottom:1px solid var(--border);
     justify-content:space-around;align-items:stretch;
     z-index:1;overflow-x:auto;overflow-y:hidden;
-    background:rgba(10,15,19,.97);
+    background:rgba(var(--trm-surf-2),.97);
     backdrop-filter:blur(20px);
     -webkit-backdrop-filter:blur(20px);
     box-shadow:none;
@@ -1259,7 +1285,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 }
 #qs-overlay.open{opacity:1;pointer-events:all}
 .qs-modal{
-  background:linear-gradient(135deg,rgba(22,22,26,.95),rgba(16,16,20,.95));
+  background:linear-gradient(135deg,rgba(var(--trm-surf-3),.95),rgba(var(--trm-surf-4),.95));
   backdrop-filter:blur(20px);
   border:1px solid var(--border2);
   border-radius:18px;padding:32px;width:100%;max-width:540px;
@@ -1287,7 +1313,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 @media(max-width:500px){.qs-grid,.qs-grid.three{grid-template-columns:1fr}}
 .qs-toggle-row{
   display:flex;align-items:center;justify-content:space-between;
-  padding:11px 16px;background:rgba(10,15,19,.6);
+  padding:11px 16px;background:rgba(var(--trm-surf-2),.6);
   border:1px solid var(--border);
   border-radius:var(--r2);transition:border-color .25s;
 }
@@ -1314,7 +1340,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
   padding:8px 14px;border-radius:var(--r2);border:1px solid var(--border);
   font-family:var(--font-head);font-size:11px;
   font-weight:600;letter-spacing:.04em;
-  background:rgba(14,20,26,.5);color:var(--muted);
+  background:rgba(var(--trm-surf-1),.5);color:var(--muted);
   backdrop-filter:blur(6px);
   transition:all .25s var(--ease-out);white-space:nowrap;
 }
@@ -1325,7 +1351,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
 }
 }
 .page-btn{
-  background:rgba(14,20,26,.5);border:1px solid var(--border);
+  background:rgba(var(--trm-surf-1),.5);border:1px solid var(--border);
   border-radius:var(--r2);padding:7px 13px;font-family:var(--font-mono);font-size:11px;color:var(--muted);
   transition:all .25s var(--ease-out);
   min-width:32px;
@@ -1370,7 +1396,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
         <div class="qs-title">Account <span>Settings</span></div>
         <div class="qs-subtitle">Edit your trading account configuration and preferences</div>
       </div>
-      <button class="modal-close" onclick="closeQS()">✕</button>
+      <button class="modal-close" onclick="closeQS()" aria-label="Close Quick Settings">✕</button>
     </div>
 
     <div class="qs-section">
@@ -1452,7 +1478,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="modal-title">Add <span>Trade</span></div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close Trade Form">✕</button>
     </div>
 
     <form id="trade-form" onsubmit="return false">
@@ -2298,7 +2324,7 @@ function renderJournal(){
 
   const pag=document.getElementById('pagination');
   if(pages<=1){pag.innerHTML='';return}
-  let html=`<button class="page-btn" onclick="changePage(${state.currentPage-1})" ${state.currentPage===1?'disabled':''}>‹</button>`;
+  let html=`<button class="page-btn" onclick="changePage(${state.currentPage-1})" aria-label="Previous page" ${state.currentPage===1?'disabled':''}>‹</button>`;
   for(let p=1;p<=pages;p++){
     if(pages>7 && p>2 && p<pages-1 && Math.abs(p-state.currentPage)>1){
       if(p===3||p===pages-2) html+=`<span class="page-info">…</span>`;
@@ -2306,7 +2332,7 @@ function renderJournal(){
     }
     html+=`<button class="page-btn ${p===state.currentPage?'active':''}" onclick="changePage(${p})">${p}</button>`;
   }
-  html+=`<button class="page-btn" onclick="changePage(${state.currentPage+1})" ${state.currentPage===pages?'disabled':''}>›</button>`;
+  html+=`<button class="page-btn" onclick="changePage(${state.currentPage+1})" aria-label="Next page" ${state.currentPage===pages?'disabled':''}>›</button>`;
   html+=`<span class="page-info">${start+1}–${Math.min(start+state.perPage,total)} of ${total}</span>`;
   pag.innerHTML=html;
 }
@@ -2356,7 +2382,7 @@ function openDetail(idx){
         </div>
         <div class="detail-meta">${fmtDate(t.date)} · ${t.session||'—'} session</div>
       </div>
-      <button class="modal-close" onclick="closeDetail()">✕</button>
+      <button class="modal-close" onclick="closeDetail()" aria-label="Close Trade Details">✕</button>
     </div>
 
     <div class="detail-body">

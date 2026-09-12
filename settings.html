@@ -61,15 +61,15 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
     <h2>Notifications</h2>
     <div class="st-row">
       <div class="st-row-text">
-        <div class="st-row-title">Email me about new followers</div>
+        <div class="st-row-title" id="lbl-notify-follow">Email me about new followers</div>
       </div>
-      <button class="st-switch" id="set-notify-follow"></button>
+      <button class="st-switch" id="set-notify-follow" role="switch" aria-checked="false" aria-labelledby="lbl-notify-follow"></button>
     </div>
     <div class="st-row">
       <div class="st-row-text">
-        <div class="st-row-title">Email me about likes on my posts</div>
+        <div class="st-row-title" id="lbl-notify-like">Email me about likes on my posts</div>
       </div>
-      <button class="st-switch" id="set-notify-like"></button>
+      <button class="st-switch" id="set-notify-like" role="switch" aria-checked="false" aria-labelledby="lbl-notify-like"></button>
     </div>
   </div>
 
@@ -77,10 +77,10 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
     <h2>Privacy</h2>
     <div class="st-row">
       <div class="st-row-text">
-        <div class="st-row-title">Private profile</div>
+        <div class="st-row-title" id="lbl-private">Private profile</div>
         <div class="st-row-sub">Only people you approve can see your posts</div>
       </div>
-      <button class="st-switch" id="set-private"></button>
+      <button class="st-switch" id="set-private" role="switch" aria-checked="false" aria-labelledby="lbl-private"></button>
     </div>
   </div>
 
@@ -88,10 +88,17 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
     <h2>Appearance</h2>
     <div class="st-row">
       <div class="st-row-text">
-        <div class="st-row-title">Reduce motion</div>
+        <div class="st-row-title" id="lbl-reduce-motion">Reduce motion</div>
         <div class="st-row-sub">Minimize animations across the platform</div>
       </div>
-      <button class="st-switch" id="set-reduce-motion"></button>
+      <button class="st-switch" id="set-reduce-motion" role="switch" aria-checked="false" aria-labelledby="lbl-reduce-motion"></button>
+    </div>
+    <div class="st-row">
+      <div class="st-row-text">
+        <div class="st-row-title" id="lbl-theme">Light theme</div>
+        <div class="st-row-sub">Switch between dark and light appearance</div>
+      </div>
+      <button class="st-switch" id="set-theme" role="switch" aria-checked="false" aria-labelledby="lbl-theme"></button>
     </div>
   </div>
 
@@ -135,6 +142,7 @@ import { getMembershipProfile } from './assets/membership/store.js';
 import { tierChip } from './assets/membership/render.js';
 import { TIERS } from './assets/membership/tiers.js';
 import { INTEGRATIONS } from './assets/integrations/registry.js';
+import { getTheme, toggleTheme } from './assets/colour/theme.js';
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
 
@@ -152,6 +160,7 @@ let settings = {};
 
 function setSwitch(el, on) {
   el.classList.toggle('on', !!on);
+  el.setAttribute('aria-checked', !!on);
 }
 
 async function saveSettings() {
@@ -174,16 +183,22 @@ async function init() {
   const notifyLike = document.getElementById('set-notify-like');
   const priv = document.getElementById('set-private');
   const reduceMotion = document.getElementById('set-reduce-motion');
+  const themeSwitch = document.getElementById('set-theme');
 
   setSwitch(notifyFollow, settings.notify_follow !== false);
   setSwitch(notifyLike, settings.notify_like !== false);
   setSwitch(priv, !!settings.private_profile);
   setSwitch(reduceMotion, !!settings.reduce_motion);
+  // Theme lives in localStorage via assets/colour/theme.js, not in the
+  // Supabase-backed `settings` object above — it's a device-level display
+  // preference, not account data, same as every other page's toggle.
+  setSwitch(themeSwitch, getTheme() === 'light');
 
   notifyFollow.addEventListener('click', () => { settings.notify_follow = !notifyFollow.classList.contains('on'); setSwitch(notifyFollow, settings.notify_follow); saveSettings(); });
   notifyLike.addEventListener('click', () => { settings.notify_like = !notifyLike.classList.contains('on'); setSwitch(notifyLike, settings.notify_like); saveSettings(); });
   priv.addEventListener('click', () => { settings.private_profile = !priv.classList.contains('on'); setSwitch(priv, settings.private_profile); saveSettings(); });
   reduceMotion.addEventListener('click', () => { settings.reduce_motion = !reduceMotion.classList.contains('on'); setSwitch(reduceMotion, settings.reduce_motion); saveSettings(); });
+  themeSwitch.addEventListener('click', () => { setSwitch(themeSwitch, toggleTheme() === 'light'); });
 
   // Membership row — reuses the same store/render architecture as the
   // dashboard and homepage, no duplicated tier logic.
