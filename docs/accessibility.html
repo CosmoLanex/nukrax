@@ -137,11 +137,15 @@
 <section class="docs-section" id="color-contrast">
   <h2 class="docs-h2">Color & contrast</h2>
   
-      <p class="docs-p">The dark palette (<a href="css.html">CSS &amp; Design System</a>) was
-      chosen with body text (<code class="docs-inline-code">--text</code> on
-      <code class="docs-inline-code">--black</code>) at a comfortably high contrast ratio;
-      muted text is reserved for secondary/supporting content rather than primary reading
-      content.</p>
+      <p class="docs-p">The site supports both a dark and a light theme
+      (<a href="../settings.html">Settings → Appearance</a>, or the Theme control in the
+      navigation menu). Both palettes (<a href="css.html">CSS &amp; Design System</a>) were
+      chosen with body text at a comfortably high contrast ratio; muted text is reserved for
+      secondary/supporting content rather than primary reading content. The Trading Terminal
+      and Community's persistent navigation surfaces (sidebar/topbar, bottom nav/rail) now
+      participate in both themes rather than staying fixed to one. The light theme has been
+      visually regression-tested across the site's main pages and the Terminal, but a formal
+      contrast-ratio audit has not been performed for either palette.</p>
     
 </section>
 
@@ -149,7 +153,7 @@
   <h2 class="docs-h2">Known gaps</h2>
   <div class="docs-callout warning">
   <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="m10.29 3.86-8.18 14.18A2 2 0 0 0 3.82 21h16.36a2 2 0 0 0 1.71-2.96L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg><span>Warning</span></div>
-  <div>A full, formal audit against WCAG 2.1 AA (systematic alt-text review, complete focus-order testing across every page, and a screen-reader pass on every one of the terminal's data-heavy views) hasn't been completed yet. Treat this page as a snapshot of what's known to work rather than a compliance guarantee.</div>
+  <div>A full, formal audit against WCAG 2.1 AA (systematic alt-text review, complete focus-order testing across every page, a formal contrast-ratio check of both the dark and light themes, and a screen-reader pass on every one of the terminal's data-heavy views) hasn't been completed yet. Treat this page as a snapshot of what's known to work rather than a compliance guarantee.</div>
 </div>
 </section>
 
@@ -157,7 +161,7 @@
   <h2 class="docs-h2">Planned improvements</h2>
   <div class="docs-callout planned">
   <div class="docs-callout-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>Planned</span></div>
-  <div>A dedicated skip-to-content link is now implemented site-wide (present on every page that uses the shared shell, plus index.html's own copy), moving keyboard focus straight to each page's main content and bypassing the repeated header/navigation. A practical pass has also been done on the live trading terminal: keyboard access to previously mouse-only controls (trade result selection, psychology tags, journal column sorting), accessible names for icon-only controls and toggle switches, proper label/input association across its forms, and an aria-current state on the active section tab. This was a targeted, practical pass rather than a formal, complete audit — deeper review (full focus-order testing, live-region behavior under all data states, and the terminal's remaining data-heavy views) is still planned.</div>
+  <div>A dedicated skip-to-content link is now implemented site-wide (present on every page that uses the shared shell, plus index.html's own copy), moving keyboard focus straight to each page's main content and bypassing the repeated header/navigation. A practical pass has also been done on the live trading terminal: keyboard access to previously mouse-only controls (trade result selection, psychology tags, journal column sorting), accessible names for icon-only controls — including the modal close buttons and pagination arrows — proper label/input association across its forms, and an aria-current state on the active section tab. Settings' toggle switches (notifications, privacy, reduce motion, and theme) now use proper <code class="docs-inline-code">role="switch"</code> semantics with an accessible name and a synchronized <code class="docs-inline-code">aria-checked</code> state. This was a targeted, practical pass rather than a formal, complete audit — deeper review (full focus-order testing, live-region behavior under all data states, and the terminal's remaining data-heavy views) is still planned.</div>
 </div>
 </section>
 

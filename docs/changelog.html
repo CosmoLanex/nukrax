@@ -104,6 +104,87 @@
     
 </section>
 
+<section class="docs-section" id="milestone-c">
+  <h2 class="docs-h2">Accessibility semantics &amp; Community light-mode navigation</h2>
+  
+      <p class="docs-p"><span class="docs-badge new">New</span> The Terminal's Quick
+      Settings, Add/Edit Trade, and Trade Detail modal close buttons, along with the
+      journal's pagination controls, now expose accessible names for screen readers.
+      Settings toggle switches (notifications, privacy, reduce motion, and theme) now use
+      proper <code class="docs-inline-code">role="switch"</code> semantics with a
+      synchronized <code class="docs-inline-code">aria-checked</code> state. Community's
+      persistent bottom navigation (mobile) and left rail (desktop) now correctly follow
+      the light/dark theme instead of staying hard-coded dark.</p>
+    
+</section>
+
+<section class="docs-section" id="terminal-light-mode">
+  <h2 class="docs-h2">Terminal light-mode support</h2>
+  
+      <p class="docs-p">The Trading Terminal's
+      sidebar, topbar, price ticker, cards, tables, forms, and all four modal types
+      (Add/Edit Trade, Trade Detail, Confirm, Quick Settings) now correctly adapt to the
+      light theme. Previously these surfaces stayed dark regardless of the selected
+      theme.</p>
+    
+</section>
+
+<section class="docs-section" id="settings-theme-control">
+  <h2 class="docs-h2">Settings theme control &amp; customization docs</h2>
+  
+      <p class="docs-p">Added a Light theme toggle
+      to Settings → Appearance, built on the platform's existing theme engine. Updated the
+      <a href="customization.html">Customization</a> documentation to describe the
+      light/dark theme as implemented, while keeping the planned display-density option
+      clearly marked as not yet built.</p>
+    
+</section>
+
+<section class="docs-section" id="qa-ci">
+  <h2 class="docs-h2">Automated QA &amp; CI checks</h2>
+  
+      <p class="docs-p">Added a lightweight QA script that checks for broken internal
+      links, duplicate element IDs, and malformed HTML/CSS, running automatically via
+      GitHub Actions on every push. See <a href="deployment.html">Deployment</a>.</p>
+    
+</section>
+
+<section class="docs-section" id="accessibility-pass">
+  <h2 class="docs-h2">Accessibility pass</h2>
+  
+      <p class="docs-p">Added keyboard and screen-reader support to previously
+      mouse-only Terminal journal interactions — trade result selection, psychology tags,
+      and column sorting — along with other targeted fixes. This was a practical pass
+      rather than a full WCAG audit; see <a href="accessibility.html">Accessibility</a>
+      for current status and known gaps.</p>
+    
+</section>
+
+<section class="docs-section" id="feedback-persistence">
+  <h2 class="docs-h2">Feedback &amp; review persistence</h2>
+  
+      <p class="docs-p">Feedback page reviews are now persisted to Supabase (with
+      row-level security) instead of being held only in local/in-memory state.</p>
+    
+</section>
+
+<section class="docs-section" id="payment-cleanup">
+  <h2 class="docs-h2">Payment scaffolding cleanup</h2>
+  
+      <p class="docs-p">Removed an orphaned payment-address data file after confirming it
+      had no remaining references anywhere in the codebase.</p>
+    
+</section>
+
+<section class="docs-section" id="ui-alignment">
+  <h2 class="docs-h2">Desktop &amp; mobile UI alignment</h2>
+  
+      <p class="docs-p">Aligned desktop and mobile layouts against the project's design
+      references across shell, header, and page geometry, alongside a broader functional
+      and production-readiness audit pass across the site.</p>
+    
+</section>
+
 <section class="docs-section" id="docs-system">
   <h2 class="docs-h2">Documentation system</h2>
   
@@ -174,6 +255,14 @@
   <aside class="docs-toc">
     <div class="docs-toc-label">On this page</div>
     <a href="#overview" class="docs-toc-link active">Recent platform updates</a>
+    <a href="#milestone-c" class="docs-toc-link">Accessibility semantics &amp; Community light-mode navigation</a>
+    <a href="#terminal-light-mode" class="docs-toc-link">Terminal light-mode support</a>
+    <a href="#settings-theme-control" class="docs-toc-link">Settings theme control &amp; customization docs</a>
+    <a href="#qa-ci" class="docs-toc-link">Automated QA &amp; CI checks</a>
+    <a href="#accessibility-pass" class="docs-toc-link">Accessibility pass</a>
+    <a href="#feedback-persistence" class="docs-toc-link">Feedback &amp; review persistence</a>
+    <a href="#payment-cleanup" class="docs-toc-link">Payment scaffolding cleanup</a>
+    <a href="#ui-alignment" class="docs-toc-link">Desktop &amp; mobile UI alignment</a>
     <a href="#docs-system" class="docs-toc-link">Documentation system</a>
     <a href="#performance-pass" class="docs-toc-link">Scroll performance pass</a>
     <a href="#button-radius" class="docs-toc-link">“Get Started” button refinement</a>
