@@ -754,9 +754,10 @@ footer{
         <textarea id="rfReview" placeholder="Share your experience running a NUKRAX system…" maxlength="600" required></textarea>
       </div>
       <div class="review-form-actions">
-        <button type="submit" class="btn btn-primary">Post Review <span class="btn-arrow">→</span></button>
+        <button type="submit" class="btn btn-primary" id="rfSubmitBtn">Post Review <span class="btn-arrow">→</span></button>
       </div>
-      <p class="review-form-note">Your review appears instantly for everyone browsing right now. Reviews aren't stored permanently in this preview — connecting a backend would make them persist for future visitors.</p>
+      <p class="review-form-note" id="rfNote">Reviews are checked by our team before appearing publicly — you'll be able to see your own submission right away while it's pending.</p>
+      <p class="review-form-note" id="rfStatus" hidden></p>
     </form>
   </div>
 </div>
@@ -820,7 +821,8 @@ footer{
   </div>
 </footer>
 
-<script>
+<script type="module">
+import { supabase } from './assets/auth/client.js';
 /* ── LOADING SCREEN ── */
 (function(){
   const loader = document.getElementById('loader');
@@ -944,6 +946,60 @@ if(REDUCE_MOTION){
 
   const AVATAR_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8.5" r="4"/><path d="M4 20c0-4.2 3.8-7 8-7s8 2.8 8 7"/></svg>';
 
+  let currentUser = null;
+
+  /* Builds the same card markup used by the original static/demo cards,
+     from either a freshly-inserted row or one loaded back from Supabase —
+     one code path for both so they're never visually inconsistent. */
+  function buildCard(data, tags){
+    const pct = (data.rating / 5) * 100;
+    const review = data.review_text;
+    const excerpt = review.length > 140 ? review.slice(0,140).trim() + '…' : review;
+    const card = document.createElement('div');
+    card.className = 'testimonial-card reveal-card visible';
+    card.tabIndex = 0;
+    card.setAttribute('role','button');
+    card.dataset.id = data.id;
+    card.dataset.name = data.name;
+    card.dataset.role = data.role;
+    card.dataset.rating = String(data.rating);
+    card.dataset.tags = tags || '';
+    card.dataset.review = review;
+    card.innerHTML =
+      '<div class="star-rating"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:' + pct + '%">★★★★★</div></div>' +
+      '<p class="testimonial-quote">' + excerpt.replace(/</g,'&lt;') + '</p>' +
+      '<div class="testimonial-person">' +
+        '<div class="avatar">' + AVATAR_SVG + '</div>' +
+        '<div><div class="testimonial-name">' + data.name.replace(/</g,'&lt;') + '</div><div class="testimonial-role">' + data.role.replace(/</g,'&lt;') + '</div></div>' +
+      '</div>';
+    return card;
+  }
+
+  /* RLS on `reviews` already returns exactly: every approved row (public
+     policy) plus the current user's own rows regardless of status (own-
+     rows policy) — no extra .eq('status', 'approved') filter needed or
+     wanted here, since that would hide the user's own pending review. */
+  async function loadReviews(){
+    const { data: { session } } = await supabase.auth.getSession();
+    currentUser = session?.user || null;
+
+    const { data: rows, error } = await supabase
+      .from('reviews')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error('Failed to load reviews:', error.message); return; }
+    if (!rows || !rows.length) return;
+
+    rows.forEach(row => {
+      const isOwnUnapproved = currentUser && row.user_id === currentUser.id && row.status !== 'approved';
+      const card = buildCard(row, isOwnUnapproved ? 'Pending review' : '');
+      wireCard(card);
+      grid.appendChild(card);
+    });
+    updateStats();
+  }
+
   function updateStats(){
     const cards = grid.querySelectorAll('.testimonial-card');
     let total = 0;
@@ -995,6 +1051,7 @@ if(REDUCE_MOTION){
     });
   }
   grid.querySelectorAll('.testimonial-card').forEach(wireCard);
+  loadReviews();
 
   /* Deep link: feedback.html#id opens that profile directly */
   function tryOpenFromHash(){
@@ -1020,11 +1077,15 @@ if(REDUCE_MOTION){
   const addReviewClose = document.getElementById('addReviewClose');
   const form = document.getElementById('addReviewForm');
   const starPicker = document.getElementById('starPicker');
+  const rfStatus = document.getElementById('rfStatus');
+  const rfSubmitBtn = document.getElementById('rfSubmitBtn');
   let selectedRating = 0;
+  let submitting = false;
 
   function openAddReview(){
     addOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
+    rfStatus.hidden = true;
   }
   function closeAddReview(){
     addOverlay.classList.remove('active');
@@ -1047,8 +1108,10 @@ if(REDUCE_MOTION){
     return name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,3) || 'A';
   }
 
-  form.addEventListener('submit', function(e){
+  form.addEventListener('submit', async function(e){
     e.preventDefault();
+    if(submitting) return;
+
     const name = document.getElementById('rfName').value.trim();
     const role = document.getElementById('rfRole').value.trim() || 'Community Trader';
     const review = document.getElementById('rfReview').value.trim();
@@ -1061,28 +1124,40 @@ if(REDUCE_MOTION){
       return;
     }
 
-    const id = 'user-' + Date.now();
-    const pct = (selectedRating / 5) * 100;
-    const excerpt = review.length > 140 ? review.slice(0,140).trim() + '…' : review;
+    if(!currentUser){
+      rfStatus.textContent = 'Please log in to post a review.';
+      rfStatus.hidden = false;
+      return;
+    }
 
-    const card = document.createElement('div');
-    card.className = 'testimonial-card reveal-card visible new-card';
-    card.tabIndex = 0;
-    card.setAttribute('role','button');
-    card.dataset.id = id;
-    card.dataset.name = name;
-    card.dataset.role = role;
-    card.dataset.rating = String(selectedRating);
-    card.dataset.tags = 'New review';
-    card.dataset.review = review;
-    card.innerHTML =
-      '<div class="star-rating"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:' + pct + '%">★★★★★</div></div>' +
-      '<p class="testimonial-quote">' + excerpt.replace(/</g,'&lt;') + '</p>' +
-      '<div class="testimonial-person">' +
-        '<div class="avatar">' + AVATAR_SVG + '</div>' +
-        '<div><div class="testimonial-name">' + name.replace(/</g,'&lt;') + '</div><div class="testimonial-role">' + role.replace(/</g,'&lt;') + '</div></div>' +
-      '</div>';
+    submitting = true;
+    rfSubmitBtn.disabled = true;
+    rfSubmitBtn.style.opacity = '.6';
+    rfStatus.hidden = true;
 
+    const { data, error } = await supabase
+      .from('reviews')
+      .insert({ user_id: currentUser.id, name, role, rating: selectedRating, review_text: review })
+      .select()
+      .single();
+
+    submitting = false;
+    rfSubmitBtn.disabled = false;
+    rfSubmitBtn.style.opacity = '';
+
+    if(error || !data){
+      console.error('Failed to post review:', error?.message);
+      rfStatus.textContent = "Couldn't post your review — please try again.";
+      rfStatus.hidden = false;
+      return;
+    }
+
+    /* status defaults to 'pending' in the database (never bypassed from
+       here) — this card is only visible to its author via the own-rows
+       RLS policy until a moderator approves it, so it's tagged as such
+       rather than presented as already public. */
+    const card = buildCard(data, 'Pending review');
+    card.classList.add('new-card');
     wireCard(card);
     grid.insertBefore(card, grid.firstChild);
     updateStats();

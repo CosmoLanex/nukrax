@@ -519,6 +519,14 @@ th{
 th.sorted{color:var(--white)}
 th.sorted::after{content:' ↓';font-size:9px}
 th.sorted.asc::after{content:' ↑'}
+/* Keyboard-accessible sort trigger nested in the th (see journal table
+   header markup) — reset to look identical to the plain text it
+   replaces; th already carries all the real styling above. */
+.th-sort-btn{
+  background:none;border:none;padding:0;margin:0;
+  font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;
+  cursor:pointer;
+}
 
 tbody tr{
   border-bottom:1px solid var(--border);
@@ -1124,6 +1132,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
      above), so #content only needs its own comfortable padding; the
      global shell (assets/shell/shell.js/shell.css) already reserves
      body-level clearance for its own fixed bottom nav. ── */
+  #app{flex-direction:column}
   #main{
     margin-left:0!important;
     height:auto;overflow:visible;
@@ -1368,15 +1377,15 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
       <div class="qs-section-label">Account</div>
       <div class="qs-grid three">
         <div class="form-group">
-          <label>Trader Name</label>
+          <label for="qs-name">Trader Name</label>
           <input type="text" id="qs-name" class="form-input" placeholder="e.g. PHANTOM"/>
         </div>
         <div class="form-group">
-          <label>Starting Balance ($)</label>
+          <label for="qs-balance">Starting Balance ($)</label>
           <input type="number" id="qs-balance" class="form-input" placeholder="10000"/>
         </div>
         <div class="form-group">
-          <label>Risk per Trade (%)</label>
+          <label for="qs-risk">Risk per Trade (%)</label>
           <input type="number" step="0.1" id="qs-risk" class="form-input" placeholder="1.0"/>
         </div>
       </div>
@@ -1388,7 +1397,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
         <div class="qs-toggle-row">
           <span class="qs-toggle-label">Show P&L column in Journal</span>
           <label class="toggle">
-            <input type="checkbox" id="qs-pnl" checked/>
+            <input type="checkbox" id="qs-pnl" checked aria-label="Show P&L column in Journal"/>
             <div class="toggle-track"></div>
             <div class="toggle-thumb"></div>
           </label>
@@ -1396,7 +1405,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
         <div class="qs-toggle-row">
           <span class="qs-toggle-label">3D Tilt effect on stat cards</span>
           <label class="toggle">
-            <input type="checkbox" id="qs-tilt" checked/>
+            <input type="checkbox" id="qs-tilt" checked aria-label="3D Tilt effect on stat cards"/>
             <div class="toggle-track"></div>
             <div class="toggle-thumb"></div>
           </label>
@@ -1404,7 +1413,7 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
         <div class="qs-toggle-row">
           <span class="qs-toggle-label">Particle background animation</span>
           <label class="toggle">
-            <input type="checkbox" id="qs-particles" checked onchange="toggleParticlesQS(this)"/>
+            <input type="checkbox" id="qs-particles" checked onchange="toggleParticlesQS(this)" aria-label="Particle background animation"/>
             <div class="toggle-track"></div>
             <div class="toggle-thumb"></div>
           </label>
@@ -1449,11 +1458,11 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
     <form id="trade-form" onsubmit="return false">
       <div class="form-grid">
         <div class="form-group">
-          <label>Date & Time</label>
+          <label for="f-date">Date & Time</label>
           <input type="datetime-local" id="f-date" class="form-input" required/>
         </div>
         <div class="form-group">
-          <label>Pair</label>
+          <label for="f-pair">Pair</label>
           <select id="f-pair" class="form-select">
             <option value="XAUUSD">XAUUSD (Gold)</option>
             <option value="XAGUSD">XAGUSD (Silver)</option>
@@ -1464,14 +1473,14 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
           </select>
         </div>
         <div class="form-group">
-          <label>Trade Direction</label>
+          <label for="f-type">Trade Direction</label>
           <select id="f-type" class="form-select">
             <option value="Buy">Buy (Long)</option>
             <option value="Sell">Sell (Short)</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Session</label>
+          <label for="f-session">Session</label>
           <select id="f-session" class="form-select">
             <option value="London">London</option>
             <option value="New York">New York</option>
@@ -1484,19 +1493,19 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
         <hr class="form-divider"/>
 
         <div class="form-group">
-          <label>Entry Price</label>
+          <label for="f-entry">Entry Price</label>
           <input type="number" step="0.01" id="f-entry" class="form-input" placeholder="e.g. 2310.50" required oninput="calcRR()"/>
         </div>
         <div class="form-group">
-          <label>Stop Loss</label>
+          <label for="f-sl">Stop Loss</label>
           <input type="number" step="0.01" id="f-sl" class="form-input" placeholder="e.g. 2300.00" required oninput="calcRR()"/>
         </div>
         <div class="form-group">
-          <label>Take Profit</label>
+          <label for="f-tp">Take Profit</label>
           <input type="number" step="0.01" id="f-tp" class="form-input" placeholder="e.g. 2330.00" required oninput="calcRR()"/>
         </div>
         <div class="form-group">
-          <label>Lot Size</label>
+          <label for="f-lot">Lot Size</label>
           <input type="number" step="0.01" min="0.01" id="f-lot" class="form-input" placeholder="e.g. 0.50"/>
         </div>
 
@@ -1513,48 +1522,48 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
         <div class="form-group full">
           <label>Result</label>
           <div class="result-group">
-            <div class="result-opt" data-val="Win" onclick="selectResult(this)">✓ WIN</div>
-            <div class="result-opt" data-val="Loss" onclick="selectResult(this)">✗ LOSS</div>
-            <div class="result-opt" data-val="BE" onclick="selectResult(this)">↔ BREAK EVEN</div>
+            <button type="button" class="result-opt" data-val="Win" onclick="selectResult(this)">✓ WIN</button>
+            <button type="button" class="result-opt" data-val="Loss" onclick="selectResult(this)">✗ LOSS</button>
+            <button type="button" class="result-opt" data-val="BE" onclick="selectResult(this)">↔ BREAK EVEN</button>
           </div>
           <input type="hidden" id="f-result" required/>
         </div>
 
         <div class="form-group">
-          <label>Profit / Loss ($)</label>
+          <label for="f-pnl">Profit / Loss ($)</label>
           <input type="number" step="0.01" id="f-pnl" class="form-input" placeholder="e.g. 350.00 or -150.00"/>
         </div>
         <div class="form-group">
-          <label>Exit Price</label>
+          <label for="f-exit">Exit Price</label>
           <input type="number" step="0.01" id="f-exit" class="form-input" placeholder="e.g. 2328.50"/>
         </div>
 
         <div class="form-group full">
-          <label>Trade Setup / Strategy</label>
+          <label for="f-setup">Trade Setup / Strategy</label>
           <input type="text" id="f-setup" class="form-input" placeholder="e.g. BMS + OB retest, Liquidity sweep"/>
         </div>
 
         <div class="form-group full">
           <label>Psychology State</label>
           <div class="psych-group" id="psych-group">
-            <div class="psych-tag" onclick="togglePsych(this)" data-v="Confident">Confident</div>
-            <div class="psych-tag" onclick="togglePsych(this)" data-v="Fear">Fear</div>
-            <div class="psych-tag" onclick="togglePsych(this)" data-v="FOMO">FOMO</div>
-            <div class="psych-tag" onclick="togglePsych(this)" data-v="Disciplined">Disciplined</div>
-            <div class="psych-tag" onclick="togglePsych(this)" data-v="Overtrading">Overtrading</div>
-            <div class="psych-tag" onclick="togglePsych(this)" data-v="Revenge">Revenge Trade</div>
-            <div class="psych-tag" onclick="togglePsych(this)" data-v="Patient">Patient</div>
-            <div class="psych-tag" onclick="togglePsych(this)" data-v="Anxious">Anxious</div>
+            <button type="button" class="psych-tag" onclick="togglePsych(this)" data-v="Confident">Confident</button>
+            <button type="button" class="psych-tag" onclick="togglePsych(this)" data-v="Fear">Fear</button>
+            <button type="button" class="psych-tag" onclick="togglePsych(this)" data-v="FOMO">FOMO</button>
+            <button type="button" class="psych-tag" onclick="togglePsych(this)" data-v="Disciplined">Disciplined</button>
+            <button type="button" class="psych-tag" onclick="togglePsych(this)" data-v="Overtrading">Overtrading</button>
+            <button type="button" class="psych-tag" onclick="togglePsych(this)" data-v="Revenge">Revenge Trade</button>
+            <button type="button" class="psych-tag" onclick="togglePsych(this)" data-v="Patient">Patient</button>
+            <button type="button" class="psych-tag" onclick="togglePsych(this)" data-v="Anxious">Anxious</button>
           </div>
         </div>
 
         <div class="form-group full">
-          <label>Notes & Observations</label>
+          <label for="f-notes">Notes & Observations</label>
           <textarea id="f-notes" class="form-textarea" placeholder="Key observations, mistakes, what went well, market context..."></textarea>
         </div>
 
         <div class="form-group full">
-          <label>Screenshot URL (optional)</label>
+          <label for="f-screenshot">Screenshot URL (optional)</label>
           <input type="url" id="f-screenshot" class="form-input" placeholder="https://prnt.sc/... or TradingView chart link"/>
         </div>
 
@@ -1575,21 +1584,21 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
        views within the trading journal tool itself). The old NUKRAX logo block that used
        to live here was a duplicate of the global shell's own logo (assets/shell/shell.js)
        and has been removed — the shell now owns all top-level NUKRAX branding site-wide. -->
-  <nav id="sidebar">
-    <button class="nav-item active" data-page="dashboard" onclick="navigate(this)">
-      <span class="nav-icon">⬡</span>
+  <nav id="sidebar" aria-label="Terminal sections">
+    <button class="nav-item active" data-page="dashboard" onclick="navigate(this)" aria-current="page">
+      <span class="nav-icon" aria-hidden="true">⬡</span>
       <span class="nav-label">Dashboard</span>
     </button>
     <button class="nav-item" data-page="journal" onclick="navigate(this)">
-      <span class="nav-icon">◈</span>
+      <span class="nav-icon" aria-hidden="true">◈</span>
       <span class="nav-label">Journal</span>
     </button>
     <button class="nav-item" data-page="analytics" onclick="navigate(this)">
-      <span class="nav-icon">◎</span>
+      <span class="nav-icon" aria-hidden="true">◎</span>
       <span class="nav-label">Analytics</span>
     </button>
     <button class="nav-item" data-page="settings" onclick="navigate(this)">
-      <span class="nav-icon">⚙</span>
+      <span class="nav-icon" aria-hidden="true">⚙</span>
       <span class="nav-label">Settings</span>
     </button>
 
@@ -1611,13 +1620,13 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
         <div class="xau-ticker">
           <div>
             <div class="xau-label" style="display:flex;align-items:center">
-              <span class="xau-live-dot loading" id="xau-dot"></span>XAUUSD
+              <span class="xau-live-dot loading" id="xau-dot" aria-hidden="true"></span>XAUUSD
             </div>
             <div style="display:flex;align-items:center;gap:6px">
               <span class="xau-price" id="xau-price">Loading…</span>
               <span class="xau-change" id="xau-change"></span>
             </div>
-            <div class="xau-source" id="xau-source">Fetching live price…</div>
+            <div class="xau-source" id="xau-source" aria-live="polite">Fetching live price…</div>
           </div>
         </div>
         <button class="btn-settings-edit" onclick="openQS()" title="Edit Account Settings">⚙ Edit Settings</button>
@@ -1690,17 +1699,17 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
           <table id="journal-table">
             <thead>
               <tr>
-                <th onclick="sortBy('date')">#</th>
-                <th onclick="sortBy('date')">Date</th>
-                <th onclick="sortBy('pair')">Pair</th>
-                <th onclick="sortBy('type')">Dir</th>
-                <th onclick="sortBy('entry')">Entry</th>
-                <th onclick="sortBy('sl')">SL</th>
-                <th onclick="sortBy('tp')">TP</th>
-                <th onclick="sortBy('lot')">Lots</th>
-                <th onclick="sortBy('rr')">R:R</th>
-                <th onclick="sortBy('result')">Result</th>
-                <th onclick="sortBy('pnl')">P&L</th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('date')">#</button></th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('date')">Date</button></th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('pair')">Pair</button></th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('type')">Dir</button></th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('entry')">Entry</button></th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('sl')">SL</button></th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('tp')">TP</button></th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('lot')">Lots</button></th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('rr')">R:R</button></th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('result')">Result</button></th>
+                <th><button type="button" class="th-sort-btn" onclick="sortBy('pnl')">P&L</button></th>
                 <th>Setup</th>
                 <th>Actions</th>
               </tr>
@@ -1788,15 +1797,15 @@ label{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.06em;tex
             <div class="settings-title">Account Configuration</div>
             <div class="account-input-row">
               <div class="form-group">
-                <label>Starting Balance ($)</label>
+                <label for="set-balance">Starting Balance ($)</label>
                 <input type="number" id="set-balance" class="form-input" placeholder="e.g. 10000" oninput="saveSettings()"/>
               </div>
               <div class="form-group">
-                <label>Risk per Trade (%)</label>
+                <label for="set-risk">Risk per Trade (%)</label>
                 <input type="number" step="0.1" id="set-risk" class="form-input" placeholder="e.g. 1.0" oninput="saveSettings()"/>
               </div>
               <div class="form-group">
-                <label>Trader Name</label>
+                <label for="set-name">Trader Name</label>
                 <input type="text" id="set-name" class="form-input" placeholder="e.g. PHANTOM" oninput="saveSettings()"/>
               </div>
             </div>
@@ -2012,8 +2021,9 @@ const pages={
 };
 function _navigateCore(btn){
   const pg=btn.dataset.page;
-  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>{b.classList.remove('active'); b.removeAttribute('aria-current');});
   btn.classList.add('active');
+  btn.setAttribute('aria-current','page');
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+pg).classList.add('active');
   document.getElementById('topbar-title').textContent=pages[pg].title;

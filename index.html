@@ -41,6 +41,12 @@
 </script>
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/colour/theme.css">
+  <!-- Shared shell stylesheet, used here ONLY for its --nkx-shell-h var
+       and the canonical .nkx-shell-frame/-notch/-line classes (the same
+       angular header frame the logged-in app shell uses) — index.html's
+       own nav/#navbar markup and layout are otherwise untouched by this
+       file, since index isn't mounting the full app shell. -->
+  <link rel="stylesheet" href="assets/shell/shell.css">
   <script type="module" src="assets/colour/theme.js"></script>
   <link rel="stylesheet" href="assets/membership/membership.css">
   <link rel="stylesheet" href="assets/ui/interactions.css">
@@ -264,31 +270,31 @@ body::after{
 }
 
 /* ══════════ NAV ══════════ */
+/* Fixed and visually static — no scroll-driven change to background,
+   padding, height, or logo scale (reference: the header never moves or
+   repaints as the page scrolls). Height matches the app shell's own
+   --nkx-shell-h (64px, from assets/shell/shell.css) so the public page
+   and the logged-in app share the same header proportions. */
 nav{
   position:fixed;top:0;left:0;right:0;
   z-index:100;
+  height:var(--nkx-shell-h,64px);
   display:flex;align-items:center;justify-content:space-between;
-  padding:26px var(--gutter);
-  background:transparent;
-  border-bottom:1px solid transparent;
-  transition:background .5s var(--ease),border-color .5s var(--ease),padding .5s var(--ease);
+  padding:0 var(--gutter);
+  background:var(--black);
 }
-nav.scrolled{
-  padding:17px var(--gutter);
-  background:rgba(3,5,7,0.88);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter:blur(16px);
-  border-bottom-color:var(--line);
-}
-@media(max-width:768px){
-  nav.scrolled{
-    background:rgba(3,5,7,0.97);
-    -webkit-backdrop-filter: none;
-  backdrop-filter:none;
-  }
-}
+body{padding-top:var(--nkx-shell-h,64px)}
 
-.nav-logo-container{display:flex;align-items:center}
+.nav-logo-container{
+  display:flex;align-items:center;
+  /* Sits inside the shared header frame's notch (below), which is only
+     tall enough for the logo — top-align rather than centering in the
+     full nav height. */
+  align-self:flex-start;
+  padding-top:3px;
+  position:relative;
+  z-index:1;
+}
 /* Reference (Desktop-screens.svg): the wordmark sits alone, no icon
    badge beside it — the .nav-logo-img icon box that used to render one
    here has been removed. */
@@ -393,6 +399,7 @@ body.nkx-logged-out .nav-get-started-link{display:inline-flex}
     justify-content:flex-start; gap:22px;
     overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
     flex-shrink:1; min-width:0; max-width:none;
+    margin-right:14px;
   }
   .nav-links::-webkit-scrollbar{display:none}
   .nav-links li{flex-shrink:0}
@@ -678,7 +685,7 @@ body.nkx-logged-in #security{display:none}
   .hero-ctas .btn{width:100%;justify-content:center}
   .hero-globe-wrap{margin-top:80px}
 }
-@media(max-width:380px){
+@media(max-width:430px){
   .hero-logo{font-size:var(--fs-hero-logo-sm);letter-spacing:.02em}
   nav{padding-left:16px;padding-right:16px}
   .nav-logo{font-size:var(--fs-14)}
@@ -1112,10 +1119,6 @@ footer{
 .reveal-metrics.visible .terminal-metric:nth-child(2){transition-delay:.15s}
 .reveal-metrics.visible .terminal-metric:nth-child(3){transition-delay:.25s}
 .reveal-metrics.visible .terminal-metric:nth-child(4){transition-delay:.35s}
-
-/* Nav — logo scales down slightly while scrolled */
-.nav-logo-container{transition:transform .5s var(--ease);transform-origin:left center}
-nav.scrolled .nav-logo-container{transform:scale(.92)}
 
 /* Buttons — hover lift + soft glow, press feedback */
 .btn{will-change:transform}
@@ -1817,6 +1820,7 @@ a.testimonial-card:hover{transform:translateY(-3px)}
 
 <!-- NAV -->
 <nav id="navbar">
+  <div class="nkx-shell-frame" aria-hidden="true"><div class="nkx-shell-frame-notch"></div><div class="nkx-shell-frame-line"></div></div>
   <div class="nav-logo-container">
     <a href="index.html" class="nav-logo">nukrax</a>
   </div>
@@ -2902,18 +2906,6 @@ window.addEventListener('pageshow', function(event) {
   }
 });
 
-/* ── NAVBAR SCROLL ── */
-const navbar=document.getElementById('navbar');
-let navScrollTicking = false;
-window.addEventListener('scroll',()=>{
-  if(navScrollTicking) return;
-  navScrollTicking = true;
-  requestAnimationFrame(()=>{
-    navbar.classList.toggle('scrolled',window.scrollY>60);
-    navScrollTicking = false;
-  });
-}, { passive:true });
-
 /* ── PAUSE DECORATIVE ANIMATIONS WHEN TAB IS BACKGROUNDED ── */
 document.addEventListener('visibilitychange', ()=>{
   document.body.classList.toggle('nkx-tab-hidden', document.hidden);
@@ -3569,18 +3561,21 @@ function applyAuthState(session) {
 
 supabase.auth.getSession().then(({ data }) => {
   applyAuthState(data.session);
-  // NOTE: this used to also force window.location.replace('/dashboard.html')
-  // here — but by the time this runs, the full homepage has already
-  // loaded and rendered, so that was exactly the "blindly redirect away
-  // from a page that's already showing" behavior we don't want. The fast
-  // pre-render check at the very top of <head> already sends a returning
-  // logged-in user straight to /dashboard.html *before* any of this page
-  // loads, which is the legitimate speed optimization; if that one
-  // missed (stale/absent token) and the visitor is looking at the actual
-  // rendered homepage, applyAuthState() above is enough — the CSS rules
-  // for body.nkx-logged-in (.hero-ctas-loggedin, .welcome-panel, hiding
-  // #testimonials/#faq/#why/#stack/#security) already swap this exact
-  // page into the "Go to Dashboard" logged-in state in place.
+  // Authoritative check: an authenticated user must never remain on /.
+  // The fast pre-render check at the very top of <head> is only a speed
+  // optimization (synchronous localStorage read, before this page's
+  // ~160KB even loads) — it can miss (stale/absent token at that
+  // instant, third-party cookie/storage quirks, etc.), so this is the
+  // real enforcement point once Supabase has actually resolved the
+  // session. Guarded by the same session-storage flag the fast path
+  // uses so a visitor who was just bounced here via /?authRequired=1
+  // (logged-out at the time guard.js checked) can't get stuck in a
+  // redirect loop if their session becomes valid a moment later —
+  // it redirects once, not repeatedly.
+  if (data.session && !sessionStorage.getItem('nkx_home_redirect_done')) {
+    sessionStorage.setItem('nkx_home_redirect_done', '1');
+    location.replace('/dashboard.html');
+  }
 });
 supabase.auth.onAuthStateChange((_event, session) => applyAuthState(session));
 </script>

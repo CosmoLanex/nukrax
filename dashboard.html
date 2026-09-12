@@ -51,6 +51,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 /* ── mobile tab bar ── */
 .db-mobile-tabs{display:none}
 @media(max-width:900px){
+  .db-shell{flex-direction:column}
   .db-sidebar{display:none}
   .db-mobile-tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line);
     padding:0 clamp(20px,4vw,44px);position:sticky;top:var(--nkx-shell-h,64px);background:var(--black);z-index:400}
