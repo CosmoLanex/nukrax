@@ -67,6 +67,19 @@ html.nkx-light {
   --nkx-shadow-soft: 0 8px 24px rgba(35, 43, 46, 0.10);
   --nkx-shadow-lift: 0 12px 32px rgba(35, 43, 46, 0.16);
 }
+/* Same reasoning applies to focus indicators: --accent is intentionally
+   identical in both themes (see above), which gives keyboard focus
+   rings/borders strong contrast against the dark theme's panels (~9:1)
+   but only ~2:1 against the light theme's near-white panels — well
+   under the 3:1 non-text contrast minimum. --nkx-focus-ring exists so
+   focus states can stay theme-aware without touching --accent itself
+   anywhere it's used for branding (buttons, links, pills, etc.). */
+html:not(.nkx-light) {
+  --nkx-focus-ring: var(--accent);
+}
+html.nkx-light {
+  --nkx-focus-ring: var(--accent-dim);
+}
 html:not(.nkx-light) {
   --nkx-shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
   --nkx-shadow-lift: 0 12px 32px rgba(0, 0, 0, 0.5);
