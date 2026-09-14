@@ -25,6 +25,17 @@ html.no-js .nkx-reveal, html.no-js .nkx-reveal-toggle{opacity:1!important;transf
 :where(a, button, input, select, textarea, [tabindex]):focus-visible{
   outline:2px solid var(--accent);outline-offset:3px;border-radius:4px;
 }
+/* --accent has strong contrast against the dark theme's panels (~9:1)
+   but drops to ~2:1 against the light theme's near-white panels — well
+   under the 3:1 non-text contrast minimum, meaning keyboard focus is
+   barely visible in light mode. --accent-dim (already an existing token,
+   used elsewhere for borders) gives ~6:1 against the light palette while
+   staying a recognizable step of the same accent color, so it's used
+   here for light mode only; --accent is untouched everywhere else
+   (buttons, links, pills, etc.) and dark mode's ring is unchanged. */
+html.nkx-light :where(a, button, input, select, textarea, [tabindex]):focus-visible{
+  outline-color:var(--accent-dim);
+}
 
 /* ── skeleton loading (dashboard panels, marketplace grid) ── */
 .nkx-skeleton{
