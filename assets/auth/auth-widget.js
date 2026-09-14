@@ -230,7 +230,7 @@ const EYE_OFF = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
 function passwordField(id, placeholder, autocomplete) {
   return `<div class="nkx-field">
     <input type="password" id="${id}" placeholder="${placeholder}" required minlength="6" autocomplete="${autocomplete}"/>
-    <button type="button" class="nkx-eye" data-target="${id}">${EYE_OPEN}</button>
+    <button type="button" class="nkx-eye" data-target="${id}" aria-label="Show password">${EYE_OPEN}</button>
   </div>`;
 }
 
@@ -241,6 +241,7 @@ function wireEyeToggles(root) {
       const isPw = input.type === 'password';
       input.type = isPw ? 'text' : 'password';
       btn.innerHTML = isPw ? EYE_OFF : EYE_OPEN;
+      btn.setAttribute('aria-label', isPw ? 'Hide password' : 'Show password');
     });
   });
 }
