@@ -120,7 +120,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
 .cm-search-bar{padding:14px 8px 10px}
 .cm-search-bar input{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);
   padding:12px 16px;border-radius:20px;font-family:var(--font-b);font-size:14px;outline:none;transition:border-color .25s var(--ease)}
-.cm-search-bar input:focus{border-color:var(--accent)}
+.cm-search-bar input:focus{border-color:var(--nkx-focus-ring)}
 .cm-user-row{display:flex;align-items:center;gap:12px;padding:14px;margin:0 4px 8px;border-radius:14px;
   background:var(--panel);border:1px solid var(--line);cursor:pointer;transition:border-color .3s var(--ease)}
 @media (hover:hover) and (pointer:fine){.cm-user-row:hover{border-color:var(--line-lit)}}
@@ -213,6 +213,7 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
   color:var(--white);margin-bottom:16px}
 .cm-composer-modal textarea{width:100%;min-height:110px;background:transparent;border:none;color:var(--text);
   font-family:var(--font-b);font-size:15px;resize:vertical;outline:none}
+.cm-composer-modal textarea:focus{box-shadow:inset 0 -2px 0 var(--nkx-focus-ring)}
 .cm-composer-preview img{max-width:100%;border-radius:8px;margin-top:8px;max-height:220px;object-fit:cover}
 .cm-composer-msg{font-size:12px;color:#D98787;min-height:16px;margin-top:6px}
 .cm-composer-actions{display:flex;align-items:center;justify-content:space-between;margin-top:12px;
@@ -295,9 +296,9 @@ body{background:var(--black);color:var(--text);font-family:var(--font-b);min-hei
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z"/></svg>
     <span class="cm-nav-label">Lunox AI</span>
   </a>
-  <a class="cm-nav-item" href="/leaderboard.html" title="Leaderboard">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M7 6H4a2 2 0 002 4M17 6h3a2 2 0 01-2 4"/></svg>
-    <span class="cm-nav-label">Leaderboard</span>
+  <a class="cm-nav-item" href="/leaderboard.html" title="Top Traders">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20h18"/><path d="M7 20v-6M12 20V6M17 20v-9"/></svg>
+    <span class="cm-nav-label">Top Traders</span>
   </a>
   <button class="cm-nav-item" data-view="notifications" title="Notifications">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
