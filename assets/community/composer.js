@@ -13,7 +13,7 @@ function ensureComposerModal() {
   overlay.className = 'cm-composer-overlay';
   overlay.innerHTML = `
     <div class="cm-composer-modal">
-      <button class="cm-composer-close" id="cm-composer-close">×</button>
+      <button class="cm-composer-close" id="cm-composer-close" aria-label="Close">×</button>
       <h3 id="cm-composer-title">New Post</h3>
       <textarea id="cm-composer-text" placeholder="What's happening?" maxlength="500"></textarea>
       <div class="cm-composer-preview" id="cm-composer-preview"></div>

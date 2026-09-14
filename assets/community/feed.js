@@ -100,8 +100,8 @@ export async function renderFeed(container, currentUser, filterUsername = null) 
           ${post.content ? `<div class="cm-post-text">${escapeHtml(post.content)}</div>` : ''}
           ${post.image_url ? `<img class="cm-post-image" src="${escapeHtml(post.image_url)}" alt="">` : ''}
           <div class="cm-post-actions">
-            <button class="cm-like-btn ${isLiked ? 'liked' : ''}" data-like-post="${post.id}">
-              <svg viewBox="0 0 24 24" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
+            <button class="cm-like-btn ${isLiked ? 'liked' : ''}" data-like-post="${post.id}" aria-pressed="${isLiked ? 'true' : 'false'}" aria-label="${isLiked ? 'Unlike this post' : 'Like this post'}">
+              <svg viewBox="0 0 24 24" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
               <span class="cm-like-count">${likeIds.length}</span>
             </button>
           </div>
