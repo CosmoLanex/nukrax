@@ -124,7 +124,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/cube/cube.css?v=4">
 <link rel="preload" href="assets/fonts/nukrax-display.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 
@@ -269,55 +268,88 @@ body::after{
   clip:rect(0,0,0,0);white-space:nowrap;border:0;
 }
 
-/* ══════════ NAV ══════════ */
-/* Fixed and visually static — no scroll-driven change to background,
-   padding, height, or logo scale (reference: the header never moves or
-   repaints as the page scrolls). Height matches the app shell's own
+html{scroll-padding-top:var(--nkx-shell-h,64px)}
+
+/* Locked NUKRAX blue-grey brand family (spec-exact hex values, used where
+   the design calls for these precise tones rather than the general
+   --accent token). Page-scoped here rather than added to the shared
+   assets/css/tokens.css, which other pages also depend on. */
+:root{
+  --nkx-blue-1:#ABBED3;
+  --nkx-blue-2:#B0BFD1;
+  --nkx-blue-3:#B9C3D0;
+  --nkx-blue-4:#CFDEEA;
+}
+
+/* ══════════ NAV / MEGA-MENU ══════════ */
+/* Fixed dark-glass bar — height matches the app shell's own
    --nkx-shell-h (64px, from assets/shell/shell.css) so the public page
    and the logged-in app share the same header proportions. */
 nav{
   position:fixed;top:0;left:0;right:0;
-  z-index:100;
+  z-index:200;
   height:var(--nkx-shell-h,64px);
   display:flex;align-items:center;justify-content:space-between;
   padding:0 var(--gutter);
-  background:var(--black);
+  background:color-mix(in srgb, var(--black) 88%, transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
 }
 body{padding-top:var(--nkx-shell-h,64px)}
 
 .nav-logo-container{
   display:flex;align-items:center;
-  /* Sits inside the shared header frame's notch (below), which is only
-     tall enough for the logo — top-align rather than centering in the
-     full nav height. */
   align-self:flex-start;
   padding-top:3px;
   position:relative;
   z-index:1;
 }
-/* Reference (Desktop-screens.svg): the wordmark sits alone, no icon
-   badge beside it — the .nav-logo-img icon box that used to render one
-   here has been removed. */
 .nav-logo{
   font-family:var(--font-logo);font-weight:400;font-size:var(--fs-16);
   letter-spacing:.05em;text-transform:uppercase;color:var(--white);
 }
 
-.nav-links{display:flex;align-items:center;gap:36px;list-style:none;position:absolute;left:50%;transform:translateX(-50%)}
-.nav-links a{
-  position:relative;
-  font-size:var(--fs-13);font-weight:400;color:var(--muted);
+/* ── Mega-menu list — shared markup between desktop dropdown bar and
+   mobile off-canvas drawer; presentation differs per breakpoint below. ── */
+.nkx-mm-list{
+  display:flex;align-items:center;gap:30px;list-style:none;
+  position:absolute;left:50%;transform:translateX(-50%);
+}
+.nkx-mm-item{position:relative}
+.nkx-mm-trigger,.nkx-mm-link{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--font-b);font-size:var(--fs-13);font-weight:400;color:var(--muted);
+  background:none;border:0;cursor:pointer;padding:9px 2px;
   transition:color .3s var(--ease);
 }
-.nav-links a::after{
-  content:'';position:absolute;left:0;bottom:-5px;width:100%;height:1px;
-  background:var(--accent);
-  transform:scaleX(0);transform-origin:right;
-  transition:transform .4s var(--ease);
+.nkx-mm-trigger .nkx-mm-caret{
+  width:8px;height:8px;flex-shrink:0;
+  transition:transform .25s var(--ease-out);
 }
 @media (hover:hover) and (pointer:fine){
-.nav-links a:hover{color:var(--white)}
-.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+  .nkx-mm-trigger:hover,.nkx-mm-link:hover{color:var(--white)}
+}
+.nkx-mm-trigger[aria-expanded="true"]{color:var(--white)}
+.nkx-mm-trigger[aria-expanded="true"] .nkx-mm-caret{transform:rotate(180deg)}
+
+.nkx-mm-panel{
+  display:none;
+  list-style:none;
+  position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);
+  min-width:220px;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:10px;
+  box-shadow:0 16px 40px rgba(0,0,0,.4);
+}
+.nkx-mm-panel.open{display:block}
+.nkx-mm-panel a{
+  display:block;
+  font-family:var(--font-b);font-size:var(--fs-13);color:var(--text);
+  padding:10px 12px;border-radius:6px;
+  transition:background .2s var(--ease),color .2s var(--ease);
+}
+@media (hover:hover) and (pointer:fine){
+  .nkx-mm-panel a:hover{background:var(--line);color:var(--white)}
 }
 
 .nav-right{display:flex;align-items:center;gap:22px}
@@ -352,29 +384,27 @@ body{padding-top:var(--nkx-shell-h,64px)}
   .nav-status{display:none}
 }
 
-/* ── Auth-state conditional nav (new/logged-out visitors see a simpler nav) ── */
+/* ── Auth-state conditional nav (new/logged-out visitors see Login/Sign up) ──
+   Restyled per the new spec's button treatment: Login as a quiet ghost
+   link, Sign up as a filled accent pill — same locked accent family
+   used everywhere else on the page, no new colours introduced. */
 .nav-login-link{
-  display:none;font-family:var(--font-b);font-size:var(--fs-13);font-weight:700;color:var(--text);text-decoration:none;padding:9px 4px;
-  transition:color .2s var(--ease);
+  display:none;font-family:var(--font-b);font-size:var(--fs-13);font-weight:600;color:var(--text);text-decoration:none;
+  padding:9px 16px;border-radius:64px;border:1px solid transparent;
+  transition:color .2s var(--ease),border-color .2s var(--ease);
 }
-@media (hover:hover) and (pointer:fine){.nav-login-link:hover{color:var(--white)}}
+@media (hover:hover) and (pointer:fine){.nav-login-link:hover{color:var(--white);border-color:var(--line-lit)}}
 .nav-get-started-link{
   display:none;align-items:center;
   font-family:var(--font-b);font-size:var(--fs-13);font-weight:700;letter-spacing:.01em;
-  color:var(--white);
-  background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
-  border:1px solid rgba(255,255,255,0.14);
-  box-shadow:0 1px 0 rgba(255,255,255,0.07) inset, 0 6px 18px rgba(0,0,0,0.35);
+  color:var(--black);
+  background:var(--accent);
+  border:1px solid var(--accent);
   padding:9px 20px;border-radius:64px;text-decoration:none;
   transition:background .25s var(--ease),border-color .25s var(--ease),transform .15s var(--ease-out);
 }
-/* Desktop and mobile now share the same refined ~60–70px radius language
-   (both were previously different — mobile a full 999px pill, desktop a
-   near-square 16px rect). */
-@media(min-width:601px){.nav-get-started-link{border-radius:64px}}
 @media (hover:hover) and (pointer:fine){.nav-get-started-link:hover{
-  background:linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04));
-  border-color:rgba(255,255,255,0.24);
+  background:var(--white);border-color:var(--white);
 }}
 .nav-get-started-link:active{transform:scale(.95)}
 
@@ -385,24 +415,54 @@ body.nkx-logged-out #nkx-w-menu-wrap{display:none!important}
 body.nkx-logged-out .nav-login-link{display:inline-block}
 body.nkx-logged-out .nav-get-started-link{display:inline-flex}
 
-/* Was display:none here — the Infrastructure/Terminal/Execution Systems
-   links (in-page section jumps) became completely inaccessible on
-   mobile rather than just hidden behind a toggle. Kept reachable as a
-   horizontally-scrollable strip instead — same safe, contained-overflow
-   pattern already used elsewhere on the site (marketplace category
-   chips, community's mobile section tabs) rather than introducing new
-   toggle/drawer JS this late. Overrides the desktop absolute-centering
-   positioning, which doesn't suit a scrollable strip. */
+/* ── Mobile drawer toggle (hidden on desktop) ── */
+.nkx-mm-toggle{
+  display:none;
+  width:38px;height:38px;align-items:center;justify-content:center;
+  background:none;border:1px solid var(--line);border-radius:8px;color:var(--white);
+  cursor:pointer;
+}
+.nkx-mm-toggle-bars{position:relative;width:16px;height:11px}
+.nkx-mm-toggle-bars span{
+  position:absolute;left:0;right:0;height:1.5px;background:currentColor;
+  transition:transform .25s var(--ease),opacity .2s var(--ease);
+}
+.nkx-mm-toggle-bars span:nth-child(1){top:0}
+.nkx-mm-toggle-bars span:nth-child(2){top:5px}
+.nkx-mm-toggle-bars span:nth-child(3){top:10px}
+body.nkx-mm-drawer-open .nkx-mm-toggle-bars span:nth-child(1){transform:translateY(5px) rotate(45deg)}
+body.nkx-mm-drawer-open .nkx-mm-toggle-bars span:nth-child(2){opacity:0}
+body.nkx-mm-drawer-open .nkx-mm-toggle-bars span:nth-child(3){transform:translateY(-5px) rotate(-45deg)}
+
 @media(max-width:860px){
-  .nav-links{
-    display:flex; position:static; left:auto; transform:none;
-    justify-content:flex-start; gap:22px;
-    overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
-    flex-shrink:1; min-width:0; max-width:none;
-    margin-right:14px;
+  .nkx-mm-toggle{display:flex}
+  /* The shared <ul> becomes a full-height off-canvas drawer; each
+     dropdown panel becomes an in-flow accordion body instead of an
+     absolutely-positioned popover. Same trigger/JS, different CSS. */
+  .nkx-mm-list{
+    position:fixed;top:var(--nkx-shell-h,64px);left:0;right:0;bottom:0;
+    transform:none;
+    flex-direction:column;align-items:stretch;gap:0;
+    background:var(--black);
+    padding:8px var(--gutter) 40px;
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+    transition:transform .3s var(--ease-out),visibility .3s;
+    transform:translateX(100%);
+    visibility:hidden;
   }
-  .nav-links::-webkit-scrollbar{display:none}
-  .nav-links li{flex-shrink:0}
+  body.nkx-mm-drawer-open .nkx-mm-list{transform:translateX(0);visibility:visible}
+  .nkx-mm-item{border-bottom:1px solid var(--line)}
+  .nkx-mm-trigger,.nkx-mm-link{
+    width:100%;justify-content:space-between;
+    font-size:var(--fs-15-5);padding:16px 2px;
+  }
+  .nkx-mm-panel{
+    position:static;transform:none;display:none;
+    width:100%;min-width:0;margin:0 0 8px;
+    background:none;border:0;box-shadow:none;padding:0 0 4px 12px;
+  }
+  .nkx-mm-panel.open{display:block}
+  .nkx-mm-panel a{padding:12px 10px;color:var(--muted)}
 }
 
 
@@ -463,17 +523,6 @@ body.nkx-logged-out .nav-get-started-link{display:inline-flex}
   transition:transform .12s var(--ease-out),box-shadow .12s var(--ease-out);
 }
 @media (prefers-reduced-motion: reduce){.btn-premium::before{animation:none;display:none}}
-@media(max-width:600px){#btn-get-started{border-radius:16px}}
-/* Desktop only — reduce the pill (999px) down to a premium rounded-rect,
-   matching the treatment already used on mobile. Mobile is untouched. */
-@media(min-width:601px){#btn-get-started{border-radius:18px}}
-
-.hero-doc-link{
-  display:inline-flex;align-items:center;
-  font-family:var(--font-b);font-size:var(--fs-14);font-weight:700;color:var(--text);
-  text-decoration:none;transition:color .25s var(--ease);
-}
-@media (hover:hover) and (pointer:fine){.hero-doc-link:hover{color:var(--white)}}
 
 .link-row{display:flex;flex-wrap:wrap;justify-content:center;gap:30px}
 .link-inline{
@@ -497,14 +546,14 @@ body.nkx-logged-out .nav-get-started-link{display:inline-flex}
 
 /* ══════════ HERO ══════════ */
 .hero{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  text-align:left;
   padding:150px var(--gutter) 70px;
   position:relative;
   z-index:2;
 }
 
-/* signature "wow" element — soft volumetric glow behind the wordmark that
+/* signature "wow" element — soft volumetric glow behind the headline that
    drifts gently toward the cursor. Restrained: single blurred radial gradient,
    pure CSS-transition driven (no animation loop). */
 .hero-glow{
@@ -522,86 +571,105 @@ body.nkx-logged-out .nav-get-started-link{display:inline-flex}
 .hero-glow.active{opacity:1}
 
 .hero-content{
-  display:flex;flex-direction:column;align-items:center;
+  display:flex;flex-direction:column;align-items:flex-start;
+  position:relative;z-index:1;
+  width:100%;
 }
 
 @media(min-width:960px){
   .hero{
     flex-direction:row;align-items:center;justify-content:space-between;
-    text-align:left;gap:clamp(48px,5vw,96px);
+    gap:clamp(48px,5vw,96px);
     max-width:1320px;margin:0 auto;
     padding-left:32px;padding-right:calc(var(--gutter) + 30px);
   }
-  .hero-content{
-    align-items:flex-start;
-    flex:0 1 460px;max-width:460px;
-  }
-  .hero-logo{font-size:var(--fs-hero-logo-lg);white-space:nowrap}
-  /* Infinity animation is mobile-only — hidden on desktop. */
-  .hero-globe-wrap{display:none}
-  .hero-tagline{margin-left:0;margin-right:0;font-size:var(--fs-hero-tagline-lg)}
-  .hero-ctas{justify-content:flex-start}
-  /* Fills whatever space the 460px content column leaves inside the
-     1320px hero container — grows on wide monitors, shrinks gracefully
-     on narrower desktop/tablet widths, and can never overflow its row
-     the way a fixed vw-based width could. */
-  .hero-globe-wrap{
-    margin-top:0;margin-left:-64px;
-    flex:1 1 260px;
-    width:auto;height:auto;
-    max-width:400px;max-height:48vh;min-width:200px;
-    aspect-ratio:1;
-  }
+  .hero-content{flex:0 1 560px;max-width:560px}
 }
 
-.hero-label{
-  position:relative;z-index:1;
-  font-family:var(--font-m);font-size:var(--fs-11);letter-spacing:.26em;
+.hero-eyebrow{
+  position:relative;
+  padding-left:32px;
+  font-family:var(--font-m);font-size:var(--fs-11);letter-spacing:.18em;
   text-transform:uppercase;color:var(--muted);
-  margin-bottom:34px;
+  margin-bottom:26px;
   animation:fade-up .8s var(--ease-out) both;
 }
-.hero-label span{color:var(--accent)}
+.hero-eyebrow::before{content:'';position:absolute;left:0;top:.6em;width:22px;height:1px;background:var(--line-lit)}
+.hero-eyebrow span{color:var(--accent)}
 
-.hero-logo{
-  position:relative;z-index:1;
-  font-family:var(--font-logo);
-  font-weight:400;
-  font-size:var(--fs-hero-logo);
-  line-height:1;
-  letter-spacing:.04em;
+.hero-headline{
+  font-family:var(--font-b);font-weight:600;
+  font-size:var(--fs-heading-xl);
+  line-height:1.04;letter-spacing:-.01em;
+  text-transform:uppercase;
   color:var(--white);
   animation:fade-up .9s .06s var(--ease-out) both;
 }
+.hero-headline em{color:var(--accent);font-style:normal}
 
-.hero-tagline{
-  position:relative;z-index:1;
+.hero-sub{
   font-size:var(--fs-hero-tagline);
   font-weight:300;
   color:var(--text);
-  margin:24px auto 0;
-  max-width:22ch;
-  letter-spacing:.005em;
+  margin:22px 0 0;
+  max-width:38ch;
+  line-height:1.6;
   animation:fade-up .9s .12s var(--ease-out) both;
 }
 
-.hero-divider{
-  position:relative;z-index:1;
-  width:1px;height:44px;
-  background:var(--line-lit);
-  margin:40px 0;
-  animation:fade-up .9s .18s var(--ease-out) both;
-}
-
 .hero-ctas{
-  position:relative;z-index:1;
-  display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:28px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:16px;
+  margin-top:38px;
   animation:fade-up .9s .24s var(--ease-out) both;
 }
 .hero-ctas-loggedin{display:contents}
 .hero-ctas-loggedout{display:none}
+.hero-cta-ref{text-transform:uppercase;font-size:var(--fs-14-5);padding:16px 34px;font-weight:700;letter-spacing:.04em}
 body.nkx-logged-out .hero-ctas-loggedin{display:none}
 body.nkx-logged-out .hero-ctas-loggedout{display:contents}
+
+.btn-outline{
+  background:color-mix(in srgb, var(--line-lit) 30%, transparent);
+  color:var(--white);
+  border:1px solid var(--line-lit);
+}
+@media (hover:hover) and (pointer:fine){.btn-outline:hover{background:var(--line);border-color:var(--muted)}}
+
+/* ── Animation A — ASCII character field, hero right-side visual.
+   Canvas draws a monospace character ramp whose glyph/opacity ripple
+   outward from the cursor over a slow layered-noise field; freezes to a
+   single static frame under prefers-reduced-motion. ── */
+.hero-anim-wrap{
+  position:relative;z-index:1;
+  flex:1 1 420px;max-width:640px;
+  aspect-ratio:4/3;
+  border:1px solid var(--line);border-radius:12px;
+  overflow:hidden;
+  background:var(--panel);
+}
+.hero-anim-wrap canvas{display:block;width:100%;height:100%}
+.hero-anim-label{
+  position:absolute;left:14px;bottom:12px;
+  font-family:var(--font-m);font-size:var(--fs-9-5);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+  pointer-events:none;
+}
+@media(max-width:959px){
+  .hero-anim-wrap{
+    display:block;width:100%;max-width:none;aspect-ratio:16/10;margin-top:36px;
+  }
+}
+
+/* ══════════ TICKER — Animation E (pulse lines) ══════════ */
+.nkx-ticker{
+  position:relative;
+  height:96px;
+  margin:0 auto;max-width:var(--container);
+  padding:0 var(--gutter);
+  overflow:hidden;
+}
+.nkx-ticker canvas{display:block;width:100%;height:100%}
+@media(max-width:600px){.nkx-ticker{height:64px}}
 
 /* ── Welcome Panel (logged-in homepage) — reuses .x-section/.section-label/
    .x-title/.dash-grid/.dash-card wholesale; only genuinely new rules below. ── */
@@ -664,29 +732,14 @@ body.nkx-logged-in #security{display:none}
   .btn-magnetic{transform:none !important}
 }
 
-/* ── Global Market Network — rotating wireframe globe, replaces the old
-   scroll hint. Fills the freed hero space with a live, on-theme visual
-   instead of empty space / the mountain silhouette showing through. ── */
-.hero-globe-wrap{
-  position:relative;z-index:1;
-  width:min(230px,52vw);height:min(230px,52vw);
-  margin-top:54px;
-  display:flex;flex-direction:column;align-items:center;gap:14px;
-  opacity:0;
-  transition:opacity 1.6s var(--ease);
-}
-.hero-globe-wrap.active{opacity:1}
-
 @keyframes fade-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
 @media(max-width:600px){
   .hero{padding-top:clamp(150px, 28vh, 280px)}
-  .hero-ctas{flex-direction:column;width:100%}
+  .hero-ctas{flex-direction:column;align-items:stretch;width:100%}
   .hero-ctas .btn{width:100%;justify-content:center}
-  .hero-globe-wrap{margin-top:80px}
 }
 @media(max-width:430px){
-  .hero-logo{font-size:var(--fs-hero-logo-sm);letter-spacing:.02em}
   nav{padding-left:16px;padding-right:16px}
   .nav-logo{font-size:var(--fs-14)}
   .nav-right{gap:10px}
@@ -696,73 +749,102 @@ body.nkx-logged-in #security{display:none}
 
 /* ══════════ ABOUT / INFRASTRUCTURE ══════════ */
 .about{
-  padding:40px var(--gutter) 90px;
+  padding:110px var(--gutter) 70px;
   max-width:var(--container);
   margin:0 auto;
   position:relative;
   z-index:2;
 }
 
-.about-grid{
-  display:grid;
-  grid-template-columns:.78fr 1.22fr;
-  gap:clamp(40px,6vw,96px);
-  align-items:start;
-}
-
-.about-sticky{position:sticky;top:130px}
+.about-head{position:relative}
 
 .about-headline{
-  font-family:var(--font-b);
-  font-weight:200;
+  font-family:var(--font-b);font-weight:700;
   font-size:var(--fs-heading-lg);
-  line-height:1.18;
-  letter-spacing:-.01em;
+  line-height:1.08;letter-spacing:-.01em;
+  text-transform:uppercase;
   color:var(--white);
+  max-width:20ch;
+  position:relative;z-index:2;
 }
-.about-headline em{font-style:normal;font-weight:500;color:var(--accent)}
+.about-headline em{font-style:normal;color:var(--accent)}
 
 .about-intro{
-  font-size:var(--fs-14);color:var(--muted);font-weight:300;
-  margin-top:22px;max-width:42ch;
+  font-size:var(--fs-14);color:var(--text);font-weight:300;
+  margin-top:20px;max-width:46ch;
+  line-height:1.65;
+  position:relative;z-index:2;
 }
 
-/* accordion */
-.accordion{border-top:1px solid var(--line)}
-.acc-item{border-bottom:1px solid var(--line)}
-.acc-item summary{
-  list-style:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:space-between;gap:20px;
-  padding:24px 2px;
-  transition:padding-left .3s var(--ease);
+/* ── Animation B — "Reactive Intelligence Field", borderless, integrated
+   directly into the dark background behind the headline. No card, no
+   border — see assets/home/about-field.js. ── */
+.about-anim-wrap{
+  position:absolute;top:-40px;right:-var(--gutter);
+  width:min(60%,780px);height:340px;
+  z-index:1;
+  pointer-events:none;
+  mask-image:radial-gradient(ellipse 70% 70% at 65% 40%, #000 55%, transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 70% 70% at 65% 40%, #000 55%, transparent 100%);
 }
-.acc-item summary::-webkit-details-marker{display:none}
-@media (hover:hover) and (pointer:fine){.acc-item summary:hover{padding-left:8px}}
-.acc-num{
-  font-family:var(--font-m);font-size:var(--fs-11);color:var(--accent-dim);
-  letter-spacing:.1em;margin-right:18px;
+.about-anim-wrap canvas{display:block;width:100%;height:100%}
+@media(max-width:900px){
+  .about-anim-wrap{position:static;width:100%;height:220px;margin-top:24px;order:-1}
+  .about-head{display:flex;flex-direction:column}
 }
-.acc-title{
-  font-size:var(--fs-15-5);font-weight:500;color:var(--white);
-  flex:1;letter-spacing:.005em;
+
+.about-cols{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:44px;
+  margin-top:96px;
+  position:relative;z-index:2;
 }
-.acc-chevron{
-  width:9px;height:9px;
-  border-right:1px solid var(--muted);border-bottom:1px solid var(--muted);
-  transform:rotate(-45deg);
-  transition:transform .35s var(--ease-out);
-  flex-shrink:0;
+.about-col{border-left:1px solid var(--line);padding-left:22px}
+.about-col:first-child{border-left:0;padding-left:0}
+.about-col-num{
+  display:flex;align-items:center;gap:14px;
+  font-family:var(--font-m);font-size:var(--fs-11);color:var(--muted);
+  margin-bottom:14px;
 }
-.acc-body{
-  padding:0 2px 26px 68px;
-  font-size:var(--fs-13-5);color:var(--muted);line-height:1.75;
-  max-width:58ch;
+.about-col-num::after{content:'';flex:1;height:1px;background:var(--line-lit);max-width:32px}
+.about-col h3{
+  font-family:var(--font-b);font-weight:600;font-size:var(--fs-16);
+  text-transform:uppercase;letter-spacing:.02em;color:var(--white);
+  margin-bottom:8px;
 }
+.about-col p{font-size:var(--fs-13-5);color:var(--muted);line-height:1.55;max-width:26ch}
+.about-col-arrow{
+  display:flex;align-items:center;gap:10px;
+  margin-top:18px;
+  font-size:var(--fs-14);color:var(--text);
+}
+.about-col-arrow::after{content:'';flex:1;height:1px;background:var(--line);max-width:24px}
+
+.about-divider{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:44px;padding-top:22px;
+  border-top:1px solid var(--line);
+  position:relative;z-index:2;
+}
+.about-divider-mark{font-family:var(--font-m);font-size:var(--fs-11);color:var(--line-lit)}
+
+.about-tagline{
+  display:flex;align-items:center;gap:10px;
+  margin-top:22px;
+  font-family:var(--font-m);font-size:var(--fs-11);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent);
+  position:relative;z-index:2;
+}
+.about-tagline-plus{color:var(--accent);font-size:var(--fs-14)}
 
 @media(max-width:900px){
-  .about-grid{grid-template-columns:1fr;gap:40px}
-  .about-sticky{position:static}
-  .acc-body{padding-left:2px}
+  .about-cols{grid-template-columns:1fr;gap:30px;margin-top:48px}
+  .about-col{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:22px}
+  .about-col:first-child{border-top:0;padding-top:0}
+}
+@media(max-width:600px){
+  .about{padding-top:80px}
+  .about-headline{max-width:none;font-size:var(--fs-heading-md)}
 }
 
 /* ── Stats ── */
@@ -807,13 +889,22 @@ body.nkx-logged-in #security{display:none}
   font-size:var(--fs-heading-md);color:var(--white);
   letter-spacing:-.01em;margin-bottom:14px;
 }
+.terminal-title em{font-style:normal;color:var(--accent)}
 .terminal-desc{font-size:var(--fs-13-5);color:var(--muted);line-height:1.7}
+
+.terminal-grid{
+  display:grid;
+  grid-template-columns:1.05fr 0.85fr 0.95fr;
+  gap:24px;
+  align-items:stretch;
+}
 
 .terminal-panel{
   border:1px solid var(--line);
   background:rgba(10,15,19,0.5);
   padding:0;
   overflow:hidden;
+  display:flex;flex-direction:column;
 }
 .terminal-bar{
   display:flex;align-items:center;gap:8px;
@@ -825,21 +916,16 @@ body.nkx-logged-in #security{display:none}
   margin-left:10px;font-family:var(--font-m);font-size:var(--fs-10-5);
   letter-spacing:.1em;color:var(--muted);text-transform:uppercase;
 }
-.terminal-body{
-  display:grid;
-  grid-template-columns:1.4fr 1fr;
-  gap:0;
-}
 .terminal-chart{
   padding:34px 30px;
-  border-right:1px solid var(--line);
+  flex:1;
 }
 .terminal-chart svg{width:100%;height:180px;display:block}
 .terminal-chart-label{
   font-family:var(--font-m);font-size:var(--fs-10);letter-spacing:.1em;
   color:var(--muted);text-transform:uppercase;margin-bottom:20px;
 }
-.terminal-metrics{padding:34px 30px;display:flex;flex-direction:column;gap:22px}
+.terminal-metrics{padding:30px 28px;display:flex;flex-direction:column;gap:22px;flex:1}
 .terminal-metric{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:16px;border-bottom:1px solid var(--line)}
 .terminal-metric:last-child{border-bottom:none;padding-bottom:0}
 .terminal-metric-label{font-family:var(--font-m);font-size:var(--fs-10-5);letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
@@ -849,6 +935,146 @@ body.nkx-logged-in #security{display:none}
   margin-top:16px;
   font-family:var(--font-m);font-size:var(--fs-10);letter-spacing:.1em;
   text-transform:uppercase;color:var(--accent-dim);
+}
+
+/* ── Right column: Animation C (card dance) stacked above Animation D
+   (cursor-reactive grid) — matches the supplied composition's right-side
+   stack, same total height as the chart panel on the left. ── */
+.terminal-anim-col{
+  display:flex;flex-direction:column;gap:24px;
+  min-height:0;
+}
+.terminal-anim-c{
+  position:relative;
+  flex:1.4 1 0;
+  min-height:220px;
+  border:1px solid var(--line);
+  background:rgba(10,15,19,0.35);
+  overflow:hidden;
+}
+.terminal-anim-c-label{
+  position:absolute;top:12px;left:14px;z-index:5;
+  font-family:var(--font-m);font-size:var(--fs-9-5);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+  pointer-events:none;
+}
+.card-dance-card{
+  position:absolute;
+  display:flex;align-items:center;justify-content:center;
+  padding:10px 12px;
+  border:1px solid var(--line-lit);
+  background:var(--panel);
+  border-radius:6px;
+  font-family:var(--font-m);font-size:var(--fs-9-5);
+  letter-spacing:.04em;color:var(--text);
+  text-align:center;line-height:1.4;
+  animation-duration:5s;
+  animation-timing-function:var(--ease);
+  animation-iteration-count:infinite;
+}
+@media(prefers-reduced-motion:reduce){.card-dance-card{animation:none!important}}
+
+.cd-1{animation-name:cardDance1}
+.cd-2{animation-name:cardDance2}
+.cd-3{animation-name:cardDance3}
+.cd-4{animation-name:cardDance4}
+.cd-5{animation-name:cardDance5}
+.cd-6{animation-name:cardDance6}
+
+/* Size tiers measured directly from the supplied Animation C frame sequence
+   (frame_001.png / frame_150.png, a confirmed seamless 150-frame / 5s loop):
+   one dominant ~44%x63% card, one ~28%x37%, one ~22%x30%, one ~19%x25%,
+   and two small ~14%x19% cards — six simultaneous cards total (verified by
+   counting distinct card-label text blobs across 11 sampled frames spanning
+   the full cycle, consistently 6, not the ~15 assumed in the prior pass). */
+.cd-tier-giant{width:44%;height:63%}
+.cd-tier-large{width:28%;height:37%}
+.cd-tier-medium{width:22%;height:30%}
+.cd-tier-medsmall{width:19%;height:25%}
+.cd-tier-small{width:14%;height:19%}
+
+@keyframes cardDance1{
+  0%,100%{top:1%;left:46%}
+  25%{top:8%;left:36%}
+  50%{top:2%;left:30%}
+  75%{top:10%;left:42%}
+}
+@keyframes cardDance2{
+  0%,100%{top:47%;left:57%}
+  25%{top:38%;left:47%}
+  50%{top:30%;left:60%}
+  75%{top:42%;left:66%}
+}
+@keyframes cardDance3{
+  0%,100%{top:36%;left:34%}
+  25%{top:50%;left:20%}
+  50%{top:58%;left:30%}
+  75%{top:44%;left:44%}
+}
+@keyframes cardDance4{
+  0%,100%{top:16%;left:7%}
+  25%{top:5%;left:12%}
+  50%{top:14%;left:2%}
+  75%{top:24%;left:10%}
+}
+@keyframes cardDance5{
+  0%,100%{top:70%;left:10%}
+  25%{top:60%;left:2%}
+  50%{top:50%;left:14%}
+  75%{top:64%;left:20%}
+}
+@keyframes cardDance6{
+  0%,100%{top:71%;left:71%}
+  25%{top:60%;left:76%}
+  50%{top:50%;left:68%}
+  75%{top:62%;left:60%}
+}
+
+.terminal-anim-d{
+  position:relative;
+  flex:1 1 0;
+  min-height:150px;
+  border:1px solid var(--line);
+  background:rgba(10,15,19,0.35);
+  overflow:hidden;
+  perspective:900px;
+}
+.prism-grid{
+  position:absolute;inset:0;
+  display:grid;
+  transform-style:flat;
+  transform:rotateX(14deg) rotateY(-8deg) scale(1.08);
+  transform-origin:50% 50%;
+}
+.prism-cell{
+  border:1px solid rgba(255,255,255,0.09);
+  background:transparent;
+  transition:background-color 1s ease, opacity 1s ease;
+}
+@media(prefers-reduced-motion:reduce){
+  .prism-grid{transform:rotateX(14deg) rotateY(-8deg) scale(1.08)}
+  .prism-cell{transition:none}
+}
+.terminal-anim-d-label{
+  position:absolute;top:12px;left:14px;z-index:5;
+  font-family:var(--font-m);font-size:var(--fs-9-5);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+  pointer-events:none;
+}
+
+@media(max-width:1300px){
+  .terminal-grid{grid-template-columns:1fr 1fr}
+  .terminal-grid .terminal-anim-col{grid-column:1 / -1}
+  .terminal-anim-col{flex-direction:row}
+}
+@media(max-width:900px){
+  .terminal-grid{grid-template-columns:1fr;gap:20px}
+  .terminal-anim-col{flex-direction:row}
+  .terminal-anim-c{min-height:190px}
+  .terminal-anim-d{min-height:190px}
+}
+@media(max-width:600px){
+  .terminal-anim-col{flex-direction:column}
 }
 
 @media(max-width:800px){
@@ -871,61 +1097,72 @@ body.nkx-logged-in #security{display:none}
   font-size:var(--fs-heading-md);
   color:var(--white);
   letter-spacing:-.01em;
-  margin-bottom:50px;
+  margin-bottom:14px;
+}
+.ea-section-title em{font-style:normal;color:var(--nkx-blue-1)}
+.ea-section-intro{
+  font-size:var(--fs-13-5);color:var(--muted);line-height:1.7;
+  max-width:60ch;margin-bottom:50px;
 }
 
 .ea-preview-grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  border-top:1px solid var(--line);
-  border-left:1px solid var(--line);
+  gap:16px;
 }
 
 .ea-preview-card{
   position:relative;
-  padding:30px 24px 32px;
-  border-right:1px solid var(--line);
-  border-bottom:1px solid var(--line);
+  display:block;
+  padding:22px 20px 24px;
+  border-radius:8px;
+  background:color-mix(in srgb, var(--nkx-blue-4) 16%, transparent);
+  border:1px solid color-mix(in srgb, var(--nkx-blue-4) 40%, transparent);
   transition:transform .4s var(--ease-out),box-shadow .4s var(--ease),background .3s var(--ease);
-}
-.ea-preview-card::after{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  box-shadow:inset 0 0 0 1px transparent;
-  transition:box-shadow .4s var(--ease);
 }
 @media (hover:hover) and (pointer:fine){
 .ea-preview-card:hover{
   transform:translateY(-4px);
-  background:linear-gradient(160deg, rgba(143,184,196,0.05), rgba(143,184,196,0.015));
+  background:color-mix(in srgb, var(--nkx-blue-4) 24%, transparent);
   box-shadow:0 18px 40px rgba(0,0,0,0.35);
   z-index:1;
 }
-.ea-preview-card:hover::after{box-shadow:inset 0 0 0 1px rgba(143,184,196,0.28)}
 }
 
-.ea-preview-card-tag{
-  display:inline-block;
-  font-family:var(--font-m);font-size:var(--fs-10-5);letter-spacing:.1em;
-  text-transform:uppercase;color:var(--accent-dim);
-  margin-bottom:20px;
-}
+.ea-preview-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.ea-preview-card-icon{height:26px;width:auto;flex-shrink:0;opacity:.92}
 .ea-preview-card-name{
-  font-family:var(--font-b);font-weight:500;font-size:var(--fs-19);letter-spacing:.01em;
-  color:var(--white);margin-bottom:11px;
+  font-family:var(--font-b);font-weight:600;font-size:var(--fs-14);letter-spacing:.03em;
+  text-transform:uppercase;color:var(--white);
 }
 .ea-preview-card-desc{
-  font-size:var(--fs-12-5);color:var(--muted);line-height:1.65;
+  font-size:var(--fs-12-5);color:var(--nkx-blue-4);line-height:1.65;
   margin-bottom:20px;
 }
 .ea-preview-card-arrow{
-  display:inline-flex;align-items:center;gap:6px;
-  font-family:var(--font-m);font-size:var(--fs-11);letter-spacing:.08em;
-  text-transform:uppercase;color:var(--muted);
-  transition:color .3s var(--ease),gap .3s var(--ease);
+  position:absolute;right:20px;bottom:22px;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:var(--accent);
+  font-size:var(--fs-13);
+  transition:transform .3s var(--ease);
 }
-@media (hover:hover) and (pointer:fine){.ea-preview-card:hover .ea-preview-card-arrow{color:var(--accent);gap:10px}}
+@media (hover:hover) and (pointer:fine){.ea-preview-card:hover .ea-preview-card-arrow{transform:translateX(3px)}}
 
-.ea-cta-wrap{display:flex;justify-content:center;margin-top:52px}
+.ea-cta-wrap{display:flex;justify-content:center;margin-top:40px}
+.btn-marketplace{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--font-b);font-weight:600;font-size:var(--fs-13);letter-spacing:.02em;
+  color:#131824;
+  background:var(--nkx-blue-1);
+  border:1px solid color-mix(in srgb, var(--nkx-blue-4) 40%, transparent);
+  padding:12px 22px;border-radius:6px;
+  transition:background .25s var(--ease),transform .15s var(--ease-out);
+}
+@media (hover:hover) and (pointer:fine){.btn-marketplace:hover{background:var(--nkx-blue-3)}}
+.btn-marketplace-arrow{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;font-size:var(--fs-10);
+}
 
 @media(max-width:1000px){.ea-preview-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.ea-preview-grid{grid-template-columns:1fr}}
@@ -1338,6 +1575,7 @@ body.nkx-pulse .security-card{
   font-size:var(--fs-heading-md);color:var(--white);
   letter-spacing:-.01em;margin-bottom:14px;
 }
+.x-title em{font-style:normal;color:var(--accent)}
 .x-desc{font-size:var(--fs-13-5);color:var(--muted);line-height:1.7;max-width:60ch}
 
 /* Bordered "ledger" grid — reuses the .stats / .ea-preview-grid pattern */
@@ -1389,8 +1627,31 @@ body.nkx-pulse .security-card{
 .dash-card-label{
   font-family:var(--font-m);font-size:var(--fs-10);letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);margin-bottom:18px;
-  display:flex;align-items:center;justify-content:space-between;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 10px;
 }
+.dash-card-status{
+  flex-shrink:0;
+  font-family:var(--font-m);font-size:var(--fs-9-5);letter-spacing:.06em;
+  text-transform:none;color:var(--muted);
+  padding:3px 8px;border-radius:20px;border:1px solid var(--line-lit);
+  white-space:nowrap;
+}
+
+/* ── Honest "not connected" treatment — applied to all six cards since
+   none of these six metrics has a genuine calculation source in this
+   project yet (only the XAU price feed exists, and it doesn't support
+   AI-confidence/volatility/session/liquidity/flow/sentiment). Every
+   visualization keeps its intended shape/structure — ready for a real
+   integration later — but renders in a dimmed, inert tone instead of
+   the live accent color, and drops the fabricated numbers entirely. ── */
+.dash-card[data-status="unavailable"] .gauge-fill{stroke:var(--line-lit);animation:none!important}
+.dash-card[data-status="unavailable"] .gauge-num{color:var(--muted);font-weight:400}
+.dash-card[data-status="unavailable"] .heat-cell{background:var(--line-lit)!important}
+.dash-card[data-status="unavailable"] .session-bar{background:var(--line-lit)!important}
+.dash-card[data-status="unavailable"] .sentiment-track{background:var(--line)}
+.dash-card[data-status="unavailable"] .sentiment-dot{background:var(--muted);box-shadow:none}
+.dash-card[data-status="unavailable"] .flow-fill{background:var(--line-lit);width:12%!important}
+.dash-card[data-status="unavailable"] .volatility-wave path{stroke:var(--line-lit)}
 
 /* circular gauge */
 .gauge-wrap{display:flex;align-items:center;gap:18px}
@@ -1399,6 +1660,11 @@ body.nkx-pulse .security-card{
 .gauge-fill{fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 1.3s var(--ease)}
 .gauge-num{font-family:var(--font-b);font-weight:500;font-size:var(--fs-20);color:var(--white)}
 .gauge-sub{font-family:var(--font-m);font-size:var(--fs-10);color:var(--muted);letter-spacing:.06em;margin-top:4px}
+
+/* volatility waveform (distinct from the AI Confidence ring — spec
+   requires each card to use a visualization suited to its own metric) */
+.volatility-wave{width:100%;height:64px;display:block}
+.volatility-wave path{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round}
 
 /* liquidity heatmap */
 .heatmap{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
@@ -1445,66 +1711,101 @@ body.nkx-pulse .security-card{
 .flow-fill{height:100%;width:0%;background:var(--accent);border-radius:3px;transition:width 1.1s var(--ease-out)}
 .flow-row.visible .flow-fill{width:var(--fw,50%)}
 
-/* ══════════ 05 — TRADING PERFORMANCE TIMELINE ══════════ */
-.timeline-scroll-wrap{position:relative}
-.timeline-scroll-wrap::before{
-  content:'';position:absolute;top:0;left:0;bottom:12px;width:48px;
+/* ══════════ 05 — THE PROCESSING PIPELINE ══════════ */
+.pipeline-diagram{position:relative;padding-top:34px;margin-top:26px}
+
+.pipeline-bracket{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  height:20px;
+  margin-bottom:20px;
+}
+.pipeline-bracket::before,.pipeline-bracket::after{
+  content:'';position:absolute;top:50%;height:1px;background:var(--line-lit);
+}
+.pipeline-bracket::before{left:0;right:calc(50% + 130px)}
+.pipeline-bracket::after{right:0;left:calc(50% + 130px)}
+.pipeline-bracket-label{
+  font-family:var(--font-m);font-size:var(--fs-9-5);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);
+  padding:0 14px;white-space:nowrap;
+}
+.pipeline-bracket-bottom{margin-top:20px;margin-bottom:0}
+
+.pipeline-scroll-wrap{position:relative}
+.pipeline-scroll-wrap::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:40px;
   background:linear-gradient(270deg,rgba(7,9,11,0) 0%,var(--black) 100%);
   pointer-events:none;z-index:1;opacity:0;transition:opacity .3s var(--ease);
 }
-.timeline-scroll-wrap.at-start::before{opacity:0}
-.timeline-scroll-wrap:not(.at-start)::before{opacity:1}
-.timeline-scroll-wrap::after{
-  content:'';position:absolute;top:0;right:0;bottom:12px;width:48px;
+.pipeline-scroll-wrap:not(.at-start)::before{opacity:1}
+.pipeline-scroll-wrap::after{
+  content:'';position:absolute;top:0;right:0;bottom:0;width:40px;
   background:linear-gradient(90deg,rgba(7,9,11,0) 0%,var(--black) 100%);
   pointer-events:none;
 }
-.timeline-track{
-  display:flex;align-items:stretch;gap:0;
-  overflow-x:auto;
-  padding-bottom:12px;
-  scrollbar-width:none;
+.pipeline-steps{
+  display:flex;align-items:stretch;
+  overflow-x:auto;scrollbar-width:none;
+  padding-bottom:4px;
 }
-.timeline-track::-webkit-scrollbar{display:none}
-.timeline-step{
-  flex:0 0 auto;width:180px;
-  display:flex;flex-direction:column;align-items:flex-start;
-  padding-right:8px;
-}
-.timeline-num{
-  font-family:var(--font-m);font-size:var(--fs-10);color:var(--accent-dim);
-  letter-spacing:.1em;margin-bottom:14px;
-}
-.timeline-dot{
-  width:9px;height:9px;border-radius:50%;
-  background:var(--panel);border:1.5px solid var(--line-lit);
-  margin-bottom:16px;
-  transition:background .4s var(--ease),border-color .4s var(--ease),box-shadow .4s var(--ease);
-}
-.timeline-step.visible .timeline-dot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px rgba(143,184,196,0.28)}
-.timeline-line{
-  flex:0 0 auto;width:52px;align-self:flex-start;
-  margin-top:31.5px;
-  height:1px;background:var(--line);
+.pipeline-steps::-webkit-scrollbar{display:none}
+
+.pipeline-step{
   position:relative;
-  overflow:hidden;
+  flex:0 0 auto;width:168px;
+  padding:16px 14px 18px;
+  border:1px solid var(--line);
+  background:var(--panel);
 }
-.timeline-line::after{
-  content:'';position:absolute;inset:0;
-  background:var(--accent-dim);
-  transform:scaleX(0);transform-origin:left;
-  transition:transform .8s var(--ease);
+.pipeline-step::before{
+  /* short vertical stub connecting this box up to the shared bracket line */
+  content:'';position:absolute;top:-14px;left:50%;width:1px;height:14px;
+  background:var(--line-lit);transform:translateX(-.5px);
 }
-.timeline-line.visible::after{transform:scaleX(1)}
-.timeline-title{font-size:var(--fs-14-5);font-weight:500;color:var(--white);margin-bottom:8px}
-.timeline-desc{font-size:var(--fs-12);color:var(--muted);line-height:1.6}
+.pipeline-step-num{
+  font-family:var(--font-m);font-size:var(--fs-10);color:var(--accent-dim);
+  letter-spacing:.08em;margin-bottom:10px;
+}
+.pipeline-step-title{
+  font-family:var(--font-b);font-weight:600;font-size:var(--fs-11-5);
+  text-transform:uppercase;letter-spacing:.02em;color:var(--white);
+  margin-bottom:8px;
+}
+.pipeline-step-desc{font-size:var(--fs-11-5);color:var(--muted);line-height:1.55}
+
+.pipeline-step-final{
+  border-color:var(--accent);
+  background:color-mix(in srgb, var(--accent) 8%, var(--panel));
+}
+.pipeline-step-final .pipeline-step-num,
+.pipeline-step-final .pipeline-step-title{color:var(--accent)}
+
+.pipeline-connector{
+  flex:0 0 auto;width:26px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--line-lit);font-size:var(--fs-12);
+  align-self:center;
+}
+
+@media(max-width:900px){
+  .pipeline-bracket-label{display:none}
+  .pipeline-bracket::before{right:50%}
+  .pipeline-bracket::after{left:50%}
+}
 
 @media(max-width:700px){
-  .timeline-scroll-wrap::after{display:none}
-  .timeline-track{flex-direction:column;overflow-x:visible}
-  .timeline-step{width:100%;flex-direction:row;gap:16px;padding-right:0}
-  .timeline-line{width:1px;height:40px;align-self:center;margin:0 0 0 4px}
-  .timeline-dot{margin-bottom:0}
+  .pipeline-bracket,.pipeline-scroll-wrap::after{display:none}
+  .pipeline-steps{flex-direction:column;overflow-x:visible;gap:0}
+  .pipeline-step{width:100%}
+  .pipeline-step::before{
+    top:0;left:-14px;width:14px;height:1px;
+  }
+  .pipeline-step:first-child::before{display:none}
+  .pipeline-connector{
+    width:100%;height:24px;
+    transform:rotate(90deg);
+  }
 }
 
 /* ══════════ 06 — WHY TRADERS CHOOSE ══════════ */
@@ -1529,7 +1830,9 @@ body.nkx-pulse .security-card{
 }
 @media (hover:hover) and (pointer:fine){.why-card:hover .why-icon{border-color:var(--accent-dim);transform:translateY(-2px)}}
 .why-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.4}
+.why-icon.why-icon-fill svg{width:15px;height:15px;fill:currentColor;stroke:none}
 .why-title{font-size:var(--fs-15-5);font-weight:500;color:var(--white);margin-bottom:10px}
+.why-title em{font-style:normal;color:var(--accent)}
 .why-desc{font-size:var(--fs-12-5);color:var(--muted);line-height:1.65}
 
 /* ══════════ 07 — ADVANCED ANALYTICS ══════════ */
@@ -1540,8 +1843,10 @@ body.nkx-pulse .security-card{
 .analytics-main{border-right:1px solid var(--line)}
 @media(max-width:860px){.analytics-main{border-right:none;border-bottom:1px solid var(--line)}}
 
-.candle-svg{width:100%;height:200px;display:block}
+.candle-svg{width:100%;height:auto;aspect-ratio:900/200;display:block;clip-path:inset(0 100% 0 0);transition:clip-path .7s var(--ease-out)}
+.x-panel.reveal-card.visible .candle-svg{clip-path:inset(0 0 0 0)}
 .candle{transition:transform .3s var(--ease)}
+@media (prefers-reduced-motion: reduce){.candle-svg{clip-path:inset(0 0 0 0)!important;transition:none!important}}
 
 .metrics-col{padding:28px 26px}
 .metric-block{margin-bottom:22px}
@@ -1558,7 +1863,7 @@ body.nkx-pulse .security-card{
 .pie-legend{display:flex;flex-direction:column;gap:8px;font-size:var(--fs-12);color:var(--muted)}
 .pie-legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px}
 
-.monthly-bars{display:flex;align-items:flex-end;gap:6px;height:90px;padding:26px;border-top:1px solid var(--line)}
+.monthly-bars{display:flex;align-items:flex-end;gap:1.5px;height:90px;padding:26px;border-top:1px solid var(--line)}
 .monthly-bar{flex:1;background:var(--accent-dim);border-radius:1px 1px 0 0;height:0%;transition:height 1s var(--ease-out)}
 .monthly-bars.visible .monthly-bar{height:var(--mb,30%)}
 .monthly-bar.neg{background:var(--line-lit)}
@@ -1616,6 +1921,25 @@ body.nkx-pulse .security-card{
 @media (hover:hover) and (pointer:fine){.livestat:hover .livestat-num{text-shadow:0 0 18px rgba(143,184,196,0.35)}}
 .livestat-label{font-family:var(--font-m);font-size:var(--fs-9-5);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 
+/* A.N-5 — continuous left-to-right band, no hover interaction (spec Part 10) */
+.an5-band{
+  overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:var(--panel-2, rgba(10,15,19,.5));padding:16px 0;
+  pointer-events:none;
+}
+.an5-track{
+  display:flex;width:max-content;gap:48px;
+  animation:an5Scroll 32s linear infinite;
+  will-change:transform;
+}
+.an5-item{
+  font-family:var(--font-m);font-size:var(--fs-11);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);white-space:nowrap;
+}
+.an5-sep{color:var(--line-lit);margin:0 4px;white-space:nowrap}
+@keyframes an5Scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.an5-track{animation:none}}
+
 /* ══════════ 10 — SECURITY ══════════ */
 .security-grid{
   display:grid;grid-template-columns:repeat(3,1fr);
@@ -1635,23 +1959,27 @@ body.nkx-pulse .security-card{
 .security-desc{font-size:var(--fs-12-5);color:var(--muted);line-height:1.65}
 
 /* ══════════ 11 — TESTIMONIALS ══════════ */
-.testimonial-scroll-wrap{position:relative}
-.testimonial-scroll-wrap::before{
-  content:'';position:absolute;top:0;left:0;bottom:0;width:48px;
-  background:linear-gradient(270deg,rgba(7,9,11,0) 0%,var(--black) 100%);
-  pointer-events:none;z-index:1;opacity:0;transition:opacity .3s var(--ease);
+.testimonial-marquee{display:flex;flex-direction:column;gap:1px;position:relative}
+.testimonial-marquee::before,.testimonial-marquee::after{
+  content:'';position:absolute;top:0;bottom:0;width:64px;z-index:2;pointer-events:none;
 }
-.testimonial-scroll-wrap:not(.at-start)::before{opacity:1}
-.testimonial-scroll-wrap::after{
-  content:'';position:absolute;top:0;right:0;bottom:0;width:48px;
-  background:linear-gradient(90deg,rgba(7,9,11,0) 0%,var(--black) 100%);
-  pointer-events:none;
+.testimonial-marquee::before{left:0;background:linear-gradient(90deg,var(--black) 0%,rgba(7,9,11,0) 100%)}
+.testimonial-marquee::after{right:0;background:linear-gradient(270deg,var(--black) 0%,rgba(7,9,11,0) 100%)}
+.testimonial-row{overflow:hidden;background:var(--line)}
+.testimonial-track{
+  display:flex;gap:1px;width:max-content;
+  animation:testimonialScrollRTL 46s linear infinite;
 }
-.testimonial-grid{
-  display:flex;gap:1px;background:var(--line);
-  overflow-x:auto;scrollbar-width:none;
+.testimonial-row[data-dir="ltr"] .testimonial-track{animation-name:testimonialScrollLTR}
+@keyframes testimonialScrollRTL{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes testimonialScrollLTR{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+@media (hover:hover) and (pointer:fine){
+  .testimonial-row:hover .testimonial-track{animation-play-state:paused}
 }
-.testimonial-grid::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){
+  .testimonial-track{animation:none}
+  .testimonial-track a[aria-hidden="true"]{display:none}
+}
 .testimonial-card{
   flex:0 0 min(84vw,340px);
   background:var(--black);
@@ -1705,16 +2033,14 @@ a.testimonial-card:hover{transform:translateY(-3px)}
 }
 .final-cta-grid{
   position:absolute;inset:0;z-index:0;pointer-events:none;
-  background-image:
-    linear-gradient(rgba(143,184,196,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(143,184,196,0.05) 1px, transparent 1px);
-  background-size:56px 56px;
+  background-image:repeating-linear-gradient(-45deg, rgba(143,184,196,0.14) 0 2px, transparent 2px 14px);
   -webkit-mask-image:radial-gradient(circle at 50% 50%, black, transparent 72%);
   mask-image:radial-gradient(circle at 50% 50%, black, transparent 72%);
   opacity:0;
   transition:opacity 1.2s var(--ease);
 }
 .final-cta.visible .final-cta-grid{opacity:1}
+@media (prefers-reduced-motion: reduce){.final-cta-grid{opacity:1;transition:none}}
 .final-cta-glow{
   position:absolute;top:50%;left:50%;
   width:min(1000px,110vw);height:min(700px,80vw);
@@ -1727,21 +2053,42 @@ a.testimonial-card:hover{transform:translateY(-3px)}
 }
 .final-cta.visible .final-cta-glow{opacity:1}
 .final-cta-content{position:relative;z-index:1}
-.final-cta-label{
-  font-family:var(--font-m);font-size:var(--fs-11);letter-spacing:.26em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:26px;
-}
 .final-cta-title{
   font-family:var(--font-b);font-weight:200;
   font-size:var(--fs-heading-xl);
   line-height:1.1;letter-spacing:-.01em;color:var(--white);
-  max-width:16ch;margin:0 auto 22px;
+  max-width:20ch;margin:0 auto 22px;
 }
 .final-cta-title em{font-style:normal;font-weight:500;color:var(--accent)}
+.final-cta-title .final-cta-wordmark{color:var(--muted);font-weight:500}
 .final-cta-sub{
   font-size:var(--fs-14-5);color:var(--muted);max-width:48ch;margin:0 auto 40px;line-height:1.7;
 }
 .final-cta-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:22px}
+.final-cta-form{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:520px;margin:0 auto;
+}
+.final-cta-input{
+  flex:1 1 260px;min-width:0;
+  font-family:var(--font-m);font-size:var(--fs-13);color:var(--white);
+  background:rgba(10,15,19,.5);border:1px solid var(--line);border-radius:6px;
+  padding:13px 16px;
+}
+.final-cta-input::placeholder{color:var(--muted)}
+.final-cta-input:focus{outline:2px solid var(--nkx-focus-ring, var(--accent));outline-offset:1px}
+.final-cta-submit{
+  display:inline-flex;align-items:center;gap:10px;white-space:nowrap;
+  font-family:var(--font-b);font-weight:600;font-size:var(--fs-13);letter-spacing:.02em;
+  color:#131824;background:var(--nkx-blue-1);
+  border:1px solid color-mix(in srgb, var(--nkx-blue-4) 40%, transparent);
+  padding:13px 22px;border-radius:6px;cursor:pointer;
+  transition:background .25s var(--ease);
+}
+@media (hover:hover) and (pointer:fine){.final-cta-submit:hover{background:var(--nkx-blue-3)}}
+.final-cta-form-note{
+  font-family:var(--font-m);font-size:var(--fs-11);color:var(--muted);
+  margin-top:16px;min-height:1.4em;
+}
 </style>
 
 <!-- If JavaScript never runs (disabled, blocked, or fails before the reveal
@@ -1824,11 +2171,56 @@ a.testimonial-card:hover{transform:translateY(-3px)}
   <div class="nav-logo-container">
     <a href="index.html" class="nav-logo">nukrax</a>
   </div>
-  <ul class="nav-links">
-    <li><a href="#about">Infrastructure</a></li>
-    <li><a href="#terminal">Terminal</a></li>
-    <li><a href="#ea">Execution Systems</a></li>
+
+  <ul class="nkx-mm-list" id="nkx-mm-list">
+    <li class="nkx-mm-item">
+      <button type="button" class="nkx-mm-trigger" id="mm-trigger-platform" aria-expanded="false" aria-controls="mm-panel-platform">Platform<svg class="nkx-mm-caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <ul class="nkx-mm-panel" id="mm-panel-platform" role="menu" aria-labelledby="mm-trigger-platform">
+        <li role="none"><a role="menuitem" href="/dashboard.html">Dashboard</a></li>
+        <li role="none"><a role="menuitem" href="/tr.html">Terminal</a></li>
+        <li role="none"><a role="menuitem" href="/map.html">Market Map</a></li>
+        <li role="none"><a role="menuitem" href="/marketplace.html">Marketplace</a></li>
+      </ul>
+    </li>
+    <li class="nkx-mm-item">
+      <button type="button" class="nkx-mm-trigger" id="mm-trigger-solutions" aria-expanded="false" aria-controls="mm-panel-solutions">Solutions<svg class="nkx-mm-caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <ul class="nkx-mm-panel" id="mm-panel-solutions" role="menu" aria-labelledby="mm-trigger-solutions">
+        <li role="none"><a role="menuitem" href="/ea-selection.html">All Expert Advisors</a></li>
+        <li role="none"><a role="menuitem" href="/ea/apex.html">APEX HFT</a></li>
+        <li role="none"><a role="menuitem" href="/ea/aurum.html">AURUM HFT</a></li>
+        <li role="none"><a role="menuitem" href="/ea/smc-ict.html">SMC ICT</a></li>
+        <li role="none"><a role="menuitem" href="/crypto.html">Crypto Deposits</a></li>
+      </ul>
+    </li>
+    <li class="nkx-mm-item">
+      <button type="button" class="nkx-mm-trigger" id="mm-trigger-resources" aria-expanded="false" aria-controls="mm-panel-resources">Resources<svg class="nkx-mm-caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <ul class="nkx-mm-panel" id="mm-panel-resources" role="menu" aria-labelledby="mm-trigger-resources">
+        <li role="none"><a role="menuitem" href="/docs/introduction.html">Documentation</a></li>
+        <li role="none"><a role="menuitem" href="/community.html">Community</a></li>
+        <li role="none"><a role="menuitem" href="/docs/faq.html">FAQ</a></li>
+        <li role="none"><a role="menuitem" href="/docs/changelog.html">Changelog</a></li>
+        <li role="none"><a role="menuitem" href="/support.html">Support</a></li>
+        <li role="none"><a role="menuitem" href="/contact.html">Contact</a></li>
+      </ul>
+    </li>
+    <li class="nkx-mm-item">
+      <a class="nkx-mm-link" href="https://github.com/CosmoLanex/nukrax" target="_blank" rel="noopener">Open Source</a>
+    </li>
+    <li class="nkx-mm-item">
+      <button type="button" class="nkx-mm-trigger" id="mm-trigger-develop" aria-expanded="false" aria-controls="mm-panel-develop">Develop<svg class="nkx-mm-caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <ul class="nkx-mm-panel" id="mm-panel-develop" role="menu" aria-labelledby="mm-trigger-develop">
+        <li role="none"><a role="menuitem" href="/develop/ea.html">Build an EA</a></li>
+        <li role="none"><a role="menuitem" href="/develop/automation.html">Build an Automation</a></li>
+      </ul>
+    </li>
+    <li class="nkx-mm-item">
+      <a class="nkx-mm-link" href="/chat.html">A.I</a>
+    </li>
+    <li class="nkx-mm-item">
+      <a class="nkx-mm-link" href="/marketplace.html">Pricing</a>
+    </li>
   </ul>
+
   <div class="nav-right">
     <div class="nav-status">
       <div class="nav-dot" aria-hidden="true"></div>
@@ -1836,7 +2228,10 @@ a.testimonial-card:hover{transform:translateY(-3px)}
     </div>
     <a href="/map.html" class="nav-map-btn" id="nav-map-btn"><span class="map-live-dot" aria-hidden="true"></span>Market Map</a>
     <a href="login.html" class="nav-login-link" id="nav-login-link">Login</a>
-    <a href="signup.html" class="nav-get-started-link" id="nav-get-started-link">Get Started</a>
+    <a href="signup.html" class="nav-get-started-link" id="nav-get-started-link">Sign up</a>
+    <button type="button" class="nkx-mm-toggle" id="nkx-mm-toggle" aria-expanded="false" aria-controls="nkx-mm-list" aria-label="Toggle menu">
+      <span class="nkx-mm-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
   </div>
 </nav>
 
@@ -1846,10 +2241,9 @@ a.testimonial-card:hover{transform:translateY(-3px)}
 <section class="hero" id="heroSection">
   <div class="hero-glow" id="heroGlow" aria-hidden="true"></div>
   <div class="hero-content">
-    <p class="hero-label">Est. 2024 &nbsp;/&nbsp; <span>Professional Trading Suite</span></p>
-    <h1 class="hero-logo">NUKRAX</h1>
-    <p class="hero-tagline">Precision tools for elite traders.</p>
-    <div class="hero-divider"></div>
+    <p class="hero-eyebrow">Est. 2024 / Software &bull; Automation &bull; <span>Intelligence</span></p>
+    <h1 class="hero-headline">Built for what&rsquo;s <em>next.</em></h1>
+    <p class="hero-sub">Precision software, automation and intelligent systems engineered to turn ambitious ideas into reality.</p>
     <div class="hero-ctas">
       <div class="hero-ctas-loggedin" id="heroCtasLoggedIn">
       <a href="/dashboard.html" class="btn btn-primary btn-magnetic" id="btn-dashboard">
@@ -1864,22 +2258,27 @@ a.testimonial-card:hover{transform:translateY(-3px)}
       </a>
       </div>
       <div class="hero-ctas-loggedout" id="heroCtasLoggedOut">
-      <a href="signup.html" class="btn btn-premium btn-magnetic" id="btn-get-started">
-        Get Started
-        <span class="btn-arrow">→</span>
+      <a href="#about" class="btn btn-primary btn-magnetic hero-cta-ref" id="btn-explore-nukrax">
+        EXPLORE NUKRAX
+        <span class="btn-arrow">▸</span>
       </a>
-      <a href="docs/introduction.html" class="hero-doc-link" id="btn-docs">
-        Documentation
+      <a href="#ea" class="btn btn-outline hero-cta-ref" id="btn-our-services">
+        OUR SERVICES
+        <span class="btn-arrow">→</span>
       </a>
       </div>
     </div>
   </div>
-  <div class="hero-globe-wrap" id="heroGlobeWrap">
-    <div class="cube-scene" id="cubeScene">
-      <canvas id="heroCubeCanvas"></canvas>
-    </div>
+  <div class="hero-anim-wrap" id="heroAnimWrap" aria-hidden="true">
+    <canvas id="heroAsciiCanvas"></canvas>
+    <span class="hero-anim-label">Animation — A</span>
   </div>
 </section>
+
+<!-- TICKER — Animation E (pulse lines) -->
+<div class="nkx-ticker" id="nkxTicker" role="presentation" aria-hidden="true">
+  <canvas id="nkxTickerCanvas"></canvas>
+</div>
 
 <!-- WELCOME PANEL (logged-in homepage — hidden for signed-out visitors) -->
 <section class="x-section welcome-panel" id="welcomePanel" aria-labelledby="welcome-heading">
@@ -1931,99 +2330,63 @@ a.testimonial-card:hover{transform:translateY(-3px)}
 
 <!-- INFRASTRUCTURE -->
 <section class="about" id="about" aria-labelledby="about-heading">
-  <div class="section-label reveal">01 — The Infrastructure</div>
-  <div class="about-grid">
-    <div class="reveal about-sticky">
-      <h2 class="about-headline reveal-heading" id="about-heading">
-        Built for <em>professionals.</em>
-      </h2>
-      <p class="about-intro reveal-para">
-        A private trading ecosystem engineered for serious market participants who demand institutional-grade tools without compromise.
-      </p>
-    </div>
-    <div class="reveal">
-      <div class="accordion">
-        <details class="acc-item is-open" open>
-          <summary>
-            <span class="acc-num">01</span>
-            <span class="acc-title">Institutional-Grade Expert Advisors</span>
-            <span class="acc-chevron"></span>
-          </summary>
-          <div class="acc-body">
-            Our Expert Advisors operate on millisecond-precision HFT architecture, incorporating Smart Money Concepts (SMC), Inner Circle Trader (ICT) methodologies, and proprietary liquidity-targeting algorithms. Each EA undergoes rigorous backtesting across multiple timeframes and market conditions before deployment.
-          </div>
-        </details>
-        <details class="acc-item">
-          <summary>
-            <span class="acc-num">02</span>
-            <span class="acc-title">SMC + ICT Architecture</span>
-            <span class="acc-chevron"></span>
-          </summary>
-          <div class="acc-body">
-            Market structure, liquidity sweeps, fair value gaps, and order blocks — translated from concept into executable, live-tested logic. No indicators borrowed wholesale from retail templates; every rule is rebuilt from the ground up for automation.
-          </div>
-        </details>
-        <details class="acc-item">
-          <summary>
-            <span class="acc-num">03</span>
-            <span class="acc-title">Live Trading Infrastructure</span>
-            <span class="acc-chevron"></span>
-          </summary>
-          <div class="acc-body">
-            nukrax.tr and nukrax.cr serve as our live trading platforms — providing real-time market analysis, comprehensive journaling systems, and secure crypto deposit portals for professional traders. Both integrate directly with our EA suite.
-          </div>
-        </details>
-        <details class="acc-item">
-          <summary>
-            <span class="acc-num">04</span>
-            <span class="acc-title">Precision First</span>
-            <span class="acc-chevron"></span>
-          </summary>
-          <div class="acc-body">
-            No noise, no clutter. Every feature exists because it delivers a measurable performance improvement. Whether you're running automated strategies on MT5 or managing risk across multiple positions, NUKRAX gives you infrastructure — not gimmicks.
-          </div>
-        </details>
-      </div>
+  <div class="about-head">
+    <div class="section-label reveal">01 — The Infrastructure</div>
+    <h2 class="about-headline reveal-heading" id="about-heading">
+      We build what comes <em>next.</em>
+    </h2>
+    <p class="about-intro reveal-para">
+      Software, automation and intelligence — architected for complexity, engineered for performance, and designed to evolve with the demands of the real world.
+    </p>
+    <div class="about-anim-wrap" id="aboutAnimWrap" aria-hidden="true">
+      <canvas id="aboutFieldCanvas"></canvas>
     </div>
   </div>
-</section>
 
-<!-- STATS -->
-<section class="stats" aria-labelledby="stats-heading">
-  <h2 id="stats-heading" class="visually-hidden">NUKRAX at a glance</h2>
-  <div class="stat reveal reveal-delay-1">
-    <div class="stat-num" data-count-target="3">0</div>
-    <div class="stat-label">Expert Advisors</div>
+  <div class="about-cols">
+    <div class="about-col reveal">
+      <div class="about-col-num">01</div>
+      <h3>Software</h3>
+      <p>Digital products engineered around real problems.</p>
+      <span class="about-col-arrow" aria-hidden="true">→</span>
+    </div>
+    <div class="about-col reveal reveal-delay-1">
+      <div class="about-col-num">02</div>
+      <h3>Automation</h3>
+      <p>Systems that work without being told twice.</p>
+      <span class="about-col-arrow" aria-hidden="true">→</span>
+    </div>
+    <div class="about-col reveal reveal-delay-2">
+      <div class="about-col-num">03</div>
+      <h3>Intelligence</h3>
+      <p>Technology that understands more than instructions.</p>
+      <span class="about-col-arrow" aria-hidden="true">→</span>
+    </div>
   </div>
-  <div class="stat reveal reveal-delay-2">
-    <div class="stat-num" data-count-target="2">0</div>
-    <div class="stat-label">Live Platforms</div>
+
+  <div class="about-divider reveal reveal-delay-3">
+    <span class="about-divider-mark" aria-hidden="true">///</span>
   </div>
-  <div class="stat reveal reveal-delay-3">
-    <div class="stat-num">24/7</div>
-    <div class="stat-label">Automated Execution</div>
-  </div>
-  <div class="stat reveal reveal-delay-4">
-    <div class="stat-num">MT5</div>
-    <div class="stat-label">Native Platform</div>
-  </div>
+  <p class="about-tagline reveal reveal-delay-3">
+    <span class="about-tagline-plus" aria-hidden="true">+</span> No template. No shortcuts.
+  </p>
 </section>
 
 <!-- TERMINAL SHOWCASE -->
 <section class="terminal-section" id="terminal" aria-labelledby="terminal-heading">
   <div class="section-label reveal">02 — The Terminal</div>
   <div class="terminal-head reveal">
-    <h2 class="terminal-title reveal-heading" id="terminal-heading">Where execution happens.</h2>
-    <p class="terminal-desc reveal-para">Every EA reports into the same environment — live position state, risk exposure, and execution latency, at a glance.</p>
+    <h2 class="terminal-title reveal-heading" id="terminal-heading">Real-time <em>operational</em> intelligence.</h2>
+    <p class="terminal-desc reveal-para">System performance, execution activity, and critical operational metrics — consolidated into a precise, real-time view.</p>
   </div>
-  <div class="terminal-panel reveal">
-    <div class="terminal-bar">
-      <div class="terminal-dot"></div>
-      <div class="terminal-dot"></div>
-      <div class="terminal-dot"></div>
-      <span class="terminal-bar-label">nukrax // execution terminal</span>
-    </div>
-    <div class="terminal-body">
+  <div class="terminal-grid">
+    <div class="terminal-panel reveal">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <span class="terminal-bar-label">nukrax // execution terminal</span>
+      </div>
       <div class="terminal-chart">
         <div class="terminal-chart-label">Equity Curve — Illustrative</div>
         <svg aria-hidden="true" focusable="false" viewBox="0 0 400 180" preserveAspectRatio="none">
@@ -2042,6 +2405,15 @@ a.testimonial-card:hover{transform:translateY(-3px)}
           <line x1="0" y1="90" x2="400" y2="90" stroke="#1B2328" stroke-width="1"/>
           <line x1="0" y1="135" x2="400" y2="135" stroke="#1B2328" stroke-width="1"/>
         </svg>
+      </div>
+    </div>
+
+    <div class="terminal-panel reveal">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <span class="terminal-bar-label">nukrax // chart details</span>
       </div>
       <div class="terminal-metrics reveal-metrics">
         <div class="terminal-metric">
@@ -2062,6 +2434,22 @@ a.testimonial-card:hover{transform:translateY(-3px)}
         </div>
       </div>
     </div>
+
+    <div class="terminal-anim-col reveal">
+      <div class="terminal-anim-c" aria-hidden="true">
+        <span class="terminal-anim-c-label">Animation — C</span>
+        <div class="card-dance-card cd-1 cd-tier-giant">Execution Speed</div>
+        <div class="card-dance-card cd-2 cd-tier-large">Active Positions</div>
+        <div class="card-dance-card cd-3 cd-tier-medium">Order Routing</div>
+        <div class="card-dance-card cd-4 cd-tier-medsmall">Risk Controls</div>
+        <div class="card-dance-card cd-5 cd-tier-small">Session Coverage</div>
+        <div class="card-dance-card cd-6 cd-tier-small">System Uptime</div>
+      </div>
+      <div class="terminal-anim-d" id="terminalGridWrap" aria-hidden="true">
+        <span class="terminal-anim-d-label">Animation — D</span>
+        <div class="prism-grid" id="prismGrid"></div>
+      </div>
+    </div>
   </div>
   <div class="terminal-caption reveal">Interface preview — illustrative, not live data</div>
 </section>
@@ -2069,37 +2457,46 @@ a.testimonial-card:hover{transform:translateY(-3px)}
 <!-- EA PREVIEW -->
 <section class="ea-section" id="ea" aria-labelledby="ea-heading">
   <div class="section-label reveal">03 — Execution Systems</div>
-  <h2 class="ea-section-title reveal reveal-heading" id="ea-heading">Systems built to execute.</h2>
+  <h2 class="ea-section-title reveal reveal-heading" id="ea-heading"><em>Intelligence</em> engineered for execution.</h2>
+  <p class="ea-section-intro reveal-para">Built to process complex information, adapt to changing conditions, and transform decisions into reliable, automated execution.</p>
   <div class="ea-preview-grid">
     <a href="ea/apex.html" class="ea-preview-card reveal-card reveal-delay-1">
-      <span class="ea-preview-card-tag">HFT · v1.0</span>
-      <div class="ea-preview-card-name">APEX</div>
-      <div class="ea-preview-card-desc">Ultra-fast execution engine with adaptive scalping logic and multi-timeframe confirmation system.</div>
-      <div class="ea-preview-card-arrow">View system →</div>
+      <div class="ea-preview-card-head">
+        <span class="ea-preview-card-name">Apex</span>
+        <img src="assets/images/r-logo/r-logo-candlestick.png" alt="" class="ea-preview-card-icon">
+      </div>
+      <div class="ea-preview-card-desc">CRT, ICT, TBS, SMC, and Price Action combined into a dynamic multi-strategy trading framework.</div>
+      <span class="ea-preview-card-arrow" aria-hidden="true">▸</span>
     </a>
     <a href="ea/aurum.html" class="ea-preview-card reveal-card reveal-delay-2">
-      <span class="ea-preview-card-tag">HFT · v1.0</span>
-      <div class="ea-preview-card-name">AURUM</div>
-      <div class="ea-preview-card-desc">Gold-specialist HFT system with advanced liquidity-targeting algorithms and session-based filters.</div>
-      <div class="ea-preview-card-arrow">View system →</div>
+      <div class="ea-preview-card-head">
+        <span class="ea-preview-card-name">Aurum</span>
+        <img src="assets/images/r-logo/r-logo-candlestick.png" alt="" class="ea-preview-card-icon">
+      </div>
+      <div class="ea-preview-card-desc">SMC, CRT, ICT, and Price Action unified through a 7-Timeframe analysis framework for XAUUSD.</div>
+      <span class="ea-preview-card-arrow" aria-hidden="true">▸</span>
     </a>
-    <a href="ea/smc-ict.html" class="ea-preview-card reveal-card reveal-delay-3">
-      <span class="ea-preview-card-tag">SMC · ICT</span>
-      <div class="ea-preview-card-name">SMC ICT</div>
-      <div class="ea-preview-card-desc">Smart Money Concepts implementation with ICT methodology, FVG detection, and order block validation.</div>
-      <div class="ea-preview-card-arrow">View system →</div>
+    <a href="product.html?id=auto-multi-account-copier" class="ea-preview-card reveal-card reveal-delay-3">
+      <div class="ea-preview-card-head">
+        <span class="ea-preview-card-name">Account Copier</span>
+        <img src="assets/images/r-logo/r-logo-copier.png" alt="" class="ea-preview-card-icon">
+      </div>
+      <div class="ea-preview-card-desc">Mirrors trades from one master account across unlimited follower accounts.</div>
+      <span class="ea-preview-card-arrow" aria-hidden="true">▸</span>
     </a>
-    <a href="ea/404.html" class="ea-preview-card reveal-card reveal-delay-4">
-      <span class="ea-preview-card-tag">Coming Soon</span>
-      <div class="ea-preview-card-name">MORE SYSTEMS</div>
-      <div class="ea-preview-card-desc">Additional expert advisors currently in development and rigorous testing phases.</div>
-      <div class="ea-preview-card-arrow">View system →</div>
+    <a href="develop/ea.html" class="ea-preview-card reveal-card reveal-delay-4">
+      <div class="ea-preview-card-head">
+        <span class="ea-preview-card-name">Nexus Forge</span>
+        <img src="assets/images/r-logo/r-logo-forge.png" alt="" class="ea-preview-card-icon">
+      </div>
+      <div class="ea-preview-card-desc">Build your own strategies, automate workflows, and design custom systems around your needs.</div>
+      <span class="ea-preview-card-arrow" aria-hidden="true">▸</span>
     </a>
   </div>
   <div class="ea-cta-wrap reveal-btn">
-    <a href="/ea-selection.html" class="btn btn-primary">
-      View All Expert Advisors
-      <span class="btn-arrow">→</span>
+    <a href="/marketplace.html" class="btn-marketplace">
+      Marketplace
+      <span class="btn-marketplace-arrow" aria-hidden="true">▸</span>
     </a>
   </div>
 </section>
@@ -2109,193 +2506,196 @@ a.testimonial-card:hover{transform:translateY(-3px)}
   <div class="section-label reveal">04 — Market Intelligence</div>
   <div class="x-head reveal">
     <h2 class="x-title reveal-heading" id="intelligence-heading">Read the market before it moves.</h2>
-    <p class="x-desc reveal-para">A continuous read on confidence, volatility, liquidity, and positioning — the same signals our Expert Advisors evaluate on every tick.</p>
+    <p class="x-desc reveal-para">A continuous read on market confidence, volatility, liquidity, and positioning — revealing the underlying conditions behind every market move.</p>
   </div>
 
   <div class="dash-grid">
-    <div class="dash-card reveal-card">
-      <div class="dash-card-label">AI Confidence Score</div>
+    <div class="dash-card reveal-card" data-status="unavailable">
+      <div class="dash-card-label">AI Confidence Score <span class="dash-card-status">Not connected</span></div>
       <div class="gauge-wrap">
         <svg aria-hidden="true" focusable="false" class="gauge-svg" viewBox="0 0 100 100">
           <circle class="gauge-track" cx="50" cy="50" r="42"/>
           <circle class="gauge-fill" cx="50" cy="50" r="42" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
         </svg>
         <div>
-          <div class="gauge-num" data-count-target="87" data-count-suffix="%">0%</div>
-          <div class="gauge-sub">High conviction</div>
+          <div class="gauge-num">—</div>
+          <div class="gauge-sub">Awaiting data source</div>
         </div>
       </div>
     </div>
 
-    <div class="dash-card reveal-card reveal-delay-1">
-      <div class="dash-card-label">Market Volatility</div>
-      <div class="gauge-wrap">
-        <svg aria-hidden="true" focusable="false" class="gauge-svg" viewBox="0 0 100 100">
-          <circle class="gauge-track" cx="50" cy="50" r="42"/>
-          <circle class="gauge-fill" cx="50" cy="50" r="42" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
-        </svg>
-        <div>
-          <div class="gauge-num" data-count-target="34" data-count-suffix="%">0%</div>
-          <div class="gauge-sub">Below average</div>
-        </div>
-      </div>
+    <div class="dash-card reveal-card reveal-delay-1" data-status="unavailable">
+      <div class="dash-card-label">Market Volatility <span class="dash-card-status">Not connected</span></div>
+      <svg class="volatility-wave" aria-hidden="true" focusable="false" viewBox="0 0 240 64" preserveAspectRatio="none">
+        <path d="M0,32 L240,32"/>
+      </svg>
+      <div class="gauge-sub" style="margin-top:10px">Awaiting data source</div>
     </div>
 
-    <div class="dash-card reveal-card reveal-delay-2">
-      <div class="dash-card-label">Session Activity</div>
+    <div class="dash-card reveal-card reveal-delay-2" data-status="unavailable">
+      <div class="dash-card-label">Session Activity <span class="dash-card-status">Not connected</span></div>
       <div class="session-bars">
-        <div class="session-bar" style="--bar-h:22%"></div>
-        <div class="session-bar" style="--bar-h:38%"></div>
-        <div class="session-bar" style="--bar-h:31%"></div>
-        <div class="session-bar active" style="--bar-h:74%"></div>
-        <div class="session-bar active" style="--bar-h:91%"></div>
-        <div class="session-bar active" style="--bar-h:82%"></div>
-        <div class="session-bar" style="--bar-h:46%"></div>
-        <div class="session-bar" style="--bar-h:28%"></div>
-        <div class="session-bar" style="--bar-h:19%"></div>
+        <div class="session-bar"></div>
+        <div class="session-bar"></div>
+        <div class="session-bar"></div>
+        <div class="session-bar"></div>
+        <div class="session-bar"></div>
+        <div class="session-bar"></div>
+        <div class="session-bar"></div>
+        <div class="session-bar"></div>
+        <div class="session-bar"></div>
       </div>
-      <div class="gauge-sub" style="margin-top:14px">London / NY overlap peak</div>
+      <div class="gauge-sub" style="margin-top:14px">Awaiting data source</div>
     </div>
 
-    <div class="dash-card reveal-card">
-      <div class="dash-card-label">Liquidity Heat Map</div>
+    <div class="dash-card reveal-card" data-status="unavailable">
+      <div class="dash-card-label">Liquidity Heat Map <span class="dash-card-status">Not connected</span></div>
       <div class="heatmap" id="heatmap">
-        <div class="heat-cell" style="--cell-o:.15"></div><div class="heat-cell" style="--cell-o:.3"></div><div class="heat-cell" style="--cell-o:.6"></div><div class="heat-cell" style="--cell-o:.85"></div><div class="heat-cell" style="--cell-o:.4"></div><div class="heat-cell" style="--cell-o:.2"></div><div class="heat-cell" style="--cell-o:.5"></div><div class="heat-cell" style="--cell-o:.1"></div>
-        <div class="heat-cell" style="--cell-o:.25"></div><div class="heat-cell" style="--cell-o:.55"></div><div class="heat-cell" style="--cell-o:.9"></div><div class="heat-cell" style="--cell-o:1"></div><div class="heat-cell" style="--cell-o:.65"></div><div class="heat-cell" style="--cell-o:.35"></div><div class="heat-cell" style="--cell-o:.2"></div><div class="heat-cell" style="--cell-o:.1"></div>
-        <div class="heat-cell" style="--cell-o:.15"></div><div class="heat-cell" style="--cell-o:.4"></div><div class="heat-cell" style="--cell-o:.7"></div><div class="heat-cell" style="--cell-o:.95"></div><div class="heat-cell" style="--cell-o:.5"></div><div class="heat-cell" style="--cell-o:.3"></div><div class="heat-cell" style="--cell-o:.18"></div><div class="heat-cell" style="--cell-o:.08"></div>
-        <div class="heat-cell" style="--cell-o:.1"></div><div class="heat-cell" style="--cell-o:.22"></div><div class="heat-cell" style="--cell-o:.45"></div><div class="heat-cell" style="--cell-o:.6"></div><div class="heat-cell" style="--cell-o:.38"></div><div class="heat-cell" style="--cell-o:.2"></div><div class="heat-cell" style="--cell-o:.12"></div><div class="heat-cell" style="--cell-o:.06"></div>
+        <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+        <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+        <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+        <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
       </div>
-      <div class="gauge-sub" style="margin-top:14px">Depth concentration by price band</div>
+      <div class="gauge-sub" style="margin-top:14px">Awaiting data source</div>
     </div>
 
-    <div class="dash-card reveal-card reveal-delay-1">
-      <div class="dash-card-label">Institutional Flow &amp; Order Imbalance</div>
-      <div class="flow-row" style="--fw:68%">
+    <div class="dash-card reveal-card reveal-delay-1" data-status="unavailable">
+      <div class="dash-card-label">Institutional Flow &amp; Order Imbalance <span class="dash-card-status">Not connected</span></div>
+      <div class="flow-row">
         <span class="flow-row-label">Buy Side</span>
         <div class="flow-track"><div class="flow-fill"></div></div>
       </div>
-      <div class="flow-row" style="--fw:32%">
+      <div class="flow-row">
         <span class="flow-row-label">Sell Side</span>
         <div class="flow-track"><div class="flow-fill"></div></div>
       </div>
-      <div class="flow-row" style="--fw:74%">
+      <div class="flow-row">
         <span class="flow-row-label">Net Bias</span>
         <div class="flow-track"><div class="flow-fill"></div></div>
       </div>
     </div>
 
-    <div class="dash-card reveal-card reveal-delay-2">
-      <div class="dash-card-label">Smart Money Sentiment</div>
+    <div class="dash-card reveal-card reveal-delay-2" data-status="unavailable">
+      <div class="dash-card-label">Smart Money Sentiment <span class="dash-card-status">Not connected</span></div>
       <div style="display:flex;justify-content:space-between;font-family:var(--font-m);font-size:var(--fs-10);color:var(--muted);letter-spacing:.06em">
         <span>Bearish</span><span>Neutral</span><span>Bullish</span>
       </div>
-      <div class="sentiment-track" style="--pos:71%">
+      <div class="sentiment-track">
         <div class="sentiment-dot"></div>
       </div>
-      <div class="gauge-sub" style="margin-top:14px">Skewed bullish across major pairs</div>
+      <div class="gauge-sub" style="margin-top:14px">Awaiting data source</div>
     </div>
   </div>
-  <p class="terminal-caption reveal" style="margin-top:16px">Interface preview — illustrative, not live data</p>
+  <p class="terminal-caption reveal" style="margin-top:16px">Live market intelligence requires a connected data/analytics source — not yet integrated</p>
+  <div class="ea-cta-wrap reveal-btn">
+    <a href="/map.html" class="btn-marketplace">
+      Maps
+      <span class="btn-marketplace-arrow" aria-hidden="true">▸</span>
+    </a>
+  </div>
 </section>
 
 <!-- TRADING PERFORMANCE TIMELINE -->
 <section class="x-section" id="pipeline" aria-labelledby="pipeline-heading">
   <div class="section-label reveal">05 — The Processing Pipeline</div>
   <div class="x-head reveal">
-    <h2 class="x-title reveal-heading" id="pipeline-heading">From tick to execution.</h2>
+    <h2 class="x-title reveal-heading" id="pipeline-heading">From tick to <em>execution.</em></h2>
     <p class="x-desc reveal-para">Every price update passes through the same disciplined pipeline before a single order is placed.</p>
   </div>
 
-  <div class="timeline-scroll-wrap">
-  <div class="timeline-track">
-    <div class="timeline-step reveal-card">
-      <div class="timeline-num">01</div>
-      <div class="timeline-dot"></div>
-      <div class="timeline-title">Market Opens</div>
-      <div class="timeline-desc">Session context and instrument list are established.</div>
+  <div class="pipeline-diagram reveal">
+    <div class="pipeline-bracket pipeline-bracket-top">
+      <span class="pipeline-bracket-label">NUKRAX | Automation Architecture</span>
     </div>
-    <div class="timeline-line"></div>
-    <div class="timeline-step reveal-card">
-      <div class="timeline-num">02</div>
-      <div class="timeline-dot"></div>
-      <div class="timeline-title">Liquidity Scan</div>
-      <div class="timeline-desc">Order book depth and resting liquidity are mapped.</div>
+
+    <div class="pipeline-scroll-wrap">
+    <div class="pipeline-steps">
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">01</div>
+        <div class="pipeline-step-title">Market Opens</div>
+        <div class="pipeline-step-desc">Session context and instrument list are established.</div>
+      </div>
+      <span class="pipeline-connector" aria-hidden="true">→</span>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">02</div>
+        <div class="pipeline-step-title">Liquidity Scan</div>
+        <div class="pipeline-step-desc">Order book depth and resting liquidity are mapped.</div>
+      </div>
+      <span class="pipeline-connector" aria-hidden="true">→</span>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">03</div>
+        <div class="pipeline-step-title">Volume Analysis</div>
+        <div class="pipeline-step-desc">Participation and momentum are measured tick by tick.</div>
+      </div>
+      <span class="pipeline-connector" aria-hidden="true">→</span>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">04</div>
+        <div class="pipeline-step-title">AI Processing</div>
+        <div class="pipeline-step-desc">Signals are scored against the current market regime.</div>
+      </div>
+      <span class="pipeline-connector" aria-hidden="true">→</span>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">05</div>
+        <div class="pipeline-step-title">Risk Evaluation</div>
+        <div class="pipeline-step-desc">Position sizing and exposure limits are checked.</div>
+      </div>
+      <span class="pipeline-connector" aria-hidden="true">→</span>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">06</div>
+        <div class="pipeline-step-title">Trade Confirmation</div>
+        <div class="pipeline-step-desc">Entry, stop, and target levels are finalized.</div>
+      </div>
+      <span class="pipeline-connector" aria-hidden="true">→</span>
+      <div class="pipeline-step pipeline-step-final">
+        <div class="pipeline-step-num">07</div>
+        <div class="pipeline-step-title">Execution</div>
+        <div class="pipeline-step-desc">The order is routed and filled in milliseconds.</div>
+      </div>
     </div>
-    <div class="timeline-line"></div>
-    <div class="timeline-step reveal-card">
-      <div class="timeline-num">03</div>
-      <div class="timeline-dot"></div>
-      <div class="timeline-title">Volume Analysis</div>
-      <div class="timeline-desc">Participation and momentum are measured tick by tick.</div>
     </div>
-    <div class="timeline-line"></div>
-    <div class="timeline-step reveal-card">
-      <div class="timeline-num">04</div>
-      <div class="timeline-dot"></div>
-      <div class="timeline-title">AI Processing</div>
-      <div class="timeline-desc">Signals are scored against the current market regime.</div>
+
+    <div class="pipeline-bracket pipeline-bracket-bottom">
+      <span class="pipeline-bracket-label">Real-Time Data Flow</span>
     </div>
-    <div class="timeline-line"></div>
-    <div class="timeline-step reveal-card">
-      <div class="timeline-num">05</div>
-      <div class="timeline-dot"></div>
-      <div class="timeline-title">Risk Evaluation</div>
-      <div class="timeline-desc">Position sizing and exposure limits are checked.</div>
-    </div>
-    <div class="timeline-line"></div>
-    <div class="timeline-step reveal-card">
-      <div class="timeline-num">06</div>
-      <div class="timeline-dot"></div>
-      <div class="timeline-title">Trade Confirmation</div>
-      <div class="timeline-desc">Entry, stop, and target levels are finalized.</div>
-    </div>
-    <div class="timeline-line"></div>
-    <div class="timeline-step reveal-card">
-      <div class="timeline-num">07</div>
-      <div class="timeline-dot"></div>
-      <div class="timeline-title">Execution</div>
-      <div class="timeline-desc">The order is routed and filled in milliseconds.</div>
-    </div>
-  </div>
   </div>
 </section>
 
 <!-- WHY TRADERS CHOOSE NUKRAX -->
 <section class="x-section" id="why" aria-labelledby="why-heading">
-  <div class="section-label reveal">06 — Why Traders Choose Nukrax</div>
+  <div class="section-label reveal">06 — The Foundation</div>
   <div class="x-head reveal">
-    <h2 class="x-title reveal-heading" id="why-heading">Built different, on purpose.</h2>
-    <p class="x-desc reveal-para">Six principles that separate an institutional-grade system from a retail indicator pack.</p>
+    <h2 class="x-title reveal-heading" id="why-heading">The architecture behind the <em>edge.</em></h2>
+    <p class="x-desc reveal-para">Six principles shaping how NUKRAX is designed, engineered, and built for execution.</p>
   </div>
   <div class="why-grid">
     <div class="why-card reveal-card">
       <div class="why-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg></div>
-      <div class="why-title">Institutional Logic</div>
-      <div class="why-desc">Strategy rules rebuilt from market structure, not borrowed from retail indicator templates.</div>
+      <div class="why-title">Structural <em>Edge</em></div>
+      <div class="why-desc">Strategies engineered around market structure, liquidity, and execution.</div>
     </div>
     <div class="why-card reveal-card reveal-delay-1">
       <div class="why-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M12 12l6-6"/></svg></div>
-      <div class="why-title">Millisecond Analysis</div>
+      <div class="why-title">Real-Time <em>Intelligence</em></div>
       <div class="why-desc">Every tick is evaluated in real time with sub-10ms average processing latency.</div>
     </div>
     <div class="why-card reveal-card reveal-delay-2">
-      <div class="why-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6l4 2"/></svg></div>
-      <div class="why-title">AI Assisted Decisions</div>
+      <div class="why-icon why-icon-fill"><svg aria-hidden="true" focusable="false" viewBox="0 0 1254 1254"><path fill="currentColor" d="M687,251 671,243 645,236 623,235 595,240 570,251 557,260 539,278 530,291 464,413 236,825 229,852 229,877 234,900 243,919 253,933 265,945 281,956 297,963 314,967 334,968 350,966 578,898 532,869 513,849 503,831 498,815 497,784 501,767 508,752 543,690 589,603 604,586 615,580 626,577 644,578 660,586 672,599 678,615 678,633 674,645 615,753 612,764 611,782 615,799 622,813 636,828 653,838 686,852 900,952 916,957 930,959 951,958 978,949 999,934 1009,923 1018,909 1027,883 1028,854 1024,834 1014,811 906,618 727,291 717,277 700,260Z"/></svg></div>
+      <div class="why-title">AI Assisted <em>Decisions</em></div>
       <div class="why-desc">Signal confidence is continuously scored against live market regime data.</div>
     </div>
     <div class="why-card reveal-card">
       <div class="why-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg></div>
-      <div class="why-title">Multi-Timeframe Engine</div>
-      <div class="why-desc">Higher-timeframe bias filters every lower-timeframe entry before execution.</div>
+      <div class="why-title">Contextual <em>Execution</em></div>
+      <div class="why-desc">Multi-timeframe analysis aligns bias, structure, and execution.</div>
     </div>
     <div class="why-card reveal-card reveal-delay-1">
       <div class="why-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M4 12h16M4 6h10M4 18h13"/></svg></div>
-      <div class="why-title">Precision Execution</div>
+      <div class="why-title">Precision <em>Execution</em></div>
       <div class="why-desc">Orders route with minimal slippage through optimized broker connections.</div>
     </div>
     <div class="why-card reveal-card reveal-delay-2">
       <div class="why-icon"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg></div>
-      <div class="why-title">Adaptive Risk Intelligence</div>
+      <div class="why-title">Adaptive Risk <em>Intelligence</em></div>
       <div class="why-desc">Position sizing and drawdown limits adjust automatically to live volatility.</div>
     </div>
   </div>
@@ -2306,10 +2706,11 @@ a.testimonial-card:hover{transform:translateY(-3px)}
   <div class="section-label reveal">07 — Advanced Analytics</div>
   <div class="x-head reveal">
     <h2 class="x-title reveal-heading" id="analytics-heading">Every metric, at a glance.</h2>
-    <p class="x-desc reveal-para">A consolidated read on performance — from price action to portfolio-level risk.</p>
+    <p class="x-desc reveal-para">A consolidated read on performance — from market dynamics to portfolio-wide exposure.</p>
   </div>
 
-  <div class="x-panel reveal-card">
+  <div class="x-panel reveal-card" aria-describedby="analytics-alt">
+    <p id="analytics-alt" class="visually-hidden">Illustrative NUKRAX analytics module showing sample performance metrics, not live trading data: 74% win rate, 1.8 profit factor, 8.4% max drawdown, 12% risk exposure, 62% winning trades, 38% losing trades. Below these figures is a decorative illustrative candlestick chart and a decorative bar strip.</p>
     <div class="x-panel-bar">
       <div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div>
       <span style="margin-left:10px">nukrax // analytics module</span>
@@ -2319,31 +2720,77 @@ a.testimonial-card:hover{transform:translateY(-3px)}
         <div style="padding:26px 26px 4px">
           <div class="x-panel-bar" style="border:none;padding:0;margin-bottom:16px">Candlestick — Illustrative</div>
         </div>
-        <svg aria-hidden="true" focusable="false" class="candle-svg" viewBox="0 0 400 200" preserveAspectRatio="none" style="padding:0 26px 26px">
-          <line x1="0" y1="50" x2="400" y2="50" stroke="#1B2328" stroke-width="1"/>
-          <line x1="0" y1="100" x2="400" y2="100" stroke="#1B2328" stroke-width="1"/>
-          <line x1="0" y1="150" x2="400" y2="150" stroke="#1B2328" stroke-width="1"/>
-          <g class="candle" stroke="#46626B" stroke-width="1.4">
-            <line x1="20" y1="60" x2="20" y2="120"/><rect x="14" y="80" width="12" height="30" fill="#1B2328"/>
-            <line x1="52" y1="70" x2="52" y2="130"/><rect x="46" y="90" width="12" height="25" fill="#8FB8C4"/>
-            <line x1="84" y1="50" x2="84" y2="115"/><rect x="78" y="60" width="12" height="40" fill="#1B2328"/>
-            <line x1="116" y1="90" x2="116" y2="150"/><rect x="110" y="100" width="12" height="35" fill="#8FB8C4"/>
-            <line x1="148" y1="55" x2="148" y2="105"/><rect x="142" y="65" width="12" height="28" fill="#8FB8C4"/>
-            <line x1="180" y1="80" x2="180" y2="140"/><rect x="174" y="95" width="12" height="30" fill="#1B2328"/>
-            <line x1="212" y1="40" x2="212" y2="95"/><rect x="206" y="50" width="12" height="32" fill="#8FB8C4"/>
-            <line x1="244" y1="60" x2="244" y2="120"/><rect x="238" y="75" width="12" height="30" fill="#1B2328"/>
-            <line x1="276" y1="30" x2="276" y2="85"/><rect x="270" y="40" width="12" height="30" fill="#8FB8C4"/>
-            <line x1="308" y1="55" x2="308" y2="110"/><rect x="302" y="65" width="12" height="30" fill="#1B2328"/>
-            <line x1="340" y1="20" x2="340" y2="75"/><rect x="334" y="28" width="12" height="32" fill="#8FB8C4"/>
-            <line x1="372" y1="35" x2="372" y2="90"/><rect x="366" y="45" width="12" height="30" fill="#8FB8C4"/>
-          </g>
+        <svg aria-hidden="true" focusable="false" class="candle-svg" viewBox="0 0 900 200" style="padding:0 26px 26px">
+          <line x1="0" y1="61" x2="900" y2="61" stroke="var(--line)" stroke-width="1"/>
+          <line x1="0" y1="100" x2="900" y2="100" stroke="var(--line)" stroke-width="1"/>
+          <line x1="0" y1="139" x2="900" y2="139" stroke="var(--line)" stroke-width="1"/>
+          <g class="candle"><line x1="7.5" y1="52.1" x2="7.5" y2="79.7" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="4.0" y="56.8" width="7" height="16.7" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="22.5" y1="37.3" x2="22.5" y2="87.0" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="19.0" y="44.9" width="7" height="34.9" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="37.5" y1="47.6" x2="37.5" y2="86.4" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="34.0" y="53.9" width="7" height="25.8" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="52.5" y1="55.5" x2="52.5" y2="75.1" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="49.0" y="62.4" width="7" height="6.0" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="67.5" y1="30.4" x2="67.5" y2="76.0" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="64.0" y="37.9" width="7" height="30.8" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="82.5" y1="25.1" x2="82.5" y2="58.1" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="79.0" y="25.1" width="7" height="27.0" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="97.5" y1="25.1" x2="97.5" y2="41.7" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="94.0" y="26.2" width="7" height="7.8" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="112.5" y1="25.1" x2="112.5" y2="47.9" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="109.0" y="25.1" width="7" height="17.6" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="127.5" y1="27.3" x2="127.5" y2="79.9" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="124.0" y="34.6" width="7" height="37.5" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="142.5" y1="64.0" x2="142.5" y2="101.6" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="139.0" y="71.1" width="7" height="25.6" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="157.5" y1="101.8" x2="157.5" y2="121.9" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="154.0" y="107.8" width="7" height="6.4" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="172.5" y1="105.9" x2="172.5" y2="147.3" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="169.0" y="113.6" width="7" height="27.9" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="187.5" y1="118.7" x2="187.5" y2="155.0" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="184.0" y="123.7" width="7" height="23.9" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="202.5" y1="122.7" x2="202.5" y2="145.2" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="199.0" y="130.3" width="7" height="8.5" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="217.5" y1="112.5" x2="217.5" y2="147.8" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="214.0" y="119.1" width="7" height="21.7" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="232.5" y1="100.9" x2="232.5" y2="153.1" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="229.0" y="107.5" width="7" height="38.6" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="247.5" y1="101.7" x2="247.5" y2="140.0" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="244.0" y="109.3" width="7" height="24.3" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="262.5" y1="101.0" x2="262.5" y2="119.9" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="259.0" y="106.1" width="7" height="6.4" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="277.5" y1="73.1" x2="277.5" y2="110.8" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="274.0" y="80.8" width="7" height="24.3" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="292.5" y1="59.0" x2="292.5" y2="100.5" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="289.0" y="65.0" width="7" height="27.8" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="307.5" y1="56.0" x2="307.5" y2="76.7" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="304.0" y="63.0" width="7" height="8.8" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="322.5" y1="45.3" x2="322.5" y2="83.6" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="319.0" y="52.5" width="7" height="23.2" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="337.5" y1="43.8" x2="337.5" y2="92.8" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="334.0" y="49.5" width="7" height="38.0" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="352.5" y1="53.8" x2="352.5" y2="91.4" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="349.0" y="61.6" width="7" height="22.1" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="367.5" y1="64.0" x2="367.5" y2="81.5" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="364.0" y="69.4" width="7" height="6.0" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="382.5" y1="53.7" x2="382.5" y2="94.1" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="379.0" y="61.1" width="7" height="25.7" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="397.5" y1="58.5" x2="397.5" y2="103.2" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="394.0" y="65.3" width="7" height="31.1" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="412.5" y1="86.3" x2="412.5" y2="108.0" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="409.0" y="92.5" width="7" height="8.7" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="427.5" y1="105.6" x2="427.5" y2="144.4" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="424.0" y="113.3" width="7" height="23.8" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="442.5" y1="135.0" x2="442.5" y2="174.9" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="439.0" y="139.7" width="7" height="35.2" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="457.5" y1="161.6" x2="457.5" y2="174.9" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="454.0" y="169.3" width="7" height="5.6" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="472.5" y1="172.0" x2="472.5" y2="174.9" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="469.0" y="174.9" width="7" height="1.5" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="487.5" y1="147.3" x2="487.5" y2="174.9" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="484.0" y="154.1" width="7" height="20.8" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="502.5" y1="120.4" x2="502.5" y2="166.1" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="499.0" y="127.9" width="7" height="33.4" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="517.5" y1="112.9" x2="517.5" y2="134.2" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="514.0" y="118.2" width="7" height="8.3" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="532.5" y1="93.5" x2="532.5" y2="130.3" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="529.0" y="101.3" width="7" height="23.3" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="547.5" y1="91.7" x2="547.5" y2="137.3" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="544.0" y="97.3" width="7" height="32.5" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="562.5" y1="97.4" x2="562.5" y2="127.2" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="559.0" y="104.7" width="7" height="16.1" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="577.5" y1="96.5" x2="577.5" y2="118.2" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="574.0" y="103.6" width="7" height="7.5" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="592.5" y1="68.8" x2="592.5" y2="114.7" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="589.0" y="74.8" width="7" height="33.0" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="607.5" y1="43.4" x2="607.5" y2="91.9" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="604.0" y="51.1" width="7" height="34.3" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="622.5" y1="43.4" x2="622.5" y2="63.3" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="619.0" y="48.4" width="7" height="7.5" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="637.5" y1="34.6" x2="637.5" y2="69.8" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="634.0" y="42.2" width="7" height="21.9" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="652.5" y1="48.4" x2="652.5" y2="90.9" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="649.0" y="55.0" width="7" height="28.2" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="667.5" y1="77.8" x2="667.5" y2="107.1" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="664.0" y="84.4" width="7" height="17.7" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="682.5" y1="106.9" x2="682.5" y2="131.3" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="679.0" y="114.5" width="7" height="9.0" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="697.5" y1="112.4" x2="697.5" y2="157.6" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="694.0" y="117.4" width="7" height="35.0" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="712.5" y1="115.2" x2="712.5" y2="164.4" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="709.0" y="123.0" width="7" height="33.8" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="727.5" y1="131.3" x2="727.5" y2="149.6" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="724.0" y="137.3" width="7" height="6.4" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="742.5" y1="123.7" x2="742.5" y2="157.8" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="739.0" y="130.8" width="7" height="19.7" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="757.5" y1="116.0" x2="757.5" y2="157.8" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="754.0" y="123.3" width="7" height="27.9" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="772.5" y1="116.0" x2="772.5" y2="148.2" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="769.0" y="121.6" width="7" height="19.7" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="787.5" y1="107.8" x2="787.5" y2="133.0" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="784.0" y="115.6" width="7" height="10.2" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="802.5" y1="79.2" x2="802.5" y2="126.3" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="799.0" y="84.5" width="7" height="35.6" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="817.5" y1="58.5" x2="817.5" y2="105.4" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="814.0" y="66.0" width="7" height="31.9" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="832.5" y1="58.1" x2="832.5" y2="75.6" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="829.0" y="64.9" width="7" height="5.2" fill="var(--line-lit)"/></g>
+          <g class="candle"><line x1="847.5" y1="44.5" x2="847.5" y2="76.1" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="844.0" y="50.8" width="7" height="17.5" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="862.5" y1="28.9" x2="862.5" y2="73.5" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="859.0" y="36.6" width="7" height="32.1" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="877.5" y1="33.6" x2="877.5" y2="67.0" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="874.0" y="38.2" width="7" height="21.0" fill="var(--accent)"/></g>
+          <g class="candle"><line x1="892.5" y1="29.3" x2="892.5" y2="53.6" stroke="var(--accent-dim)" stroke-width="1.1"/><rect x="889.0" y="37.0" width="7" height="11.1" fill="var(--line-lit)"/></g>
         </svg>
         <div class="pie-row">
           <svg aria-hidden="true" focusable="false" class="pie-svg" viewBox="0 0 42 42">
-            <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#1B2328" stroke-width="6"/>
-            <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#8FB8C4" stroke-width="6"
+            <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--line)" stroke-width="6"/>
+            <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--accent)" stroke-width="6"
               stroke-dasharray="62 100" stroke-dashoffset="25" transform="rotate(-90 21 21)"/>
-            <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#46626B" stroke-width="6"
+            <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="var(--accent-dim)" stroke-width="6"
               stroke-dasharray="38 100" stroke-dashoffset="63" transform="rotate(-90 21 21)"/>
           </svg>
           <div class="pie-legend">
@@ -2352,41 +2799,83 @@ a.testimonial-card:hover{transform:translateY(-3px)}
           </div>
         </div>
         <div class="monthly-bars" id="monthlyBars">
-          <div class="monthly-bar" style="--mb:38%"></div>
-          <div class="monthly-bar" style="--mb:52%"></div>
-          <div class="monthly-bar neg" style="--mb:18%"></div>
-          <div class="monthly-bar" style="--mb:64%"></div>
-          <div class="monthly-bar" style="--mb:71%"></div>
-          <div class="monthly-bar neg" style="--mb:24%"></div>
-          <div class="monthly-bar" style="--mb:58%"></div>
-          <div class="monthly-bar" style="--mb:83%"></div>
-          <div class="monthly-bar" style="--mb:69%"></div>
+          <div class="monthly-bar" style="--mb:50%"></div>
+          <div class="monthly-bar" style="--mb:59%"></div>
+          <div class="monthly-bar" style="--mb:65%"></div>
+          <div class="monthly-bar" style="--mb:67%"></div>
+          <div class="monthly-bar" style="--mb:66%"></div>
+          <div class="monthly-bar neg" style="--mb:61%"></div>
+          <div class="monthly-bar neg" style="--mb:53%"></div>
+          <div class="monthly-bar neg" style="--mb:42%"></div>
+          <div class="monthly-bar neg" style="--mb:29%"></div>
           <div class="monthly-bar neg" style="--mb:15%"></div>
-          <div class="monthly-bar" style="--mb:77%"></div>
-          <div class="monthly-bar" style="--mb:90%"></div>
+          <div class="monthly-bar" style="--mb:28%"></div>
+          <div class="monthly-bar" style="--mb:41%"></div>
+          <div class="monthly-bar" style="--mb:52%"></div>
+          <div class="monthly-bar" style="--mb:61%"></div>
+          <div class="monthly-bar" style="--mb:66%"></div>
+          <div class="monthly-bar" style="--mb:68%"></div>
+          <div class="monthly-bar" style="--mb:66%"></div>
+          <div class="monthly-bar neg" style="--mb:60%"></div>
+          <div class="monthly-bar neg" style="--mb:51%"></div>
+          <div class="monthly-bar neg" style="--mb:40%"></div>
+          <div class="monthly-bar neg" style="--mb:28%"></div>
+          <div class="monthly-bar" style="--mb:33%"></div>
+          <div class="monthly-bar" style="--mb:45%"></div>
+          <div class="monthly-bar" style="--mb:56%"></div>
+          <div class="monthly-bar" style="--mb:63%"></div>
+          <div class="monthly-bar" style="--mb:68%"></div>
+          <div class="monthly-bar" style="--mb:69%"></div>
+          <div class="monthly-bar" style="--mb:66%"></div>
+          <div class="monthly-bar" style="--mb:59%"></div>
+          <div class="monthly-bar neg" style="--mb:49%"></div>
+          <div class="monthly-bar neg" style="--mb:37%"></div>
+          <div class="monthly-bar neg" style="--mb:23%"></div>
+          <div class="monthly-bar neg" style="--mb:22%"></div>
+          <div class="monthly-bar" style="--mb:33%"></div>
+          <div class="monthly-bar" style="--mb:45%"></div>
+          <div class="monthly-bar" style="--mb:55%"></div>
+          <div class="monthly-bar" style="--mb:62%"></div>
+          <div class="monthly-bar" style="--mb:66%"></div>
+          <div class="monthly-bar" style="--mb:66%"></div>
+          <div class="monthly-bar" style="--mb:62%"></div>
+          <div class="monthly-bar" style="--mb:54%"></div>
+          <div class="monthly-bar neg" style="--mb:45%"></div>
+          <div class="monthly-bar neg" style="--mb:33%"></div>
+          <div class="monthly-bar neg" style="--mb:27%"></div>
+          <div class="monthly-bar neg" style="--mb:40%"></div>
+          <div class="monthly-bar" style="--mb:52%"></div>
+          <div class="monthly-bar" style="--mb:61%"></div>
+          <div class="monthly-bar" style="--mb:67%"></div>
+          <div class="monthly-bar" style="--mb:70%"></div>
+          <div class="monthly-bar" style="--mb:69%"></div>
+          <div class="monthly-bar" style="--mb:64%"></div>
+          <div class="monthly-bar" style="--mb:56%"></div>
+          <div class="monthly-bar neg" style="--mb:45%"></div>
+          <div class="monthly-bar neg" style="--mb:31%"></div>
         </div>
       </div>
       <div class="metrics-col">
         <div class="metric-block">
-          <div class="metric-top"><span class="metric-name">Win Rate</span><span class="metric-value" data-count-target="74" data-count-suffix="%">0%</span></div>
+          <div class="metric-top"><span class="metric-name">Win Rate</span><span class="metric-value" data-count-target="74" data-count-suffix="%">74%</span></div>
           <div class="metric-bar-track"><div class="metric-bar-fill"></div></div>
         </div>
         <div class="metric-block" style="--mw:88%">
-          <div class="metric-top"><span class="metric-name">Profit Factor</span><span class="metric-value" data-count-target="1.8" data-count-decimals="1">0.0</span></div>
+          <div class="metric-top"><span class="metric-name">Profit Factor</span><span class="metric-value" data-count-target="1.8" data-count-decimals="1">1.8</span></div>
           <div class="metric-bar-track"><div class="metric-bar-fill"></div></div>
         </div>
         <div class="metric-block" style="--mw:22%">
-          <div class="metric-top"><span class="metric-name">Max Drawdown</span><span class="metric-value" data-count-target="8.4" data-count-decimals="1" data-count-suffix="%">0%</span></div>
+          <div class="metric-top"><span class="metric-name">Max Drawdown</span><span class="metric-value" data-count-target="8.4" data-count-decimals="1" data-count-suffix="%">8.4%</span></div>
           <div class="metric-bar-track"><div class="metric-bar-fill"></div></div>
         </div>
         <div class="metric-block" style="--mw:91%">
-          <div class="metric-top"><span class="metric-name">Risk Exposure</span><span class="metric-value" data-count-target="12" data-count-suffix="%">0%</span></div>
+          <div class="metric-top"><span class="metric-name">Risk Exposure</span><span class="metric-value" data-count-target="12" data-count-suffix="%">12%</span></div>
           <div class="metric-bar-track"><div class="metric-bar-fill"></div></div>
         </div>
       </div>
     </div>
   </div>
-  <p class="terminal-caption reveal" style="margin-top:16px">Interface preview — illustrative, not live data</p>
+  <p class="terminal-caption reveal" style="margin-top:16px">Illustrative data — not live performance</p>
 </section>
 
 <!-- TECHNOLOGY STACK -->
@@ -2440,43 +2929,33 @@ a.testimonial-card:hover{transform:translateY(-3px)}
   </div>
 </section>
 
-<!-- LIVE STATISTICS -->
-<section class="livestats-band" aria-labelledby="livestats-heading">
-  <h2 id="livestats-heading" class="visually-hidden">Live platform statistics</h2>
-  <div class="livestats-grid">
-    <div class="livestat reveal reveal-delay-1">
-      <div class="livestat-num"><span data-count-target="99.98" data-count-decimals="2" data-count-suffix="%">0.00%</span></div>
-      <div class="livestat-label">Uptime</div>
-    </div>
-    <div class="livestat reveal reveal-delay-2">
-      <div class="livestat-num"><span data-count-target="24" data-count-suffix="/7">0</span></div>
-      <div class="livestat-label">Automated Execution</div>
-    </div>
-    <div class="livestat reveal reveal-delay-3">
-      <div class="livestat-num"><span data-count-target="15" data-count-suffix="M+">0</span></div>
-      <div class="livestat-label">Ticks Processed / Day</div>
-    </div>
-    <div class="livestat reveal reveal-delay-4">
-      <div class="livestat-num"><span data-count-target="120" data-count-suffix="+">0</span></div>
-      <div class="livestat-label">Instruments Monitored</div>
-    </div>
-    <div class="livestat reveal reveal-delay-1">
-      <div class="livestat-num"><span data-count-target="5" data-count-prefix="&lt;" data-count-suffix="ms">0ms</span></div>
-      <div class="livestat-label">Avg. Execution Latency</div>
-    </div>
-    <div class="livestat reveal reveal-delay-2">
-      <div class="livestat-num"><span data-count-target="365" data-count-suffix=" Days">0</span></div>
-      <div class="livestat-label">Continuous Operation</div>
-    </div>
+<!-- A.N-5: continuous left-to-right band per spec Part 10. The source (SVG) shows
+     only a plain instruction sentence here with no specified content — using
+     reference-sourced labels already established for the adjacent Tech-Stack/
+     Security cards rather than inventing new marketing copy. -->
+<div class="an5-band" aria-hidden="true">
+  <div class="an5-track">
+    <span class="an5-item">AI Engine</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">Risk Engine</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">Cloud Infrastructure</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">Market Scanner</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">Security Layer</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">Execution Core</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">AI Engine</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">Risk Engine</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">Cloud Infrastructure</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">Market Scanner</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">Security Layer</span><span class="an5-sep" aria-hidden="true">•</span>
+    <span class="an5-item">Execution Core</span><span class="an5-sep" aria-hidden="true">•</span>
   </div>
-</section>
+</div>
 
 <!-- SECURITY -->
 <section class="x-section" id="security" aria-labelledby="security-heading">
   <div class="section-label reveal">09 — Security</div>
   <div class="x-head reveal">
-    <h2 class="x-title reveal-heading" id="security-heading">Protected at every layer.</h2>
-    <p class="x-desc reveal-para">Capital and data security aren't an afterthought — they're engineered into the foundation.</p>
+    <h2 class="x-title reveal-heading" id="security-heading">Security engineered into every layer.</h2>
+    <p class="x-desc reveal-para">Capital and data security are built into the architecture, not added as an afterthought.</p>
   </div>
   <div class="security-grid">
     <div class="security-card reveal-card">
@@ -2522,81 +3001,156 @@ a.testimonial-card:hover{transform:translateY(-3px)}
 <section class="x-section" id="testimonials" aria-labelledby="testimonials-heading">
   <div class="section-label reveal">10 — From the Community</div>
   <div class="x-head reveal">
-    <h2 class="x-title reveal-heading" id="testimonials-heading">What traders are saying.</h2>
-    <p class="x-desc reveal-para">Feedback from members running nukrax systems in live conditions.</p>
+    <h2 class="x-title reveal-heading" id="testimonials-heading">User Perspectives.</h2>
+    <p class="x-desc reveal-para">Real experiences from users putting NUKRAX to work in live markets.</p>
   </div>
-  <div class="testimonial-scroll-wrap">
-  <div class="testimonial-grid">
-    <a href="feedback.html#r-k" class="testimonial-card reveal-card">
-      <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:96%">★★★★★</div></div><span class="star-rating-num">4.8</span><span class="visually-hidden">Rated 4.8 out of 5</span></div>
-      <p class="testimonial-quote">The risk engine alone changed how I size positions. It's the first system that feels engineered rather than assembled.</p>
-      <div class="testimonial-person">
-        <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
-        <div>
-          <div class="testimonial-name">R. K.</div>
-          <div class="testimonial-role">Prop Desk Trader</div>
-        </div>
+  <div class="testimonial-marquee">
+    <div class="testimonial-row" data-dir="rtl">
+      <div class="testimonial-track">
+        <a href="feedback.html#r-k" class="testimonial-card">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:96%">★★★★★</div></div><span class="star-rating-num">4.8</span><span class="visually-hidden">Rated 4.8 out of 5</span></div>
+          <p class="testimonial-quote">The risk engine alone changed how I size positions. It's the first system that feels engineered rather than assembled.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">R. K.</div>
+              <div class="testimonial-role">Prop Desk Trader</div>
+            </div>
+          </div>
+        </a>
+        <a href="feedback.html#m-t" class="testimonial-card">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:90%">★★★★★</div></div><span class="star-rating-num">4.5</span><span class="visually-hidden">Rated 4.5 out of 5</span></div>
+          <p class="testimonial-quote">Execution speed is genuinely different. Slippage on my fills dropped noticeably after switching over.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">M. T.</div>
+              <div class="testimonial-role">Independent Trader</div>
+            </div>
+          </div>
+        </a>
+        <a href="feedback.html#a-v" class="testimonial-card">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:100%">★★★★★</div></div><span class="star-rating-num">5.0</span><span class="visually-hidden">Rated 5.0 out of 5</span></div>
+          <p class="testimonial-quote">The SMC/ICT logic isn't a retail rehash — it actually respects liquidity the way institutions do.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">A. V.</div>
+              <div class="testimonial-role">Portfolio Manager</div>
+            </div>
+          </div>
+        </a>
+        <a href="feedback.html#r-k" class="testimonial-card" aria-hidden="true" tabindex="-1">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:96%">★★★★★</div></div><span class="star-rating-num">4.8</span></div>
+          <p class="testimonial-quote">The risk engine alone changed how I size positions. It's the first system that feels engineered rather than assembled.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">R. K.</div>
+              <div class="testimonial-role">Prop Desk Trader</div>
+            </div>
+          </div>
+        </a>
+        <a href="feedback.html#m-t" class="testimonial-card" aria-hidden="true" tabindex="-1">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:90%">★★★★★</div></div><span class="star-rating-num">4.5</span></div>
+          <p class="testimonial-quote">Execution speed is genuinely different. Slippage on my fills dropped noticeably after switching over.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">M. T.</div>
+              <div class="testimonial-role">Independent Trader</div>
+            </div>
+          </div>
+        </a>
+        <a href="feedback.html#a-v" class="testimonial-card" aria-hidden="true" tabindex="-1">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:100%">★★★★★</div></div><span class="star-rating-num">5.0</span></div>
+          <p class="testimonial-quote">The SMC/ICT logic isn't a retail rehash — it actually respects liquidity the way institutions do.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">A. V.</div>
+              <div class="testimonial-role">Portfolio Manager</div>
+            </div>
+          </div>
+        </a>
       </div>
-    </a>
-    <a href="feedback.html#m-t" class="testimonial-card reveal-card reveal-delay-1">
-      <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:90%">★★★★★</div></div><span class="star-rating-num">4.5</span><span class="visually-hidden">Rated 4.5 out of 5</span></div>
-      <p class="testimonial-quote">Execution speed is genuinely different. Slippage on my fills dropped noticeably after switching over.</p>
-      <div class="testimonial-person">
-        <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
-        <div>
-          <div class="testimonial-name">M. T.</div>
-          <div class="testimonial-role">Independent Trader</div>
-        </div>
+    </div>
+    <div class="testimonial-row" data-dir="ltr">
+      <div class="testimonial-track">
+        <a href="feedback.html#d-h" class="testimonial-card">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:86%">★★★★★</div></div><span class="star-rating-num">4.3</span><span class="visually-hidden">Rated 4.3 out of 5</span></div>
+          <p class="testimonial-quote">Uptime has been flawless through every major news event I've traded so far this year.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">D. H.</div>
+              <div class="testimonial-role">Algorithmic Trader</div>
+            </div>
+          </div>
+        </a>
+        <a href="feedback.html#s-l" class="testimonial-card">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:94%">★★★★★</div></div><span class="star-rating-num">4.7</span><span class="visually-hidden">Rated 4.7 out of 5</span></div>
+          <p class="testimonial-quote">Support and documentation are as precise as the code. Rare for a system this sophisticated.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">S. L.</div>
+              <div class="testimonial-role">Quant Analyst</div>
+            </div>
+          </div>
+        </a>
+        <a href="feedback.html#j-p" class="testimonial-card">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:92%">★★★★★</div></div><span class="star-rating-num">4.6</span><span class="visually-hidden">Rated 4.6 out of 5</span></div>
+          <p class="testimonial-quote">Multi-timeframe confirmation cut my false entries dramatically. This is built for people who take it seriously.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">J. P.</div>
+              <div class="testimonial-role">Full-Time Trader</div>
+            </div>
+          </div>
+        </a>
+        <a href="feedback.html#d-h" class="testimonial-card" aria-hidden="true" tabindex="-1">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:86%">★★★★★</div></div><span class="star-rating-num">4.3</span></div>
+          <p class="testimonial-quote">Uptime has been flawless through every major news event I've traded so far this year.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">D. H.</div>
+              <div class="testimonial-role">Algorithmic Trader</div>
+            </div>
+          </div>
+        </a>
+        <a href="feedback.html#s-l" class="testimonial-card" aria-hidden="true" tabindex="-1">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:94%">★★★★★</div></div><span class="star-rating-num">4.7</span></div>
+          <p class="testimonial-quote">Support and documentation are as precise as the code. Rare for a system this sophisticated.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">S. L.</div>
+              <div class="testimonial-role">Quant Analyst</div>
+            </div>
+          </div>
+        </a>
+        <a href="feedback.html#j-p" class="testimonial-card" aria-hidden="true" tabindex="-1">
+          <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:92%">★★★★★</div></div><span class="star-rating-num">4.6</span></div>
+          <p class="testimonial-quote">Multi-timeframe confirmation cut my false entries dramatically. This is built for people who take it seriously.</p>
+          <div class="testimonial-person">
+            <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
+            <div>
+              <div class="testimonial-name">J. P.</div>
+              <div class="testimonial-role">Full-Time Trader</div>
+            </div>
+          </div>
+        </a>
       </div>
-    </a>
-    <a href="feedback.html#a-v" class="testimonial-card reveal-card reveal-delay-2">
-      <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:100%">★★★★★</div></div><span class="star-rating-num">5.0</span><span class="visually-hidden">Rated 5.0 out of 5</span></div>
-      <p class="testimonial-quote">The SMC/ICT logic isn't a retail rehash — it actually respects liquidity the way institutions do.</p>
-      <div class="testimonial-person">
-        <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
-        <div>
-          <div class="testimonial-name">A. V.</div>
-          <div class="testimonial-role">Portfolio Manager</div>
-        </div>
-      </div>
-    </a>
-    <a href="feedback.html#d-h" class="testimonial-card reveal-card">
-      <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:86%">★★★★★</div></div><span class="star-rating-num">4.3</span><span class="visually-hidden">Rated 4.3 out of 5</span></div>
-      <p class="testimonial-quote">Uptime has been flawless through every major news event I've traded so far this year.</p>
-      <div class="testimonial-person">
-        <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
-        <div>
-          <div class="testimonial-name">D. H.</div>
-          <div class="testimonial-role">Algorithmic Trader</div>
-        </div>
-      </div>
-    </a>
-    <a href="feedback.html#s-l" class="testimonial-card reveal-card reveal-delay-1">
-      <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:94%">★★★★★</div></div><span class="star-rating-num">4.7</span><span class="visually-hidden">Rated 4.7 out of 5</span></div>
-      <p class="testimonial-quote">Support and documentation are as precise as the code. Rare for a system this sophisticated.</p>
-      <div class="testimonial-person">
-        <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
-        <div>
-          <div class="testimonial-name">S. L.</div>
-          <div class="testimonial-role">Quant Analyst</div>
-        </div>
-      </div>
-    </a>
-    <a href="feedback.html#j-p" class="testimonial-card reveal-card reveal-delay-2">
-      <div class="star-rating-row"><div class="star-rating" aria-hidden="true"><div class="star-row star-row-bg">★★★★★</div><div class="star-row star-row-fg" style="width:92%">★★★★★</div></div><span class="star-rating-num">4.6</span><span class="visually-hidden">Rated 4.6 out of 5</span></div>
-      <p class="testimonial-quote">Multi-timeframe confirmation cut my false entries dramatically. This is built for people who take it seriously.</p>
-      <div class="testimonial-person">
-        <div class="avatar"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#sprite-avatar"/></svg></div>
-        <div>
-          <div class="testimonial-name">J. P.</div>
-          <div class="testimonial-role">Full-Time Trader</div>
-        </div>
-      </div>
-    </a>
+    </div>
   </div>
-  </div>
-  <div class="reveal-btn" style="margin-top:36px;text-align:center">
-    <a href="/feedback.html" class="btn btn-primary">See more feedback <span class="btn-arrow">→</span></a>
+  <div class="ea-cta-wrap reveal-btn" style="margin-top:36px;justify-content:center;display:flex">
+    <a href="/feedback.html" class="btn-marketplace">
+      Feedbacks
+      <span class="btn-marketplace-arrow" aria-hidden="true">▸</span>
+    </a>
   </div>
 </section>
 
@@ -2605,7 +3159,7 @@ a.testimonial-card:hover{transform:translateY(-3px)}
   <div class="section-label reveal">11 — Frequently Asked Questions</div>
   <div class="x-head reveal">
     <h2 class="x-title reveal-heading" id="faq-heading">Everything you need to know.</h2>
-    <p class="x-desc reveal-para">Still have a question after reading through? Reach out on Telegram or X.</p>
+    <p class="x-desc reveal-para">Still have a question after reading through? Reach out on <a href="https://t.me/CosmoLanex" target="_blank" rel="noopener noreferrer" class="link-inline">Telegram</a> or <a href="mailto:ask@nukrax.com" class="link-inline" style="text-decoration:underline">ask@nukrax.com</a>.</p>
   </div>
   <div class="accordion reveal-card">
     <details class="acc-item">
@@ -2671,20 +3225,70 @@ a.testimonial-card:hover{transform:translateY(-3px)}
   </div>
 </section>
 
-<!-- FINAL CTA -->
+<!-- LIVE STATISTICS -->
+<section class="livestats-band" aria-labelledby="livestats-heading">
+  <h2 id="livestats-heading" class="visually-hidden">Live platform statistics</h2>
+  <div class="livestats-grid">
+    <div class="livestat reveal reveal-delay-1">
+      <div class="livestat-num"><span data-count-target="99.98" data-count-decimals="2" data-count-suffix="%">99.98%</span></div>
+      <div class="livestat-label">Uptime</div>
+    </div>
+    <div class="livestat reveal reveal-delay-2">
+      <div class="livestat-num"><span data-count-target="24" data-count-suffix="/7">24/7</span></div>
+      <div class="livestat-label">Automated Execution</div>
+    </div>
+    <div class="livestat reveal reveal-delay-3">
+      <div class="livestat-num"><span data-count-target="15" data-count-suffix="M+">15M+</span></div>
+      <div class="livestat-label">Ticks Processed / Day</div>
+    </div>
+    <div class="livestat reveal reveal-delay-4">
+      <div class="livestat-num"><span data-count-target="120" data-count-suffix="+">120+</span></div>
+      <div class="livestat-label">Instruments Monitored</div>
+    </div>
+    <div class="livestat reveal reveal-delay-1">
+      <div class="livestat-num"><span data-count-target="5" data-count-prefix="&lt;" data-count-suffix="ms">&lt;5ms</span></div>
+      <div class="livestat-label">Avg. Execution Latency</div>
+    </div>
+    <div class="livestat reveal reveal-delay-2">
+      <div class="livestat-num"><span data-count-target="365" data-count-suffix=" Days">365 Days</span></div>
+      <div class="livestat-label">Continuous Operation</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA / EMAIL SIGNUP -->
 <section class="final-cta" id="finalCta" aria-labelledby="final-cta-heading">
   <div class="final-cta-grid"></div>
   <div class="final-cta-glow"></div>
   <div class="final-cta-content">
-    <div class="final-cta-label reveal">Ready when you are</div>
-    <h2 class="final-cta-title reveal-heading" id="final-cta-heading">Trade with <em>precision.</em> Trade with <em>nukrax.</em></h2>
-    <p class="final-cta-sub reveal-para">Join the traders running institutional-grade systems around the clock — no noise, no guesswork, just disciplined execution.</p>
-    <div class="final-cta-actions reveal-btn">
-      <a href="/ea-selection.html" class="btn btn-primary">Explore Expert Advisors <span class="btn-arrow">→</span></a>
-      <a href="https://t.me/CosmoLanex" class="link-inline" target="_blank" rel="noopener noreferrer">Talk to us on Telegram <span class="btn-arrow">↗</span></a>
-    </div>
+    <h2 class="final-cta-title reveal-heading" id="final-cta-heading">If You Can <em>Think-IT</em><br><span class="final-cta-wordmark">NUKRAX</span> Can Build IT.</h2>
+    <p class="final-cta-sub reveal-para">Through software and automation to intelligent systems — we transform complex ideas into technology built to perform in the real world.</p>
+    <form class="final-cta-form reveal-btn" id="nkx-signup-form" novalidate>
+      <label for="nkx-signup-email" class="visually-hidden">Email address</label>
+      <input type="email" id="nkx-signup-email" name="email" class="final-cta-input" placeholder="Enter your email" autocomplete="email" required>
+      <button type="submit" class="final-cta-submit">Sign up for NUKRAX</button>
+    </form>
+    <p class="final-cta-form-note" id="nkx-signup-note" role="status" aria-live="polite"></p>
   </div>
 </section>
+<script>
+(function(){
+  var form = document.getElementById('nkx-signup-form');
+  var note = document.getElementById('nkx-signup-note');
+  if(!form || !note) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var input = document.getElementById('nkx-signup-email');
+    if(!input.checkValidity()){
+      note.textContent = 'Please enter a valid email address.';
+      return;
+    }
+    // No email-signup backend exists in this project yet — front-end state only.
+    note.textContent = 'Signups aren\u2019t connected yet \u2014 reach out on Telegram or ask@nukrax.com in the meantime.';
+    form.reset();
+  });
+})();
+</script>
 
 </main>
 
@@ -2956,7 +3560,7 @@ const primaryTextEls = document.querySelectorAll(
    which reads as an intentional showcase effect rather than a bug. */
 const decorativeEls = document.querySelectorAll(
   '.reveal-card, .reveal-image, .reveal-metrics, ' +
-  '.heatmap, .session-bars, .sentiment-track, .flow-row, .metric-block, .monthly-bars, .timeline-line'
+  '.heatmap, .session-bars, .sentiment-track, .flow-row, .metric-block, .monthly-bars'
 );
 
 function forceRevealAll(){
@@ -3033,11 +3637,11 @@ function setupAutoScrollTrack(wrapSelector, trackSelector, { skipBelowWidth = 0,
 
 // Pipeline: stacks into a vertical column below 700px, so auto-scroll only
 // applies where it's still a horizontal row.
-setupAutoScrollTrack('.timeline-scroll-wrap', '.timeline-track', { skipBelowWidth: 700 });
+setupAutoScrollTrack('.pipeline-scroll-wrap', '.pipeline-steps', { skipBelowWidth: 700, speed: 1 });
 
-// Testimonials: stays a single horizontally-scrolling row at every width,
-// mobile included, so no skipBelowWidth here.
-setupAutoScrollTrack('.testimonial-scroll-wrap', '.testimonial-grid', { mobileSpeed: 0.75 });
+// Testimonials now use a dedicated two-row CSS marquee (opposite directions,
+// hover-to-pause per row) — see .testimonial-track keyframes above; no JS
+// driver needed here.
 
 try {
   document.querySelectorAll('.reveal-heading').forEach(h=>{
@@ -3127,7 +3731,7 @@ if(typeof reduceMotionQuery.addEventListener === 'function'){
       const decimals = parseInt(el.dataset.countDecimals || '0', 10);
       if(entry.isIntersecting){
         animateCount(el, target, decimals);
-      } else if(entry.boundingClientRect.top > 0){
+      } else if(entry.boundingClientRect.top > 0 && !REDUCE_MOTION){
         el.textContent = format(el, 0, decimals);
       }
     });
@@ -3581,12 +4185,16 @@ supabase.auth.onAuthStateChange((_event, session) => applyAuthState(session));
 </script>
 <script type="module" src="assets/home/home.js"></script>
 <script type="module">
-  import { initInfinity } from './assets/infinity/infinity.js?v=1';
-  // Mobile-only — matches the same 960px breakpoint the hero layout
-  // itself switches on (see @media(min-width:960px) above).
-  if (window.innerWidth < 960) {
-    initInfinity({ canvasId: 'heroCubeCanvas', hostId: 'cubeScene', wrapId: 'heroGlobeWrap' });
-  }
+  import { initMegaMenu } from './assets/home/megamenu.js?v=1';
+  import { initHeroAscii } from './assets/home/hero-ascii.js?v=1';
+  import { initTickerPulse } from './assets/home/ticker-pulse.js?v=1';
+  import { initAboutField } from './assets/home/about-field.js?v=1';
+  import { initTerminalGrid } from './assets/home/terminal-grid.js?v=1';
+  initMegaMenu();
+  initHeroAscii({ canvasId: 'heroAsciiCanvas', wrapId: 'heroAnimWrap' });
+  initTickerPulse({ canvasId: 'nkxTickerCanvas', wrapId: 'nkxTicker' });
+  initAboutField({ canvasId: 'aboutFieldCanvas', wrapId: 'aboutAnimWrap' });
+  initTerminalGrid({ wrapId: 'terminalGridWrap', gridId: 'prismGrid' });
 </script>
 </body>
 </html>
